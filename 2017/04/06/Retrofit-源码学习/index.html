@@ -1,0 +1,1016 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Retrofit," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Retrofit的对象是通过建造者模式构建出来的 public Retrofit build() {   if (baseUrl == null) { //检查baseurl     throw new IllegalStateException(&amp;quot;Base URL required.&amp;quot;);   }    okhttp3.Call.Factory callFactory = t">
+<meta name="keywords" content="Android,Retrofit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Retrofit 源码学习">
+<meta property="og:url" content="http://yoursite.com/2017/04/06/Retrofit-源码学习/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="Retrofit的对象是通过建造者模式构建出来的 public Retrofit build() {   if (baseUrl == null) { //检查baseurl     throw new IllegalStateException(&amp;quot;Base URL required.&amp;quot;);   }    okhttp3.Call.Factory callFactory = t">
+<meta property="og:updated_time" content="2017-04-07T15:59:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Retrofit 源码学习">
+<meta name="twitter:description" content="Retrofit的对象是通过建造者模式构建出来的 public Retrofit build() {   if (baseUrl == null) { //检查baseurl     throw new IllegalStateException(&amp;quot;Base URL required.&amp;quot;);   }    okhttp3.Call.Factory callFactory = t">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/06/Retrofit-源码学习/"/>
+
+
+
+
+
+  <title>Retrofit 源码学习 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/Retrofit-源码学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Retrofit 源码学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-06T22:12:43+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Retrofit的对象是通过建造者模式构建出来的</p>
+<pre><code>public Retrofit build() {
+  if (baseUrl == null) { //检查baseurl
+    throw new IllegalStateException(&quot;Base URL required.&quot;);
+  }
+
+  okhttp3.Call.Factory callFactory = this.callFactory;
+  if (callFactory == null) {
+    // 如果未设置Okhttp 对象，那么使用默认的
+    callFactory = new OkHttpClient(); 
+  }
+  Executor callbackExecutor = this.callbackExecutor;
+  if (callbackExecutor == null) {
+    callbackExecutor = platform.defaultCallbackExecutor();
+  }
+  // Make a defensive copy of the adapters and add the default Call adapter.
+  List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;(this.adapterFactories);
+  adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
+
+  // Make a defensive copy of the converters.
+  List&lt;Converter.Factory&gt; converterFactories = new ArrayList&lt;&gt;(this.converterFactories);
+
+  return new Retrofit(callFactory, baseUrl, converterFactories, adapterFactories,
+      callbackExecutor, validateEagerly);
+}
+</code></pre><p>在项目中我们定义了 TestService 这个接口</p>
+<pre><code>public interface TestService {
+    @GET(&quot;xxxx/{path}/data&quot;)
+    Call&lt;String&gt; getData(@Path(&quot;path&quot;) String path);
+}
+</code></pre><p>当我们需要使用TestService 的时候只需要调用  retrofit.create 方法。</p>
+<pre><code>service = retrofit.create(TestService.class);
+</code></pre><p>就会得到一个TestService 的实例。</p>
+<p>进入create 方法 </p>
+<pre><code>public &lt;T&gt; T create(final Class&lt;T&gt; service) {
+// 检查是否是一个有效的接口， 同时限定这个类只能是接口，并且没有继承其他的接口。
+Utils.validateServiceInterface(service);  
+if (validateEagerly) {
+  eagerlyValidateMethods(service);
+}
+return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
+    new InvocationHandler() {
+      private final Platform platform = Platform.get();
+
+      @Override public Object invoke(Object proxy, Method method, Object... args)
+          throws Throwable {
+        // If the method is a method from Object then defer to normal invocation.
+        if (method.getDeclaringClass() == Object.class) {
+          return method.invoke(this, args);
+        }
+        if (platform.isDefaultMethod(method)) { // 源码中始终返回false.
+          return platform.invokeDefaultMethod(method, service, proxy, args);
+        }
+
+        ServiceMethod serviceMethod = loadServiceMethod(method);
+        OkHttpCall okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
+        return serviceMethod.callAdapter.adapt(okHttpCall);
+      }
+    });
+}
+</code></pre><p> eagerlyValidateMethods(service); </p>
+<p>这个方法会把service中所有的方法放在 Retrofit 实例的 Map serviceMethodCache 对象当中，供以后的调用。validateEagerly 这个参数的作用就是判断是否在首次创建Retrofit 的时候就把所有的方法都放到这个map当中，如果不是就是使用到的时候再放进去</p>
+<p>这个Map 中的key 是 Method 对象，而key 是SerivceMethod 这个对象中包含了很多东西，例如baseURL, relativeUrl, headrs 等信息，可以看看源码，ServiceMethod 对象同样是通过建造者模式创建的，创建的过程如下</p>
+<ol>
+<li>创建一个 CallAdapter  对象</li>
+<li>检查返回值类型，如果没有给定泛型中的具体类型，那么会抛出异常，例如直接返回Call 会抛出一个异常。</li>
+<li>设置Response body 的转换器。</li>
+<li>开始解析添加在方法上的注解，其中的注解包括了Http Method, Path, Header等信息，如果其中还包含Query Sring ,还会检查query string 是否不正确的使用@Path 注解。</li>
+<li>然后再次检查是否没有添加表示Http Method的注解</li>
+<li>检查是否有请求体，如果没有请求体，但是请求需要提交表单 那么会抛异常。</li>
+<li>检查参数的类型，参数不能为表示泛型的通配符，必须是具体的类型</li>
+<li>检查方法参数的注解，如果没有添加方法参数的注解会抛异常。</li>
+<li>检查注解和方法参数注解的匹配，和使用规范注解(例如一个参数只能有一个注解)</li>
+</ol>
+<p>方法的最后通过<strong>动态代理</strong>的方式返回了一个实现了 service 代表接口的类。</p>
+<p>这里说一下动态代理匿名内部类中 Platform， 这个对象实际上表示了不同平台，目前里面默认的有Java, Android，IOS, 根据不同的平台会有一些不同地方，例如默认的回调池， CallAdapter 如何创建（后面分析）等等。</p>
+<pre><code>ServiceMethod serviceMethod = loadServiceMethod(method);
+</code></pre><p>这一行代码就是前面提到的从 serviceMethodCache 这个map 对象中去取对应的方法。<br>之后创建了一个OkHttpCall 对象，OkHttpCall 实现了 Call 这个interface，进入到Call 这个interface中，上面有一段对这个类的注释：</p>
+<blockquote>
+<p>Call最终代表了Retrofit 发送请求到服务器然后从服务器接受一个响应，每一个call产生自己的请求和和响应，可以通过clone方法来多次实现多次请求，通过这种方式可以实现轮询或者请求失败的重试。Call 通过enqueue方法来实现异步的调用，也可以使用 execute() 来实现同步的调用，当call正在读响应或者发请求的时候可能会有IOException.</p>
+</blockquote>
+<p>读完这段之后，我们再来看 OkHttpCall 就会明白 OkHttpCall 只是 使用OkHttp来实现发送请求，所以Retrofit 并不是一个真正发送网络请求的库，真正实现网络请求的是okhttp，Retroif 只是在在上面实现了一层封装，提供了接口。</p>
+<p>我们接着看 return serviceMethod.callAdapter.adapt(okHttpCall); </p>
+<p>这里调用CallAdpater的adapt 方法返回了一个对象。</p>
+<p>CallAdapter 是一个接口。</p>
+<pre><code>public interface CallAdapter&lt;T&gt; {
+      Type responseType();
+      &lt;R&gt; T adapt(Call&lt;R&gt; call);
+}
+</code></pre><p>其中定义两个方法，从方法的文档中可以知道 responseType 返回响应泛型的具体类型，在TestService中就是String, 而 adapt 方法就是真正产生返回值 Call<string>的， 在文档里面说：这个方法实际上产生了 参数 call 的 一个代理。我们可以通过自定义自己的CallAdapter并且在retrofit对象构建的过程中传入，Retrofit 提供了一个默认的CallAdapter.</string></p>
+<p>这个 callAdapter 对象创建的关键是在retrofit build过程中的 adapterFactories， 这是一个 CallAdapter 对象的List. </p>
+<p>我们再回到Retrofit 的 build 方法当中</p>
+<pre><code>Executor callbackExecutor = this.callbackExecutor;
+  if (callbackExecutor == null) {
+    callbackExecutor = platform.defaultCallbackExecutor();
+  }
+
+  List&lt;CallAdapter.Factory&gt; adapterFactories = new ArrayList&lt;&gt;(this.adapterFactories);
+  adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
+</code></pre><p>callbackExecutor 这里返回对象不为空，会返回一个 MainThreadExecutor </p>
+<pre><code>static class MainThreadExecutor implements Executor {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    @Override 
+    public void execute(Runnable r) {
+        handler.post(r);
+    }
+ }
+</code></pre><p>这个熟悉android Handler 的一看就知道了</p>
+<p>接下来看 platform 对象的 defaultCallAdapterFactory 方法， 传入了 callbackExecutor</p>
+<p>这里 platform 对象实际上 是 Android</p>
+<pre><code>static class Android extends Platform {
+    ....    
+    @Override 
+    CallAdapter.Factory defaultCallAdapterFactory(Executor callbackExecutor) {
+      return new ExecutorCallAdapterFactory(callbackExecutor);
+    }
+    ....
+}
+</code></pre><p>所以真正的 CallAdaterFactory （工厂模式创建CallAdater）在这里被构造出来。接着看 ExecutorCallAdapterFactory</p>
+<p>贴关键代码</p>
+<pre><code>class ExecutorCallAdapterFactory extends CallAdapter.Factory {
+    ...
+  @Override
+  public CallAdapter&lt;Call&lt;?&gt;&gt; get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    ...
+    final Type responseType = Utils.getCallResponseType(returnType);
+    return new CallAdapter&lt;Call&lt;?&gt;&gt;() {
+    ...
+      @Override public &lt;R&gt; Call&lt;R&gt; adapt(Call&lt;R&gt; call) {
+        return new ExecutorCallbackCall&lt;&gt;(callbackExecutor, call);
+      }
+    };
+  }
+</code></pre><p>这里又是一个匿名内部类，关键的adapt 方法返回了 ExecutorCallbackCall 对象。</p>
+<p>接着看 ExecutorCallbackCall， 继续部分关键代码 </p>
+<pre><code>static final class ExecutorCallbackCall&lt;T&gt; implements Call&lt;T&gt; {
+    final Executor callbackExecutor;
+    final Call&lt;T&gt; delegate;
+
+    ExecutorCallbackCall(Executor callbackExecutor, Call&lt;T&gt; delegate) {
+      this.callbackExecutor = callbackExecutor;
+      this.delegate = delegate;
+    }
+
+@Override 
+public void enqueue(final Callback&lt;T&gt; callback) {
+  if (callback == null) throw new NullPointerException(&quot;callback == null&quot;);
+  delegate.enqueue(new Callback&lt;T&gt;() {
+    @Override public void onResponse(Call&lt;T&gt; call, final Response&lt;T&gt; response) {
+      callbackExecutor.execute(new Runnable() {
+        @Override public void run() {
+          if (delegate.isCanceled()) {
+            callback.onFailure(ExecutorCallbackCall.this, new IOException(&quot;Canceled&quot;));
+          } else {
+            callback.onResponse(ExecutorCallbackCall.this, response);
+          }
+        }
+      });
+    }
+
+    @Override public void onFailure(Call&lt;T&gt; call, final Throwable t) {
+      callbackExecutor.execute(new Runnable() {
+        @Override public void run() {
+          callback.onFailure(ExecutorCallbackCall.this, t);
+        }
+      });
+    }
+  });
+}
+....
+</code></pre><p>首先 ExecutorCallbackCall 这个类也是一个Call对象，只用看enqueue 方法，方法的实现全部都是用调用了delegate，所以这里就知道了之前CallAdapter 接口文档里面写的 adapt 方法返回的只是 adapt 方法参数 call, 的一个包装类，这里的 delegate 就是call 对象。在这个回调里面也通过 callbackExecutor （MainThreadExecutor）实现了将callback 放到主线程里面来调用。</p>
+<p>分析完了callAdapter.adapt 的方法，知道他返回的是一个 OkhttpCall的包装类。</p>
+<p>再接着看OkhttpCall,  看异步发送请求的实现，</p>
+<pre><code>@Override
+public void enqueue(final Callback&lt;T&gt; callback) {
+    checkNotNull(callback, &quot;callback == null&quot;);
+
+    okhttp3.Call call;
+    Throwable failure;
+
+    synchronized (this) {
+        if (executed) // 一个请求不能重复执行
+            throw new IllegalStateException(&quot;Already executed.&quot;);
+        executed = true;
+
+        call = rawCall;
+        failure = creationFailure;
+        if (call == null &amp;&amp; failure == null) {
+            try {
+                call = rawCall = createRawCall();  // ①
+            } catch (Throwable t) {
+                failure = creationFailure = t;
+            }
+        }
+    }
+
+    if (failure != null) {
+        callback.onFailure(this, failure);
+        return;
+    }
+
+    if (canceled) {
+        call.cancel();
+    }
+
+    call.enqueue(new okhttp3.Callback() {
+        .....
+    });
+}
+</code></pre><p>① 首次执行的时候，rawCall 和 creationFailure 都为空，这个是需要创建 rawCall ， 也就是okhttp3.Call 的对象，进入到 createRawCall() 方法</p>
+<pre><code>private okhttp3.Call createRawCall() throws IOException {
+    Request request = serviceMethod.toRequest(args);
+    okhttp3.Call call = serviceMethod.callFactory.newCall(request);
+    if (call == null) {
+      throw new NullPointerException(&quot;Call.Factory returned null.&quot;);
+    }
+    return call;
+</code></pre><p>  }</p>
+<p>先通过serviceMethod 创建了一个 Request 对象，</p>
+<pre><code>Request toRequest(Object... args) throws IOException {
+RequestBuilder requestBuilder = new RequestBuilder(httpMethod, baseUrl, relativeUrl, headers, contentType, hasBody, isFormEncoded, isMultipart);
+@SuppressWarnings(&quot;unchecked&quot;) // It is an error to invoke a method with the wrong arg types.
+ParameterHandler&lt;Object&gt;[] handlers = (ParameterHandler&lt;Object&gt;[]) parameterHandlers;
+int argumentCount = args != null ? args.length : 0;
+if (argumentCount != handlers.length) {
+  throw new IllegalArgumentException(&quot;Argument count (&quot; + argumentCount
+      + &quot;) doesn&apos;t match expected count (&quot; + handlers.length + &quot;)&quot;);
+}
+for (int p = 0; p &lt; argumentCount; p++) {
+  handlers[p].apply(requestBuilder, args[p]);
+}
+return requestBuilder.build();
+}
+</code></pre><p>实际上在这里，根据我们自定义service中的方法的参数来创建了一个Okhttp 中的请求对象Requestd，其中需要注意的是， 这个构造其中的过程中完成了对配置的各项参数的处理，其中ParameterHandler 是一个抽象类，继承这个类的类需要实现</p>
+<pre><code>abstract void apply(RequestBuilder builder, T value) throws IOException;
+</code></pre><p>看一下Path 参数是如何被处理的，代码如下</p>
+<pre><code>static final class Path&lt;T&gt; extends ParameterHandler&lt;T&gt; {
+    ....
+    @Override 
+    void apply(RequestBuilder builder, T value) throws IOException {
+      if (value == null) {
+        throw new IllegalArgumentException(
+            &quot;Path parameter \&quot;&quot; + name + &quot;\&quot; value must not be null.&quot;);
+      }
+      builder.addPathParam(name, valueConverter.convert(value), encoded);
+    }
+}
+</code></pre><p> 最终是在 builder.addPathParam(name, valueConverter.convert(value), encoded);完成了对name(定义在url中的{name})替换。</p>
+<p>最后调用requestBuilder.build() 完成了okhttp request 对象的创建。</p>
+<p>在看到 createRawCall 方法当中，接下来需要用 okhttp 的 request 对象创建一个Call 对象，<br>接下来进入到 service.callFactory 的 newCall方法当中，这个方法最终的实现在OkHttpClient 这个类中，newCall直接创建了 RealCall 对象。</p>
+<pre><code>final class RealCall implements Call {...}
+</code></pre><p>看到 RealCall 这个对象的声明，可以看出来实际上 OkHttpCall 是一个包装类，最终实现请求的是 RealCall。</p>
+<p>那么实际上OkHttpCall实现的Call的各种方法实际上都是调用RealCall的实现来完成的。</p>
+<p>再回到OkhttpCall 的enqueue 方法当中，如果上述的创建请求对象的过程中出错了，那么直接调用回调的onFailure 方法。</p>
+<p>接下来 会调用call的 enqueue 方法，从上面的分析可以知道 call 实际上是 RealCall的一个对象，我们直接到RealCall中去看 enqueue 方法的实现。</p>
+<p>RealCall 内部重载了enqueue </p>
+<pre><code>void enqueue(Callback responseCallback, boolean forWebSocket) {
+    synchronized (this) {
+      if (executed) throw new IllegalStateException(&quot;Already Executed&quot;);
+      executed = true;
+    }
+    client.dispatcher().enqueue(new AsyncCall(responseCallback, forWebSocket));}
+</code></pre><p>关键是调用 client.dispatcher().enqueue() 这个方法，</p>
+<p>因为这个里面就涉及到 okHtpp 源码的分析，就不再深入的分析，只是简单的看下里面的代码：</p>
+<pre><code>synchronized void enqueue(AsyncCall call) {
+    if (runningAsyncCalls.size() &lt; maxRequests &amp;&amp; runningCallsForHost(call) &lt; maxRequestsPerHost) {
+      runningAsyncCalls.add(call);
+      executorService().execute(call);
+    } else {
+      readyAsyncCalls.add(call);
+    }
+</code></pre><p>  }</p>
+<p>AsyncCall 是一个Runnable 的对象，最终放到通过executorService方法得到的线程池中来执行。<br>不过放进去之前先判断一下当前正在执行的请求是否超过了限制，还有判断当前运行的请求队列是否有过多（大于maxRequestsPerHost）的request 请求同一个host ,如果不满足就放到等待队列中。</p>
+<p>当请求完成的代码，是在AsyncCall当中。</p>
+<pre><code>Override 
+protected void execute() {
+  boolean signalledCallback = false;
+  try {
+    Response response = getResponseWithInterceptorChain(forWebSocket); // ①
+    if (canceled) {
+      signalledCallback = true;
+      responseCallback.onFailure(RealCall.this, new IOException(&quot;Canceled&quot;));
+    } else {
+      signalledCallback = true;
+      responseCallback.onResponse(RealCall.this, response);
+    }
+  } catch (IOException e) {
+    if (signalledCallback) {
+      // Do not signal the callback twice!
+      Platform.get().log(INFO, &quot;Callback failure for &quot; + toLoggableString(), e);
+    } else {
+      responseCallback.onFailure(RealCall.this, e);
+    }
+  } finally {
+    client.dispatcher().finished(this);
+  }
+}
+</code></pre><p>① 在这里我们有机会通过自己Interceptor 来处理请求和响应， 在Retrofit 中默认定义了一个 ApplicationInterceptorChain，请求从这里开始处理。</p>
+<pre><code> @Override 
+ public Response proceed(Request request) throws IOException {
+  // If there&apos;s another interceptor in the chain, call that.
+  if (index &lt; client.interceptors().size()) {
+    Interceptor.Chain chain = new ApplicationInterceptorChain(index + 1, request, forWebSocket);
+    Interceptor interceptor = client.interceptors().get(index);
+    Response interceptedResponse interceptor.intercept(chain);
+
+    if (interceptedResponse == null) {
+      throw new NullPointerException(&quot;application interceptor &quot; + interceptor
+          + &quot; returned null&quot;);
+    }
+    return interceptedResponse;
+  }
+  // No more interceptors. Do HTTP.
+  return getResponse(request, forWebSocket);
+}
+</code></pre><p>这里实际上有一个类似递归的调用，通过不断的 改变 ApplicationInterceptorChain 的 index, 来使每个interceptor的intercept 方法调用，并且通过request 这个引用，来使request 所指向的对象得到每个拦截器的处理。这里拦截器可以想想java Web 中Servlet 中拦截器的处理。</p>
+<p>接下来getResponse() 方法 就是真正发送Http请求的地方，这个里面涉及到较多okHttp 的使用，这里就不分析了，等后面看了okhttp 的源码再来说。</p>
+<p>在getResponse() 中会得到一个okhttp response 的对象，根据请求的结果来回调  responseCallback 的 onFailure 和 onResponse 方法。</p>
+<p>responseCallback 这个对象就是在OkHttpCall 的 enequeue 方法中 调用 RealCall enequeue 方法传入的，那么接下来在回到 OkHttpCall 的  enqueue 方法。</p>
+<pre><code>public void enqueue(final Callback&lt;T&gt; callback) {
+    ....
+
+    call.enqueue(new okhttp3.Callback() {
+  @Override public void onResponse(okhttp3.Call call, okhttp3.Response rawResponse)
+      throws IOException {
+    Response&lt;T&gt; response;
+    try {
+      response = parseResponse(rawResponse);
+    } catch (Throwable e) {
+      callFailure(e);
+      return;
+    }
+    callSuccess(response);
+  }
+
+  @Override public void onFailure(okhttp3.Call call, IOException e) {
+    try {
+      callback.onFailure(OkHttpCall.this, e);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
+
+  private void callFailure(Throwable e) {
+    try {
+      callback.onFailure(OkHttpCall.this, e);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
+
+  private void callSuccess(Response&lt;T&gt; response) {
+    try {
+      callback.onResponse(OkHttpCall.this, response);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
+});
+}
+</code></pre><p>从这里调用我们可以简单的看出这里实际上又是Callback的一个包装，拿到okhttp3.Response 对象之后调用 parseResponse 方法，将OkHtt Response 转换为一个 Retrofit 的 Response.<br>然后调用 callSuccess 最终来回调我们使用时传入的callback.</p>
+<p>到这里我们使用Retrofit 实现一个异步请求的过程就分析完成了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Retrofit/" rel="tag"># Retrofit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/29/Java-异常处理/" rel="next" title="Java 异常处理">
+                <i class="fa fa-chevron-left"></i> Java 异常处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

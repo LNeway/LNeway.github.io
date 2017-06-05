@@ -1,0 +1,727 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C++,指针," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="空指针空指针不指向任何实际的对象或者函数。反过来说，任何对象或者函数的地址都不可能是空指针。例如， int p = 0;不能对空指针进行 操作 野指针野指针不是空指针，是一个指向垃圾内存的指针。 野指针形成原因：  声明指针变量的时候没有初始化 指针被free或者delete之后，没有设置为NULL，让人误以为这是一个合法指针。free和delete只是把指针所指向的内存给释放掉，但并没有把指针本">
+<meta name="keywords" content="C++,指针">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++指针学习笔记(2)">
+<meta property="og:url" content="http://yoursite.com/2016/09/04/C-指针学习笔记-2/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="空指针空指针不指向任何实际的对象或者函数。反过来说，任何对象或者函数的地址都不可能是空指针。例如， int p = 0;不能对空指针进行 操作 野指针野指针不是空指针，是一个指向垃圾内存的指针。 野指针形成原因：  声明指针变量的时候没有初始化 指针被free或者delete之后，没有设置为NULL，让人误以为这是一个合法指针。free和delete只是把指针所指向的内存给释放掉，但并没有把指针本">
+<meta property="og:updated_time" content="2016-09-04T14:23:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++指针学习笔记(2)">
+<meta name="twitter:description" content="空指针空指针不指向任何实际的对象或者函数。反过来说，任何对象或者函数的地址都不可能是空指针。例如， int p = 0;不能对空指针进行 操作 野指针野指针不是空指针，是一个指向垃圾内存的指针。 野指针形成原因：  声明指针变量的时候没有初始化 指针被free或者delete之后，没有设置为NULL，让人误以为这是一个合法指针。free和delete只是把指针所指向的内存给释放掉，但并没有把指针本">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/09/04/C-指针学习笔记-2/"/>
+
+
+
+
+
+  <title>C++指针学习笔记(2) | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/04/C-指针学习笔记-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++指针学习笔记(2)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-04T22:03:04+08:00">
+                2016-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>空指针</strong><br>空指针不指向任何实际的对象或者函数。反过来说，任何对象或者函数的地址都不可能是空指针。<br>例如， int <em>p = 0;<br>不能对空指针进行</em> 操作</p>
+<p><strong>野指针</strong><br>野指针不是空指针，是一个指向垃圾内存的指针。</p>
+<p>野指针形成原因：</p>
+<ol>
+<li><strong>声明指针变量的时候没有初始化</strong></li>
+<li><strong>指针被free或者delete之后，没有设置为NULL，让人误以为这是一个合法指针</strong>。<em>free和delete只是把指针所指向的内存给释放掉，但并没有把指针本身给清理掉。这时候的指针依然指向原来的位置</em>，只不过这个位置的内存数据已经被毁尸灭迹，此时的这个指针指向的内存就是一个垃圾内存。但是此时的指针由于并不是一个NULL指针（在没有置为NULL的前提下），在做如下指针校验的时候</li>
+<li><strong>指针操作超越了变量的作用范围</strong>。由于C/C++中指针有++操作，因而在执行该操作的时候，稍有不慎，就容易指针访问越界，访问了一个不该访问的内存，结果程序崩溃另一种情况是指针指向一个临时变量的引用，当该变量被释放时，此时的指针就变成了一个野指针，如下</li>
+</ol>
+<p><strong>使用指针需要注意的地方</strong><br>(1) 声明指针的时候为空指针。<br>在函数内部可以通过判断来确定一个指针是否是空指针，从而避免异常的操作，但是并没有办法判断野指针。所以在使用的时候要避免野指针。</p>
+<pre><code>int main() {
+    int* p; //野指针
+    int* p1 = 0 ; //空指针 
+}
+</code></pre><p>   在使用指针之前可以先先判断检查，是否为空指针。</p>
+<pre><code>int main() {
+    int* p = 0; //空指针 
+    if(p) {
+        cout&lt;&lt;&quot;you can user * operation&quot;;
+    } else {
+        cout&lt;&lt;&quot;this is null point&quot;;
+    }
+}
+</code></pre><p>运行上面的代码会输出 <em>this is null point</em> </p>
+<p>但是如果使用野指针，那么在程序中就没办法判断了。</p>
+<pre><code>int main() {
+    int* p; //空指针 
+    if(p) {
+        cout&lt;&lt;&quot;you can user * operation&quot;; //会执行这一句 
+    } else {
+        cout&lt;&lt;&quot;this is null point&quot;;
+    }
+}
+</code></pre><p>(2)防止使用指针的时候出现数组越界的异常。</p>
+<pre><code>int main() {
+    int arr[4] = {1,2,3,4};
+    int* p = arr;
+    p = p+4;
+    cout &lt;&lt; *p;
+   }
+</code></pre><p>在上面的代码中就出现了数组越界的情况。这个时候在程序中会有巨大的隐患，要注意避免。</p>
+<p>(3)防止出现指针所指向地址失效的情况。</p>
+<pre><code>using namespace std;
+int a = 188;
+int* test() {
+    return &amp;a;
+}
+
+int main() {
+    int* p = test();
+    cout &lt;&lt;*p;
+}
+
+
+这个时候并没有能够正常的输出188。因为变量a在程序运行的声明周期之内一直都在内存之中，所以这个时候访问是没有问题的。
+
+但是代码改成下面这个样子就有问题了
+
+
+using namespace std;
+int* test() {
+    int a = 188;
+    return &amp;a;
+}
+int main() {
+    int* p = test();
+    cout &lt;&lt;*p;
+}
+</code></pre><p>这个时候p指向的是一个临时变量，这个时候可能会形成野指针。</p>
+<p>[注] 文章关于野指针的说明部分引用了<a href="http://blog.csdn.net/fu_zk/article/details/21030607" target="_blank" rel="external">博客</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+            <a href="/tags/指针/" rel="tag"># 指针</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/03/C-指针学习笔记/" rel="next" title="C++指针学习笔记">
+                <i class="fa fa-chevron-left"></i> C++指针学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/05/C-结构体学习笔记/" rel="prev" title="C++结构体学习笔记">
+                C++结构体学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

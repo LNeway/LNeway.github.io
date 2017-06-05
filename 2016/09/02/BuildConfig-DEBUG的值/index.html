@@ -1,0 +1,713 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Gradle,BuildConfig," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="今天在做项目的时候遇到一个很奇怪的问题：项目中子模块的BuildConfig 的值永远都是release模式下的值，在debug的时候，依然是这样.在我的项目中有这样一段代码 public int getPriority() {     int priority = Log.VERBOSE;     if (!BuildConfig.DEBUG) {         priority = Log.">
+<meta name="keywords" content="Gradle,BuildConfig">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BuildConfig.DEBUG的值">
+<meta property="og:url" content="http://yoursite.com/2016/09/02/BuildConfig-DEBUG的值/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="今天在做项目的时候遇到一个很奇怪的问题：项目中子模块的BuildConfig 的值永远都是release模式下的值，在debug的时候，依然是这样.在我的项目中有这样一段代码 public int getPriority() {     int priority = Log.VERBOSE;     if (!BuildConfig.DEBUG) {         priority = Log.">
+<meta property="og:updated_time" content="2016-09-01T16:12:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BuildConfig.DEBUG的值">
+<meta name="twitter:description" content="今天在做项目的时候遇到一个很奇怪的问题：项目中子模块的BuildConfig 的值永远都是release模式下的值，在debug的时候，依然是这样.在我的项目中有这样一段代码 public int getPriority() {     int priority = Log.VERBOSE;     if (!BuildConfig.DEBUG) {         priority = Log.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/09/02/BuildConfig-DEBUG的值/"/>
+
+
+
+
+
+  <title>BuildConfig.DEBUG的值 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/02/BuildConfig-DEBUG的值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BuildConfig.DEBUG的值</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-02T00:02:46+08:00">
+                2016-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天在做项目的时候遇到一个很奇怪的问题：项目中子模块的BuildConfig 的值永远都是release模式下的值，在debug的时候，依然是这样.在我的项目中有这样一段代码</p>
+<pre><code>public int getPriority() {
+    int priority = Log.VERBOSE;
+    if (!BuildConfig.DEBUG) {
+        priority = Log.INFO;
+    }
+    return priority;
+}
+</code></pre><p>这段代码用来控制日志的的输出级别，如果在debug的模式下，应该是输出所有的log,如果是在release的模式下，应该是输出INFO级别的log，但是在实际中发现，即使是debug下，BuildConfig.Debug的值永远都是false.</p>
+<p>这是因为在gradle构建的过程当中，子模块的模式永远都是release模式，但是这个可以通过我们在gradle的配置中去更改。详细的gralde教程请看<a href="https://yeungeek.gitbooks.io/gradle-plugin-user-guide/content/library_publication.html" target="_blank" rel="external">这里</a></p>
+<p>下面说一下项目中解决办法<br>在我的项目中，依赖层级是这样的 app &gt; lib_stub &gt; lib_sdk  ,因此在配置的时候三个模块的配置文件都需要修改</p>
+<p>说明如下，app依赖lib_stub 那么需要在 dependencies 当中添加两种依赖，一种是release，一种是debug。<br>同时在lib_stub的defaultConfig当中添加两个配置项，defaultPublishConfig 和publishNonDefault（具体的含义在上面的提及的文档里面有详细的说面）<br>lib_stub 在依赖lib_sdk的时候同样需要添加两种依赖，并且在lib_sdk的defaultConfig中添加同样的配置。</p>
+<p>主要的修改部分如下<br>build.gralde(app)</p>
+<pre><code>dependencies {
+    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])
+    testCompile rootProject.ext.dependencies[&quot;junit&quot;]
+    debugCompile project(path:&apos;:lib_stub&apos;, configuration: &quot;debug&quot;)
+    releaseCompile project(path:&apos;:lib_stub&apos;, configuration: &quot;release&quot;)
+}
+</code></pre><p>build.gradle(lib_stub)</p>
+<pre><code>android {
+compileSdkVersion rootProject.ext.android[&quot;compileSdkVersion&quot;]
+buildToolsVersion rootProject.ext.android[&quot;buildToolsVersion&quot;]
+
+defaultConfig {
+    minSdkVersion rootProject.ext.android[&quot;minSdkVersion&quot;]
+    targetSdkVersion rootProject.ext.android[&quot;targetSdkVersion&quot;]
+    versionCode rootProject.ext.android[&quot;versionCode&quot;]
+    versionName rootProject.ext.android[&quot;versionName&quot;]
+    defaultPublishConfig  &quot;release&quot;
+    publishNonDefault true
+    }
+}
+
+dependencies {
+    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
+    testCompile rootProject.ext.dependencies[&quot;junit&quot;]
+    debugCompile project(path:&apos;:lib_sdk&apos;, configuration: &quot;debug&quot;)
+    releaseCompile project(path:&apos;:lib_sdk&apos;, configuration: &quot;release&quot;)
+    }
+</code></pre><p>build.gralde(lib_sdk)</p>
+<pre><code>android {
+compileSdkVersion rootProject.ext.android[&quot;compileSdkVersion&quot;]
+buildToolsVersion rootProject.ext.android[&quot;buildToolsVersion&quot;]
+
+defaultConfig {
+    minSdkVersion rootProject.ext.android[&quot;minSdkVersion&quot;]
+    targetSdkVersion rootProject.ext.android[&quot;targetSdkVersion&quot;]
+    versionCode rootProject.ext.android[&quot;versionCode&quot;]
+    versionName rootProject.ext.android[&quot;versionName&quot;]
+    defaultPublishConfig  &quot;release&quot;
+    publishNonDefault true
+    }
+}
+</code></pre><p>这样修改完成之后，就可以正确的使用BuildConfig.DEBUG 的值了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          
+            <a href="/tags/BuildConfig/" rel="tag"># BuildConfig</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/30/Ubuntu-Android-Studio运行不结束问题/" rel="next" title="Ubuntu Android Studio运行不结束问题">
+                <i class="fa fa-chevron-left"></i> Ubuntu Android Studio运行不结束问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/03/C-指针学习笔记/" rel="prev" title="C++指针学习笔记">
+                C++指针学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

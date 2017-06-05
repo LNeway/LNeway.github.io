@@ -1,0 +1,780 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,热修复," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="今天动手实践了一下安卓上的热修复机制，现在总结一下、 在Android中要想实现热更新实际上就是对class文件的替换，将目标文件替换成新的class文件即可，但是在Android中并没有直接使用class文件，而是将class重新打包在了一个dex文件中，然后从这个dex文件中去load class.在Android中，系统为我们提供了这么一个类，叫做DexClassLoader, 从这个类的注">
+<meta name="keywords" content="Android,热修复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 热修复技术">
+<meta property="og:url" content="http://yoursite.com/2017/01/15/Android-热修复技术/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="今天动手实践了一下安卓上的热修复机制，现在总结一下、 在Android中要想实现热更新实际上就是对class文件的替换，将目标文件替换成新的class文件即可，但是在Android中并没有直接使用class文件，而是将class重新打包在了一个dex文件中，然后从这个dex文件中去load class.在Android中，系统为我们提供了这么一个类，叫做DexClassLoader, 从这个类的注">
+<meta property="og:updated_time" content="2017-01-15T02:43:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 热修复技术">
+<meta name="twitter:description" content="今天动手实践了一下安卓上的热修复机制，现在总结一下、 在Android中要想实现热更新实际上就是对class文件的替换，将目标文件替换成新的class文件即可，但是在Android中并没有直接使用class文件，而是将class重新打包在了一个dex文件中，然后从这个dex文件中去load class.在Android中，系统为我们提供了这么一个类，叫做DexClassLoader, 从这个类的注">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/15/Android-热修复技术/"/>
+
+
+
+
+
+  <title>Android 热修复技术 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/15/Android-热修复技术/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 热修复技术</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-15T10:37:59+08:00">
+                2017-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天动手实践了一下安卓上的热修复机制，现在总结一下、</p>
+<p>在Android中要想实现热更新实际上就是对class文件的替换，将目标文件替换成新的class文件即可，但是在Android中并没有直接使用class文件，而是将class重新打包在了一个dex文件中，然后从这个dex文件中去load class.<br>在Android中，系统为我们提供了这么一个类，叫做<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/DexClassLoader.java" target="_blank" rel="external">DexClassLoader</a>, 从这个类的注释中我们可以看到这个类可以从包含了dex文件的jar和 apk文件中去载类，但是这个类实际上什么都没有做，只是继承了<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java" target="_blank" rel="external">BaseDexClassLoader</a>，BaseDexClassLoader中重写findClass方法</p>
+<pre><code>@Override
+protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException {
+    List&lt;Throwable&gt; suppressedExceptions = new ArrayList&lt;Throwable&gt;();
+    Class c = pathList.findClass(name, suppressedExceptions);        
+    if (c == null) {
+        ClassNotFoundException cnfe = new ClassNotFoundException(&quot;Didn&apos;t find class \&quot;&quot; + name + &quot;\&quot; on path: &quot; + pathList);
+        for (Throwable t : suppressedExceptions) {
+            cnfe.addSuppressed(t);
+        }
+        throw cnfe;
+    }
+    return c;
+}
+</code></pre><p>从上面的代码可以看出,实际上BaseDexClassLoader自己也什么都没有做，而是交给了已 pathList 这个对象去完成加载的任务，pathList 是一个<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/DexPathList.java" target="_blank" rel="external">DexPathList</a> 对象，它的findClass实现如下，</p>
+<pre><code> public Class findClass(String name, List&lt;Throwable&gt; suppressed) {
+    for (Element element : dexElements) {
+        DexFile dex = element.dexFile;
+
+        if (dex != null) {
+            Class clazz = dex.loadClassBinaryName(name, definingContext, suppressed);
+            if (clazz != null) {
+                return clazz;
+            }
+        }
+    }
+    if (dexElementsSuppressedExceptions != null) {
+        suppressed.addAll(Arrays.asList(dexElementsSuppressedExceptions));
+    }
+    return null;
+}
+</code></pre><p>它实际上会先遍历一个内部一个dexElements数组，然后从数组元素Elment中加载class对象，在这里我们最终找到了我们的classd对象是什么时候加载的了，既然知道了是什么时候加载的，我们就可以通过替换的方式来改变class了，在虚拟机加载一个class的时候，如果一个类已经被加载过了那么后面就不会再加载它，所以可以将包含补丁class的 Elment 放在数组的最前面，让虚拟机先加载补丁class, 这样需要被替换的class就不会被加载了，从而实现了更新。</p>
+<p>实际上PathClassLoader也是BaseDexClassLoader的子类，系统就是使用了这个类来实现加载，PathClassLoader和上面提到的DexClassLoader区别如下， 在创建BaseDexClassLoader的对象时候需要填一个 optimizedDirectory 参数，optimizedDirectory是用来缓存我们需要加载的dex文件的，并创建一个DexFile对象，如果它为null，那么会直接使用dex文件原有的路径来创建DexFile对象。同时optimizedDirectory必须是一个内部存储路径，无论哪种动态加载，加载的可执行文件一定要存放在内部存储。DexClassLoader可以指定自己的optimizedDirectory，所以它可以加载外部的dex，因为这个dex会被复制到内部路径的optimizedDirectory；而PathClassLoader没有optimizedDirectory，所以它只能加载内部的dex，这些大都是存在系统中已经安装过的apk里面的。</p>
+<p>因为这些类和变量我们在SDK中都无法直接的获取，所以只能通过反射的方式来获取。<br>下面是核心代码：</p>
+<pre><code>package com.baidu.myhotfix;
+
+import android.content.Context;
+import android.util.Log;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+
+import dalvik.system.BaseDexClassLoader;
+import dalvik.system.DexClassLoader;
+
+/**
+ * Created by liuwei64 on 2017/1/14.
+ */
+
+public class HotFixUtil {
+
+    private static final String TAG = &quot;HotFixUtil&quot;;
+
+    public static void init(Context context) {
+        ClassLoader classLoader = context.getClassLoader();
+        try {
+            if (classLoader instanceof BaseDexClassLoader) {
+                Log.i(TAG, &quot;get baseclassloader instance&quot;);
+                Field field = BaseDexClassLoader.class.getDeclaredField(&quot;pathList&quot;);
+                field.setAccessible(true);
+                Object dexPathList = getValue(BaseDexClassLoader.class, classLoader, &quot;pathList&quot;);
+                Object dexElements = getValue(dexPathList.getClass(), dexPathList, &quot;dexElements&quot;);
+
+                DexClassLoader cl = new DexClassLoader(&quot;/storage/sdcard0/classex_dex.jar&quot;,
+                        context.getCacheDir().getAbsolutePath(),
+                        null, context.getClassLoader());
+
+                Object dexPathListNew = getValue(BaseDexClassLoader.class, cl, &quot;pathList&quot;);
+                Object dexElementsNew = getValue(dexPathListNew.getClass(), dexPathListNew, &quot;dexElements&quot;);
+
+                Object newElements = combineArray(dexElementsNew, dexElements);
+                setValue(dexPathList.getClass(), dexPathList, &quot;dexElements&quot;, newElements);
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
+    }
+
+    public static Object getValue(Class clz, Object instance, String fileName) {
+        try {
+            Field field = clz.getDeclaredField(fileName);
+            field.setAccessible(true);
+            return field.get(instance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void setValue(Class clz, Object instance, String fileName, Object value) {
+        try {
+            Field field = clz.getDeclaredField(fileName);
+            field.setAccessible(true);
+            field.set(instance, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Object combineArray(Object arrayFirst, Object arraySecond) {
+        if (arrayFirst == null || arrayFirst == null) {
+            return null;
+        }
+
+        int firstLen = Array.getLength(arrayFirst);
+        int secondLen = Array.getLength(arraySecond);
+
+        int totalLen =  firstLen + secondLen;
+        Object result = Array.newInstance(Array.get(arrayFirst, 0).getClass(), totalLen);
+        for (int  i = 0; i &lt; totalLen; i++) {
+            if (i &lt; firstLen) {
+                Array.set(result, i , Array.get(arrayFirst, i));
+            } else {
+                Array.set(result, i , Array.get(arraySecond, i - firstLen));
+            }
+        }
+
+        return result;
+    }
+}
+</code></pre><p>实际上这里还有一个问题要解决，就是<a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">CLASS_ISPREVERIFIED</a>的问题，后面自己实现了再来更新！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/热修复/" rel="tag"># 热修复</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/12/LeakCanary源码分析/" rel="next" title="LeakCanary源码分析(1)">
+                <i class="fa fa-chevron-left"></i> LeakCanary源码分析(1)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/20/C-中的静态/" rel="prev" title="C++中的静态">
+                C++中的静态 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

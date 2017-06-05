@@ -1,0 +1,803 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,MVVM,Databinding," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="项目的代码位于 github 上 项目中采用了MVVM方式进行开发，与之前的MVP项目模式相比，直接去掉了MVP模式中的Presenter，数据加载的操作直接用ViewModel中开始. 在获取到了数据之后，通过databiding 来完成数据的展示。 在to-do中，有几个部分，下面是主界面的分析内容。 在TasksViewModel 这个类当中，封装了数据所有的操作，包括数据的加载，判空（is">
+<meta name="keywords" content="Android,MVVM,Databinding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google MVVM 示例代码分析">
+<meta property="og:url" content="http://yoursite.com/2017/02/03/Google-MVVM-示例代码分析/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="项目的代码位于 github 上 项目中采用了MVVM方式进行开发，与之前的MVP项目模式相比，直接去掉了MVP模式中的Presenter，数据加载的操作直接用ViewModel中开始. 在获取到了数据之后，通过databiding 来完成数据的展示。 在to-do中，有几个部分，下面是主界面的分析内容。 在TasksViewModel 这个类当中，封装了数据所有的操作，包括数据的加载，判空（is">
+<meta property="og:updated_time" content="2017-02-03T15:06:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Google MVVM 示例代码分析">
+<meta name="twitter:description" content="项目的代码位于 github 上 项目中采用了MVVM方式进行开发，与之前的MVP项目模式相比，直接去掉了MVP模式中的Presenter，数据加载的操作直接用ViewModel中开始. 在获取到了数据之后，通过databiding 来完成数据的展示。 在to-do中，有几个部分，下面是主界面的分析内容。 在TasksViewModel 这个类当中，封装了数据所有的操作，包括数据的加载，判空（is">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/03/Google-MVVM-示例代码分析/"/>
+
+
+
+
+
+  <title>Google MVVM 示例代码分析 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/03/Google-MVVM-示例代码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Google MVVM 示例代码分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-03T22:54:03+08:00">
+                2017-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目的代码位于 <a href="https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-databinding/" target="_blank" rel="external">github</a> 上</p>
+<p>项目中采用了MVVM方式进行开发，与之前的MVP项目模式相比，直接去掉了MVP模式中的Presenter，数据加载的操作直接用ViewModel中开始. 在获取到了数据之后，通过databiding 来完成数据的展示。</p>
+<p>在to-do中，有几个部分，下面是主界面的分析内容。</p>
+<p>在TasksViewModel 这个类当中，封装了数据所有的操作，包括数据的加载，判空（isEmpty），清除， 添加过滤条件。</p>
+<p>同时应该注意到TasksViewModel 继承了 BaseObservable 这个对象，BaseObservable 最终实现了Observable 接口， 这个接口提供了让数据绑定的UI接受数据变化的通知。<br>同时 BaseObservable 还有其他的类型的子类，例如 ObservableField 等。</p>
+<p>在 TasksViewModel 我们也可以找到 BaseObservable 类型的属性，通过这些属性，可以监听到具体属性值 的变化。</p>
+<p>除了属性值之外，还可以将方法转可以监听的对象，做法就是给方法加上  @Bindable 注解。<br>下面是这个注解的说明</p>
+<p><em>The Bindable annotation should be applied to any getter accessor method of an<br> {@link Observable} class. Bindable will generate a field in the BR class to identify<br> the field that has changed.</em></p>
+<p>它用来修饰任意一个get method，被这个注解修饰的方法会在 BR.java这个类中生成对应的属性，例如如果定义了 String getName()方法，那么就会在BR中添加一个name的常量字段。当数据发生变化我们需要通过getName来获取最新的数据的时候，调用 BaseObserverable 的 notifyPropertyChanged(BR.name)，之后getName将再次被调用。</p>
+<p>同时也可以看到这个被 @Bindable 注解修饰的方法，可以在 布局文件中直接通过 xxx.name 的方式来访问。</p>
+<p>上面说到数据加载操作也是在TasksViewModel中完成的，在loadTasks方法中 调用了 mTasksRepository 的 getTasks， 然后在callback中将数据 添加到了 items当中去，<br>item 是一个 ObservableList </p>
+<pre><code>public final ObservableList&lt;Task&gt; items = new ObservableArrayList&lt;&gt;();
+</code></pre><p>当调用了 <em>items.addAll(tasksToShow);</em> 方法之后，数据就被绑定到界面上去了。</p>
+<p>下面跟踪一下，数据绑定是如何实现的。</p>
+<p>在TasksViewModel当中，有一个 ObservableBoolean类型的成员变量dataLoading.在这个类中提供了一个set方法，在改变了value的值之后，它调用了notifyChange(); </p>
+<p>notifyChange 是一个定义在其父类 BaseObservable 中的一个同步的方法， 这个方法当中简单调用了PropertyChangeRegistry 这个类的 notifyCallbacks 方法 ，进入到notifyCallbacks 方法，实际上这个方法又是定义在其父类CallbackRegistry之中，通过CallbackRegistry的说明可知，这个类是用来存放callback和进行各种回调的，但是CallbackRegistry对于回调的处理实际上只是对回调的集合进行了管理，它通过递归的方式来通知集合中所有的回调，这里之所以采用递归的方式，文档之中给出的说明是避免在堆上进行临时状态的分配（但是采用递归需要每次都在栈上分配内存，并且堆上同样会有内存的分配，这里还不清楚），既然CallbackRegistry只是集合回调的管理，那么真正的回调应该如何处理实际上 是通过其内部类 NotifierCallback 来完成。</p>
+<pre><code>/**
+ * Class used to notify events from CallbackRegistry.
+ *
+ * @param &lt;C&gt; The callback type.
+ * @param &lt;T&gt; The notification sender type. Typically this is the containing class.
+ * @param &lt;A&gt; An opaque argument to pass to the notifier
+ */
+public abstract static class NotifierCallback&lt;C, T, A&gt; {
+    /**
+     * Called by CallbackRegistry during
+     * {@link CallbackRegistry#notifyCallbacks(Object, int, Object)}} to notify the callback.
+     *
+     * @param callback The callback to notify.
+     * @param sender The opaque sender object.
+     * @param arg The opaque notification parameter.
+     * @param arg2 An opaque argument passed in
+     *        {@link CallbackRegistry#notifyCallbacks}
+     * @see CallbackRegistry#CallbackRegistry(CallbackRegistry.NotifierCallback)
+     */
+    public abstract void onNotifyCallback(C callback, T sender, int arg, A arg2);
+}
+</code></pre><p>通过实际上在CallbackRegistry 处理回调的时候就是调用了其 onNotifyCallback来处理。</p>
+<p>所以在CallbackRegistry 的说明中可以看到 一句话 ：<em>A subclass of CallbackRegistry.NotifierCallback must be passed to the constructor to define how notifications should be called</em></p>
+<p>简单说就是由 NotifierCallback的子类来处理notification。</p>
+<p>回到 PropertyChangeRegistry 当中看 NOTIFIER_CALLBACK</p>
+<pre><code>private static final CallbackRegistry.NotifierCallback&lt;Observable.OnPropertyChangedCallback, Observable, Void&gt; NOTIFIER_CALLBACK = new CallbackRegistry.NotifierCallback&lt;Observable.OnPropertyChangedCallback, Observable, Void&gt;() {
+    @Override
+    public void onNotifyCallback(Observable.OnPropertyChangedCallback callback, Observable sender,
+            int arg, Void notUsed) {
+        callback.onPropertyChanged(sender, arg);
+    }
+};
+</code></pre><p>在接收到通知之后，实际上会调用Observable.OnPropertyChangedCallback的 onPropertyChanged 方法。</p>
+<p>从上面的分析可以看来，CallbackRegistry 实际上是一个事件分发中心和订阅中，所有的事件回调都是通过CallbackRegistry来处理，但是真正对事件的处理，却是通过自定义的 NotifierCallback来完成的。</p>
+<p>在android的databinding中，同样是通过这样一套机制来工作的，在ViewDataBinding中，定义了WeakPropertyListener，通过重写 onPropertyChanged  方法完成对数据的重新绑定。</p>
+<p>回到 TasksFragBinding.java 这个类是tasks_frag_xml这个文件生成的。<br>在其中定义了一个变量， mViewmodel ，因此在这个类中，也为我们生成了一个setViewmodel 方法，在这个方法当中，完成了对数据的mViewmodel 的赋值，然后调用了notifyPropertyChanged 方法，这个方法在前面提到过，定义BaseObservable 当中，所以可以简单的推断 ViewDataBinding 也是继承于BaseObservable。</p>
+<p>通过mViewmodel 同样可以推断出，如果我们只是修改了 mViewmodel 的内部属性是无法导致试图被刷新的（已经验证），所以在TaskViewModel 这个类中，我们可以看到，在定义了 private final ObservableField<task> mTaskObservable = new ObservableField&lt;&gt;();之后有这么一段代码 </task></p>
+<pre><code>mTaskObservable.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
+        @Override
+        public void onPropertyChanged(Observable observable, int i) {
+            Task task = mTaskObservable.get();
+            if (task != null) {
+                title.set(task.getTitle());
+                description.set(task.getDescription());
+            } else {
+                title.set(mContext.getString(R.string.no_data));
+                description.set(mContext.getString(R.string.no_data_description));
+            }
+        }
+    });
+</code></pre><p>需要自己手动去添加一个监听器来数据的更新。</p>
+<p>参照这个例子，如果需要一个更新了成员变量也会刷新对应试图的对象，应该这么定义 </p>
+<pre><code>public class Task {
+    public final ObservableField&lt;String&gt; title = new ObservableField();
+    public final ObservableField&lt;String&gt; content = new ObservableField();
+
+    public Task(String title, String content) {
+        this.title.set(title);
+        this.content.set(content);
+    }
+
+    public void setContent(String content) {
+        this.content.set(content);
+    }
+}
+</code></pre><p>对应的布局文件如下</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;layout  xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;data&gt;
+        &lt;variable
+            name=&quot;task&quot;
+            type=&quot;com.devtom.databindingtest.Task&quot;/&gt;
+    &lt;/data&gt;
+
+    &lt;RelativeLayout
+        xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+        android:id=&quot;@+id/activity_main&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
+        android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
+        android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
+        android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
+        tools:context=&quot;com.devtom.databindingtest.MainActivity&quot;&gt;
+
+        &lt;TextView
+            android:id=&quot;@+id/title&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_centerHorizontal=&quot;true&quot;
+            android:text=&quot;@{task.title}&quot; /&gt;
+
+        &lt;TextView
+            android:id=&quot;@+id/content&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_centerInParent=&quot;true&quot;
+            android:text=&quot;@{task.content}&quot; /&gt;
+
+        &lt;Button
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:text=&quot;Change&quot;
+            android:onClick=&quot;change&quot;
+            android:layout_alignParentBottom=&quot;true&quot;
+            /&gt;
+    &lt;/RelativeLayout&gt;
+&lt;/layout&gt;
+</code></pre><p>Activity 代码如下</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+        private Task task;
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            View view = this.findViewById(R.id.activity_main);
+            ActivityMainBinding mainBinding = DataBindingUtil.bind(view);
+            task = new Task(&quot;this is title&quot;,&quot;kai gong da ji&quot;);
+            mainBinding.setTask(task);
+        }
+
+        public void change(View view) {
+            task.setContent(&quot;this is chinese new year&quot;);
+        }
+}
+</code></pre><p>当手动的去改变task的某一个属性的时候，也会去刷新对应的试图。</p>
+<p>这里需要注意的是Task其中的两个成员变量可以定义为public的也可以定义为private 然后给他添加对应的private 方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/MVVM/" rel="tag"># MVVM</a>
+          
+            <a href="/tags/Databinding/" rel="tag"># Databinding</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/28/Android中AIDL的理解/" rel="next" title="Android中AIDL的理解">
+                <i class="fa fa-chevron-left"></i> Android中AIDL的理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/09/Andriod中的资源管理/" rel="prev" title="Andriod中的资源管理">
+                Andriod中的资源管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

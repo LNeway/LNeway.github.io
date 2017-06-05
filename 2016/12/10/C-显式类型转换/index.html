@@ -1,0 +1,682 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C++,类型转换," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="static_cast任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast,例如将一个整形的运算对象强制转换为doule类型。static_cast常见的用法有以下两种：  类型之间的转换，例如 doule 转为 int. 可以用于编译器无法自动执行的类型转换也非常有用，可以使用static_cast找回存在于void* 指针中的值，例如  void p =&amp;d;">
+<meta name="keywords" content="C++,类型转换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++显式类型转换">
+<meta property="og:url" content="http://yoursite.com/2016/12/10/C-显式类型转换/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="static_cast任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast,例如将一个整形的运算对象强制转换为doule类型。static_cast常见的用法有以下两种：  类型之间的转换，例如 doule 转为 int. 可以用于编译器无法自动执行的类型转换也非常有用，可以使用static_cast找回存在于void* 指针中的值，例如  void p =&amp;d;">
+<meta property="og:updated_time" content="2016-12-10T14:00:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++显式类型转换">
+<meta name="twitter:description" content="static_cast任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast,例如将一个整形的运算对象强制转换为doule类型。static_cast常见的用法有以下两种：  类型之间的转换，例如 doule 转为 int. 可以用于编译器无法自动执行的类型转换也非常有用，可以使用static_cast找回存在于void* 指针中的值，例如  void p =&amp;d;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/10/C-显式类型转换/"/>
+
+
+
+
+
+  <title>C++显式类型转换 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/10/C-显式类型转换/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++显式类型转换</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-10T21:58:26+08:00">
+                2016-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>static_cast</strong><br>任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast,例如将一个整形的运算对象强制转换为doule类型。static_cast常见的用法有以下两种：</p>
+<ul>
+<li>类型之间的转换，例如 doule 转为 int.</li>
+<li><p>可以用于编译器无法自动执行的类型转换也非常有用，可以使用static_cast找回存在于void* 指针中的值，例如</p>
+<p> void<em> p =&d;<br> double </em>dp = static_cast<double*>(p);</double*></p>
+</li>
+</ul>
+<p>当我们把指针保存在void<em>当中，并且使用static_cast找回转换的值得时候，应该保证void</em> 指针的值不变，如果一旦类型发生了变换，那么将产生未定义的后果。</p>
+<p>static_cast作类型转换的时候需要我们自己去确保转换的类型是匹配的，static_cast可以用在指针和引用上，还可以用在基础数据和对象上,用static_cast来处理的转换就需要两者具有”一定的关系”了,实际上继承关系是可以被static_cast接受的，其他情况的指针和引用转换都会被static_cast直接扔出编译错误，而这层关系上的转换又几乎都可以被dynamic_cast所代替</p>
+<p><strong>const_cast</strong><br>const_cast 只能改变运算对象底层的const修饰、<br>对于将常量对象转为非常量对象的行为，我们一般称之为去掉const性质，一旦我们去掉了某个对象的const性质，编译器就不在阻止我们对该对象进行修改了，虽然我们可以获取修改对象的权限，但是这样的操作时未定义的。<a href="http://www.cnblogs.com/ider/archive/2011/07/22/cpp_cast_operator_part2.html" target="_blank" rel="external">阅读</a></p>
+<p><strong>reinterpret_cast</strong><br>reinterpret_cast运算符用来处理无关类型之间的转换，他会产生一个新值，这个值会与原始参数有完全相同的bit位。<br>IBM的C++指南里倒是明确告诉了我们reinterpret_cast可以，或者说应该在什么地方用来作为转换运算符：</p>
+<ul>
+<li>从指针类型到一个足够大的整数类型</li>
+<li>从整数类型或者枚举类型到指针类型</li>
+<li>从一个指向函数的指针到另一个不同类型的指向函数的指针</li>
+<li>从一个指向对象的指针到另一个不同类型的指向对象的指针</li>
+<li>从一个指向类函数成员的指针到另一个指向不同类型的函数成员的指针</li>
+<li>从一个指向类数据成员的指针到另一个指向不同类型的数据成员的指针</li>
+</ul>
+<p><strong>dynamic_cast</strong><br>与static_cast一样，dynamic_cast的转换也需要目标类型和源对象有一定的关系：继承关系。 更准确的说，dynamic_cast是用来检查两者是否有继承关系。因此该运算符实际上只接受基于类对象的指针和引用的类转换。</p>
+<p>对于从子类到基类的指针转换，static_cast和dynamic_cast都是成功并且正确的（所谓成功是说转换没有编译错误或者运行异常；所谓正确是指方法的调用和数据的访问输出是期望的结果），这是面向对象多态性的完美体现。</p>
+<p>而从基类到子类的转换，static_cast和dynamic_cast都是成功的，但是正确性方面，我对两者的结果都先进行了是否非空的判别：dynamic_cast的结果显示是空指针，而static_cast则是非空指针。但很显然，static_cast的结果应该算是错误的。</p>
+<p>如果基类或者子类没有任何虚函数（如果基类有虚函数表，子类当然是自动继承了该表），当他们作为dynamic_cast的源类型进行转换时，编译也会失败。</p>
+<p>这种情况是有可能存在的，因为在设计的时候，我们可能不需要让子类重写任何基类的方法。但实际上，这是不合理的，<br>如果要用继承，那么一定要让析构函数是虚函数；如果一个函数是虚函数，那么在子类中也要是虚函数。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+            <a href="/tags/类型转换/" rel="tag"># 类型转换</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/08/Java中弱引用的理解/" rel="next" title="Java中弱引用的理解">
+                <i class="fa fa-chevron-left"></i> Java中弱引用的理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/12/LeakCanary源码分析/" rel="prev" title="LeakCanary源码分析(1)">
+                LeakCanary源码分析(1) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

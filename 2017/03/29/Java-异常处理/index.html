@@ -1,0 +1,813 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,异常," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在看Effective Java 看到了更异常相关的章节，虽然里面道理都看的懂，但是一旦要自己操作起来的时候就懵逼了，后来发现了一篇博文感觉里面写的还不错，现在翻译出来如下，附上原文的链接 Desiging with exceptions  异常的好处 异常有不少优点，首先它可以让你将异常处理的代码和正常的代码分离，在99.9%的情况下，你可以用try 代码块来包裹你想执行的代码，然后将异常处">
+<meta name="keywords" content="Java,异常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 异常处理">
+<meta property="og:url" content="http://yoursite.com/2017/03/29/Java-异常处理/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="最近在看Effective Java 看到了更异常相关的章节，虽然里面道理都看的懂，但是一旦要自己操作起来的时候就懵逼了，后来发现了一篇博文感觉里面写的还不错，现在翻译出来如下，附上原文的链接 Desiging with exceptions  异常的好处 异常有不少优点，首先它可以让你将异常处理的代码和正常的代码分离，在99.9%的情况下，你可以用try 代码块来包裹你想执行的代码，然后将异常处">
+<meta property="og:updated_time" content="2017-03-30T15:19:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 异常处理">
+<meta name="twitter:description" content="最近在看Effective Java 看到了更异常相关的章节，虽然里面道理都看的懂，但是一旦要自己操作起来的时候就懵逼了，后来发现了一篇博文感觉里面写的还不错，现在翻译出来如下，附上原文的链接 Desiging with exceptions  异常的好处 异常有不少优点，首先它可以让你将异常处理的代码和正常的代码分离，在99.9%的情况下，你可以用try 代码块来包裹你想执行的代码，然后将异常处">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/29/Java-异常处理/"/>
+
+
+
+
+
+  <title>Java 异常处理 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/29/Java-异常处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 异常处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-29T23:28:32+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在看Effective Java 看到了更异常相关的章节，虽然里面道理都看的懂，但是一旦要自己操作起来的时候就懵逼了，后来发现了一篇博文感觉里面写的还不错，现在翻译出来如下，附上原文的链接 <a href="http://www.javaworld.com/article/2076721/core-java/designing-with-exceptions.html?page=1" target="_blank" rel="external">Desiging with exceptions</a> </p>
+<p><strong>异常的好处</strong></p>
+<p>异常有不少优点，首先它可以让你将异常处理的代码和正常的代码分离，在99.9%的情况下，你可以用try 代码块来包裹你想执行的代码，然后将异常处理的代码放在catch代码块中，这样的写法将避免使你的代码看起来杂乱无章。</p>
+<p>如果你觉得一个方法无法处理一个特定的错误，那么你可以通过抛出一个异常，让其他人来处理这个问题。如果你抛出了一个编译时期的异常，那么Java编译器将迫使调用者来处理指定的异常，要么通过try catch ，要么调用者自己也声明抛出异常，Java编译器对编译期间异常的强制处理，使得Java程序更加的健壮。</p>
+<p><strong>什么时候抛异常</strong></p>
+<p>什么时候应该抛出一个异常呢？ 可以用下面的一句话来总结</p>
+<blockquote>
+<p>如果你的方法遇到了无法处理的异常条件，那么抛出一个异常</p>
+</blockquote>
+<p>(看到这句话一定会想MDZZ….)</p>
+<p>不幸的是，尽管这一句总结很好记忆，但是它并没有让你更清楚的明白这个问题，它实际上引出了另外一个问题：什么是异常条件？</p>
+<p>事实上判断一个特定的事件是不是一个异常条件是一个主观上的问题，这个判断并不是总是清晰。</p>
+<p>一个更加有用的总结应该是下面这句：</p>
+<blockquote>
+<p>在可以正常处理逻辑的情况下，不要使用异常（原文：Avoid using exceptions to indicate conditions that can reasonably be expected as part of the typical functioning of the method.）</p>
+</blockquote>
+<p>因此不正常的条件可以理解为一个方法中无法正常处理的部分。为了更好的理解这句话，请看下面的例子，</p>
+<p><strong>示例</strong></p>
+<p>作为示例，请看java.io中的两个类，FileInputStream  和 DataInputStream ，下面这段代码用FileOutputStream 来输出一个文本文件。</p>
+<pre><code>import java.io.*;
+class Example9a {
+    public static void main(String[] args)
+        throws IOException {
+        if (args.length == 0) {
+            System.out.println(&quot;Must give filename as first arg.&quot;);
+            return;
+        }
+        FileInputStream in;
+        try {
+            in = new FileInputStream(args[0]);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(&quot;Can&apos;t find file: &quot; + args[0]);
+            return;
+        }
+        int ch;
+        while ((ch = in.read()) != -1) {
+            System.out.print((char) ch);
+        }
+        System.out.println();
+        in.close();
+    }
+}
+</code></pre><p>在这个示例中，read()方法没有通过使用异常来表示读取文件已经到达了文件的末尾，而是通过返回了一个特定的值 -1， 在这个方法中，到达文件的末尾是一种正常的使用场景。正常读取字节的方式就是一直读直到读到文件的末尾。</p>
+<p>再来看看DataInputStream 这个类，采用不同的方式来表明到达了文件的末尾。</p>
+<pre><code>import java.io.*;
+class Example9b {
+    public static void main(String[] args)
+        throws IOException {
+        if (args.length == 0) {
+            System.out.println(&quot;Must give filename as first arg.&quot;);
+            return;
+        }
+        FileInputStream fin;
+        try {
+            fin = new FileInputStream(args[0]);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(&quot;Can&apos;t find file: &quot; + args[0]);
+            return;
+        }
+        DataInputStream din = new DataInputStream(fin);
+        try {
+            int i;
+            for (;;) {
+                i = din.readInt();
+                System.out.println(i);
+            }
+        }
+        catch (EOFException e) {
+        }
+        fin.close();
+    }
+}
+</code></pre><p>每次调用readInt的时候，它从流中读取四个字节，当读取到文件的末尾的时候，抛出了一个EOFException, 对于这个方法来说，抛出异常是一个合理的选择，原因如下</p>
+<ul>
+<li>首先，readInt()不能返回一个特定的值，因为任何一个数字都可能是一个合理的返回值，因此无法用一个特殊的数字来表明读取到了文件的末尾。</li>
+<li>第二，如果readInt读到了文件的末尾，但是只有三个字节，因此抛出一个编译期异常让调用者来处理是使用这个类的一部分。因此这个类的设计者抛出了一个编译期异常让迫使调用者来处理这个异常。</li>
+</ul>
+<p>还有另外一种方法来表明”数据已经到达了结尾”，下面看StringTokenizer 和Stack 的例子。</p>
+<pre><code>import java.io.*;
+import java.util.*;
+class Example9c {
+    public static void main(String[] args)
+        throws IOException {
+        if (args.length == 0) {
+            System.out.println(&quot;Must give filename as first arg.&quot;);
+            return;
+        }
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(args[0]);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(&quot;Can&apos;t find file: &quot; + args[0]);
+            return;
+        }
+        // Read file into a StringBuffer
+        StringBuffer buf = new StringBuffer();
+        try {
+            int ch;
+            while ((ch = in.read()) != -1) {
+                buf.append((char) ch);
+            }
+        }
+        finally {
+            in.close();
+        }
+        // Separate StringBuffer into tokens and
+        // push each token into a Stack
+        StringTokenizer tok = new StringTokenizer(buf.toString());
+        Stack stack = new Stack();
+        while (tok.hasMoreTokens()) {
+            stack.push(tok.nextToken());
+        }
+        // Print out tokens in reverse order.
+        while (!stack.empty()) {
+            System.out.println((String) stack.pop());
+        }
+    }
+}
+</code></pre><p>在上面这个例子中，从一个文件中读取字节，然后将字节转换为char, 放到一个StringBuffer中，之后让StringTokenizer 使用默认的分隔符来分割字符串，并且将字符串放入到一个栈中， 下一步是用pop操作将栈中数据全部取出，因为栈是一个FILO结构，数据将会倒序输出。StringTokenizer 和Stack 都有一个条件来判断数据是否已经到达末尾。每次调用 nextToken的时候都会返回一个String, 当所有的String 对象都被返回的时候，StringTokenizer 必须表明所有的数据都被取完了，在这个示例中，null 本来可以被用作一个数据已经被取完的返回值，但是这个类的设计者采用了另外一种方式，用 hasMoreTokens() 这个方法来判断当前是否还有数据未被取完，在每次调用nextToken之前，你都需要调用hasMoreTokens() 方法。</p>
+<p>在这个设计之中，类的设计者认为到达数据结构的末尾是一种正常的情况(<strong><em>原文：This approach shows that the designer did not consider reaching the end of tokens an abnormal condition， 个人理解：数据结构为空实际上是一种正常的情况，但是从一个为空的数据结构中获取数据则是处于不正常的条件，在后面会马上提到已经实际上是违反了使用这个方法的约定</em></strong>），如果你在在使用nextToken之前没有检查hasMoreTokens(), 你会遇到 NoSuchElementException，尽管这个是在已经到达数据结构末尾这种情况下抛出的，它更多的是表明了你使用这个类的方式不对， 而不是表示没有更多数据了。</p>
+<p>类似的，Stack 同样有一个方法 empty(), 它表示栈中是否还有其他的元素，在你使用pop方法之前，你都需要使用empty 来判断栈中是否还有元素，如果你在使用pop()之前没有调用empty(), 如果栈中没有了其他的元素，那么你将遇到 EmptyStackException(), 尽管这个异常只会在栈为空的情况下发生，但是这个运行时异常更多的是用来表明客户端代码中出了问题，而不是提示你这个栈为空。</p>
+<p><strong>异常实际上表明违反了使用约定</strong></p>
+<p>上面的例子可能会让你觉得，你应该使用异常来传递一个信息而不是用其他的方式。如果从另外一个角度来思考异常，可能会让你更加清楚什么时候应该使用他们</p>
+<blockquote>
+<p>异常实际上表明了违反了使用的约定 （原文：Exceptions indicate a broken contract）</p>
+</blockquote>
+<p>在面向对象编程中，我们经常谈到的一点是Design by Contract approach. 在软件设计中，一个方法实际上代表了调用者和设计者 之间的一种约定，这种约定包括调用者必须满足前置条件，而方法本身必须满足后置条件（个人理解：调用者使用方法的时机应该正确，方法的参数应该传对，而方法本身应该能按照约定正常的处理输入然后给出输出） </p>
+<p><strong>前置条件</strong></p>
+<p>以String对象的charAt(int index) 为例，这个方法要求index 必须在 0 和 length -1 之间。 例如string的长度为5， 那么你的输入应该是 0 - 4.</p>
+<p><strong>后置条件（Postcondition）</strong><br>String chatAt方法的后置条件是 返回index指定位置的字符，并且string本身保持不变。</p>
+<p>如果调用者传入了 -1 或者大于等于 length 的参数，那么实际上是调用者 违反了约定，那么这个时候会抛出一个 StringIndexOutOfBoundsException ， 这个异常表明调用者代码有bug。</p>
+<p>如果charAt 方法本身接收到了一个合法的输入，但是由于这个方法本身无法返回指定位置的字符（无法满足后置条件），同样应该抛出异常，这个异常表明了这个方法有bug或者无法处理运行时资源。</p>
+<p><strong>What to Throw</strong></p>
+<p>一旦你决定要抛出一个异常，那么你需要选择应该抛出哪一种异常。</p>
+<p><strong>Exceptions VS errors</strong></p>
+<p>一般说来你应该要使用异常而不是Error, Error 也是 Throwable的子类。有时表明JVM出了某些问题例如 OOM Error，有使用JAVA API会抛出错误，例如 java.awt.AWTError, 但是在你的代码中，应该只是用异常。</p>
+<p><strong>编译期异常 VS 运行期异常</strong></p>
+<p>这个问题才是一个大问题，到底是编译期异常还是运行时异常，编译期是Exception 及其子类，但是子类部分中要把RuntimeException 和 其子类排除，Error 及其子类同样也不是编译期异常。</p>
+<p>如果你抛出了一个编译期异常但是并没有捕获，那么你需要在你的方法声明中加上throws， 这样调用者在使用你的代码时必须使用try catch 来处理异常或者将他自己的方法添加异常的声明，使用编译期异常将迫使调用者来处理方法可能抛出的异常。</p>
+<p>如果你抛出的是一个运行期异常，那么调用者可以使用try catch 来捕获异常或者直接忽略掉异常。编译期将不会迫使调用者去处理这个异常，实际上调用者可能都不知道这个方法会抛出哪些异常。</p>
+<p>简单的区别方式如下：</p>
+<blockquote>
+<p>如果你抛出了一个异常，并且你觉得客户端程序员可以有意识的处理这个异常，那么应该使用编译期异常</p>
+</blockquote>
+<p>一般来说，如果异常是想表明类的使用方式出了问题，那么这个异常因该是运行期异常。String charAt 抛出的StringIndexOutOfBoundsException 是运行期异常。String 的设计者不希望迫使调用者每次使用charAt的时候都去处理可能的错误。</p>
+<p>但是 java.io.FileInputStream  的 read方法 抛出一个编译期异常，这个异常表明在读取文件的期间出现了某些问题，这个问题并不是由于客户端使用的方式不对而引起，它只是表明这个方法本身无法按照约定从文件中读取字节，类的设计者认为这种这种不正常的条件是十分普遍的。并且住够重要让调用者去处理这种情况。</p>
+<p>通过上面的对比，基本上可以得出以下的结论，如果异常条件的发生是方法本身无法满足约定并且重要程度足够到需要调用者去处理，那么这个时候需要抛出一个编译器异常，迫使调用者去处理，否则抛出一个运行期异常。</p>
+<p><strong>定义具体的异常</strong></p>
+<p>最终你需要决定使用哪个异常类，在这里规则非常的具体，不要直接使用Exception，你应该选择现有的已经存在的可以说明你异常情况的异常类。这样调用者可以有选择的处理各种异常情况。</p>
+<p>同时你可以在这些异常中嵌入你想添加的信息，但是不要靠这些信息来区分发生了什么异常。</p>
+<p><strong>总结</strong></p>
+<p>这篇文章最重要的一点在于，异常是用来处理不正常的条件的，当程序可以用一个正常的返回值来标志时，就不应该使用异常。 尽管异常可以可以帮助你去将异常处理代码和处理正常逻辑的代码区分开，但是不恰当的使用只会让你的代码更加难以阅读。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/异常/" rel="tag"># 异常</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/28/Java-泛型/" rel="next" title="Java 泛型">
+                <i class="fa fa-chevron-left"></i> Java 泛型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/06/Retrofit-源码学习/" rel="prev" title="Retrofit 源码学习">
+                Retrofit 源码学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">Tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
