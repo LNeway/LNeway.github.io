@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="C++,静态," />
+  <meta name="keywords" content="TCP," />
 
 
 
@@ -93,17 +93,20 @@
 
 
 
-<meta name="description" content="通过添加static关键字将成员与类结合在一起而不是与特定的对象绑定在一起，这一点和java中static关键字是一样的，而且也可以使用访问修饰符修饰 静态成员函数不和任何对象绑定在一起，他们不包含任何this 指针，作为结果，静态成员函数不能成名成const的，而且不能再静态函数的内部使用this指针。 可以使用作用域运算法直接访问静态成员。例如在Account中定义了静态的rate()函数，可">
-<meta name="keywords" content="C++,静态">
+<meta name="description" content="TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花">
+<meta name="keywords" content="TCP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C++中的静态">
-<meta property="og:url" content="http://yoursite.com/2017/01/20/C-中的静态/index.html">
+<meta property="og:title" content="TCP学习笔记">
+<meta property="og:url" content="http://yoursite.com/2017/06/12/TCP学习笔记/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="通过添加static关键字将成员与类结合在一起而不是与特定的对象绑定在一起，这一点和java中static关键字是一样的，而且也可以使用访问修饰符修饰 静态成员函数不和任何对象绑定在一起，他们不包含任何this 指针，作为结果，静态成员函数不能成名成const的，而且不能再静态函数的内部使用this指针。 可以使用作用域运算法直接访问静态成员。例如在Account中定义了静态的rate()函数，可">
-<meta property="og:updated_time" content="2017-01-22T15:19:18.000Z">
+<meta property="og:description" content="TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花">
+<meta property="og:image" content="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png">
+<meta property="og:image" content="http://docs.52im.net/extend/docs/book/tcpip/vol1/19/images2/52im_net_1.png">
+<meta property="og:updated_time" content="2017-06-12T15:48:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++中的静态">
-<meta name="twitter:description" content="通过添加static关键字将成员与类结合在一起而不是与特定的对象绑定在一起，这一点和java中static关键字是一样的，而且也可以使用访问修饰符修饰 静态成员函数不和任何对象绑定在一起，他们不包含任何this 指针，作为结果，静态成员函数不能成名成const的，而且不能再静态函数的内部使用this指针。 可以使用作用域运算法直接访问静态成员。例如在Account中定义了静态的rate()函数，可">
+<meta name="twitter:title" content="TCP学习笔记">
+<meta name="twitter:description" content="TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花">
+<meta name="twitter:image" content="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png">
 
 
 
@@ -131,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/20/C-中的静态/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/12/TCP学习笔记/"/>
 
 
 
 
 
-  <title>C++中的静态 | Learning</title>
+  <title>TCP学习笔记 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +260,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/20/C-中的静态/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/12/TCP学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tom Liu">
@@ -274,7 +277,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">C++中的静态</h1>
+          <h1 class="post-title" itemprop="name headline">TCP学习笔记</h1>
         
 
         <div class="post-meta">
@@ -286,8 +289,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-20T23:14:42+08:00">
-                2017-01-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-12T23:47:20+08:00">
+                2017-06-12
               </time>
             
 
@@ -321,59 +324,31 @@
       
 
       
-        <p>通过添加static关键字将成员与类结合在一起而不是与特定的对象绑定在一起，这一点和java中static关键字是一样的，而且也可以使用访问修饰符修饰</p>
-<p>静态成员函数不和任何对象绑定在一起，他们不包含任何this 指针，作为结果，静态成员函数不能成名成const的，而且不能再静态函数的内部使用this指针。</p>
-<p>可以使用作用域运算法直接访问静态成员。例如在Account中定义了静态的rate()函数，可以使用Accout::rate()调用。</p>
-<p>和其他的成员函数一样，我们既可以在类的内部也可以在类的外部定义静态成员函数，当在类的外部定义静态成员函数的时候不能重复static关键字。</p>
-<p>因为静态数据库成员不属于类的任何一个对象，所以他们不是在创建类的对象的时候被定义的，这意味着他们不是由类的构造函数初始化的，而且一般来说我们不能在类的内部初始化静态成员，相反的，必须在类的外部定义和初始化静态成员，类似于全局变量，静态成员定义于任何函数之外，一旦定义就存于程序的整个生命周期。</p>
-<p>下面是一个使用static的例子</p>
-<pre><code>#include &lt;iostream&gt;
-#include &lt;string&gt;
-
-using namespace std;
-
-class MyStatic{
-
-public:
-    static void test();
-    static string name;
-};
-
-void MyStatic::test() {
-    cout&lt;&lt;&quot;this is static test method&quot;&lt;&lt;endl;
-}
-
-string MyStatic::name = &quot;ssssss&quot;;
-int main(void) {
-    MyStatic::test();
-    cout&lt;&lt;MyStatic::name&lt;&lt;endl;
-    return 0;
-}
-</code></pre><p>静态成员可以用于某些场景而普通成员不能</p>
+        <p>TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花了六个章节来讲解其中的知识。其中的基本知识点包括：连接的建立，超时和重传，数据流和窗口管理，拥塞和控制.</p>
+<h1 id="TCP-数据格式"><a href="#TCP-数据格式" class="headerlink" title="TCP 数据格式"></a>TCP 数据格式</h1><p>TCP的数据格式如下图所示</p>
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png" alt="此处输入图片的描述"></p>
 <ol>
-<li><p>静态成员不收不完全类型的限制</p>
-<pre><code>class MyStatic{
-    private:
-        MyStatic *my;
-        static MyStatic instance;
-    public:
-        static void test();
-        static string name;
-};
-</code></pre></li>
+<li>每个TCP的头部都包含了目的地的端口号和源端口号，TCP层的端口号和IP成的ip地址，组成了一个四元组，这个四元组唯一标识一个连接。 </li>
+<li>32位的序列号代表了该数据中包中第一个字节的编号。</li>
+<li>32对确认号是指该数据包的发送方希望接收的下一个序列号，这个值是对当前已经接收的序列号加一所得。</li>
+<li>4位的头部长度标识tcp头部的长度，这个值最大位15，每位标识32位的长度，所以TCP头部长度限制为 15 * 32(bit) = 60字节，在不带选项的情况下，头部长度为20字节。</li>
+<li>当前TCP协议当中还有8位字段，分别标识 1.拥塞窗口减 2.ECN回显 3.URG 4.ACK 5.PSH 6.RST 7.SYN 8.FIN 这些置位分别在连接的不同阶段起作用</li>
 </ol>
-<p>在上面的例子中，如果去掉 instance 变量前的是static，那么将会编译失败</p>
-<p>2.静态成员可以作为默认的实参，而普通成员则不行</p>
-<pre><code>class MyStatic{
-    private:
-        static const int  a = 0;
-        int b;
-    public:
-        MyStatic(int c = a):b(a){
-
-        }
-    };
-</code></pre><p>如果把常量a 的 static关键字拿到，那么编译将报错。</p>
+<h1 id="TCP连接的建立"><a href="#TCP连接的建立" class="headerlink" title="TCP连接的建立"></a>TCP连接的建立</h1><p>TCP连接的建立需要经典的三次握手的过程。过程如下</p>
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/19/images2/52im_net_1.png" alt="此处输入图片的描述"></p>
+<ol>
+<li>客户端首先发送一个SYN报文(TCP头部中的SYN被置位)，并且指明自己想要连接的端口号和给定一个初始化的序列号SYN(c)。（第一次握手）</li>
+<li>服务端收到这个客户端的SYN 报文之后给出一个响应，在这个响应当中，服务器给出了自己的初始化序列号SYN(s)，此时为了对确认客户端的请求，服务端会将客户端发送的序列号加一之后放在TCP头部的确认号字段当中ACK(c+1)，因此每发送一个syn，序列号都会加1.（第二次握手）</li>
+<li>为了确认服务器端SYN（S），客户端会将服务器端的S + 1之后放在ACK(S+1)中，发送给服务端。（第三次握手）</li>
+</ol>
+<p>三次握手的过程不仅让通信的双方了解到一个连接正在建立，同时也在利用数据包的选项来交换初始序列号。</p>
+<h1 id="TCP连接的断开"><a href="#TCP连接的断开" class="headerlink" title="TCP连接的断开"></a>TCP连接的断开</h1><p>与TCP 连接的建立相比，TCP 连接的断开多了一步，一共需要四个步骤。</p>
+<ol>
+<li>连接的主动关闭者（Client），发送一个FIN报文来表示自己想关闭连接，同时这个报文里面还包括一个ACK来确认对方最近一次发来的数据。</li>
+<li>服务端接收到客户端断开的请求之后，发送一个ACK对客户端的FIN 报文做出响应，这个时候连接处于半关闭状态。</li>
+<li>服务端在发送完数据之后，同样发送一个FIN给客户端，来关闭连接。</li>
+<li>客户端接收到了FIN之后，对服务端的FIN做出一个响应，至此连接关闭。</li>
+</ol>
 
       
     </div>
@@ -403,9 +378,7 @@ int main(void) {
       
         <div class="post-tags">
           
-            <a href="/tags/C/" rel="tag"># C++</a>
-          
-            <a href="/tags/静态/" rel="tag"># 静态</a>
+            <a href="/tags/TCP/" rel="tag"># TCP</a>
           
         </div>
       
@@ -418,8 +391,8 @@ int main(void) {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/15/Android-热修复技术/" rel="next" title="Android 热修复技术">
-                <i class="fa fa-chevron-left"></i> Android 热修复技术
+              <a href="/2017/05/12/JNI相关的知识点/" rel="next" title="JNI相关的知识点">
+                <i class="fa fa-chevron-left"></i> JNI相关的知识点
               </a>
             
           </div>
@@ -427,10 +400,6 @@ int main(void) {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/22/Android中的状态保存/" rel="prev" title="Android中的状态保存">
-                Android中的状态保存 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -477,8 +446,17 @@ int main(void) {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -531,6 +509,22 @@ int main(void) {
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-数据格式"><span class="nav-number">1.</span> <span class="nav-text">TCP 数据格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP连接的建立"><span class="nav-number">2.</span> <span class="nav-text">TCP连接的建立</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP连接的断开"><span class="nav-number">3.</span> <span class="nav-text">TCP连接的断开</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

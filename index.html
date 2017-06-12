@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -112,7 +112,7 @@
     motion: true,
     duoshuo: {
       userId: '0',
-      author: 'Author'
+      author: '博主'
     },
     algolia: {
       applicationID: '',
@@ -135,7 +135,7 @@
   <title>Learning</title>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
 
@@ -201,7 +201,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            首页
           </a>
         </li>
       
@@ -211,7 +211,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            归档
           </a>
         </li>
       
@@ -221,7 +221,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
-            Tags
+            标签
           </a>
         </li>
       
@@ -244,6 +244,142 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/12/TCP学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/12/TCP学习笔记/" itemprop="url">TCP学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-12T23:47:20+08:00">
+                2017-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花了六个章节来讲解其中的知识。其中的基本知识点包括：连接的建立，超时和重传，数据流和窗口管理，拥塞和控制.</p>
+<h1 id="TCP-数据格式"><a href="#TCP-数据格式" class="headerlink" title="TCP 数据格式"></a>TCP 数据格式</h1><p>TCP的数据格式如下图所示</p>
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png" alt="此处输入图片的描述"></p>
+<ol>
+<li>每个TCP的头部都包含了目的地的端口号和源端口号，TCP层的端口号和IP成的ip地址，组成了一个四元组，这个四元组唯一标识一个连接。 </li>
+<li>32位的序列号代表了该数据中包中第一个字节的编号。</li>
+<li>32对确认号是指该数据包的发送方希望接收的下一个序列号，这个值是对当前已经接收的序列号加一所得。</li>
+<li>4位的头部长度标识tcp头部的长度，这个值最大位15，每位标识32位的长度，所以TCP头部长度限制为 15 * 32(bit) = 60字节，在不带选项的情况下，头部长度为20字节。</li>
+<li>当前TCP协议当中还有8位字段，分别标识 1.拥塞窗口减 2.ECN回显 3.URG 4.ACK 5.PSH 6.RST 7.SYN 8.FIN 这些置位分别在连接的不同阶段起作用</li>
+</ol>
+<h1 id="TCP连接的建立"><a href="#TCP连接的建立" class="headerlink" title="TCP连接的建立"></a>TCP连接的建立</h1><p>TCP连接的建立需要经典的三次握手的过程。过程如下</p>
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/19/images2/52im_net_1.png" alt="此处输入图片的描述"></p>
+<ol>
+<li>客户端首先发送一个SYN报文(TCP头部中的SYN被置位)，并且指明自己想要连接的端口号和给定一个初始化的序列号SYN(c)。（第一次握手）</li>
+<li>服务端收到这个客户端的SYN 报文之后给出一个响应，在这个响应当中，服务器给出了自己的初始化序列号SYN(s)，此时为了对确认客户端的请求，服务端会将客户端发送的序列号加一之后放在TCP头部的确认号字段当中ACK(c+1)，因此每发送一个syn，序列号都会加1.（第二次握手）</li>
+<li>为了确认服务器端SYN（S），客户端会将服务器端的S + 1之后放在ACK(S+1)中，发送给服务端。（第三次握手）</li>
+</ol>
+<p>三次握手的过程不仅让通信的双方了解到一个连接正在建立，同时也在利用数据包的选项来交换初始序列号。</p>
+<h1 id="TCP连接的断开"><a href="#TCP连接的断开" class="headerlink" title="TCP连接的断开"></a>TCP连接的断开</h1><p>与TCP 连接的建立相比，TCP 连接的断开多了一步，一共需要四个步骤。</p>
+<ol>
+<li>连接的主动关闭者（Client），发送一个FIN报文来表示自己想关闭连接，同时这个报文里面还包括一个ACK来确认对方最近一次发来的数据。</li>
+<li>服务端接收到客户端断开的请求之后，发送一个ACK对客户端的FIN 报文做出响应，这个时候连接处于半关闭状态。</li>
+<li>服务端在发送完数据之后，同样发送一个FIN给客户端，来关闭连接。</li>
+<li>客户端接收到了FIN之后，对服务端的FIN做出一个响应，至此连接关闭。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
     
       
 
@@ -283,9 +419,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-12T22:24:17+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-12T22:24:17+08:00">
                 2017-05-12
               </time>
             
@@ -410,9 +546,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-06T22:12:43+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T22:12:43+08:00">
                 2017-04-06
               </time>
             
@@ -883,9 +1019,9 @@ protected void execute() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-29T23:28:32+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T23:28:32+08:00">
                 2017-03-29
               </time>
             
@@ -1149,9 +1285,9 @@ class Example9c {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-28T22:21:52+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-28T22:21:52+08:00">
                 2017-03-28
               </time>
             
@@ -1398,9 +1534,9 @@ Constant pool:
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-26T14:50:26+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-26T14:50:26+08:00">
                 2017-03-26
               </time>
             
@@ -1652,9 +1788,9 @@ int main() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-14T23:11:02+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-14T23:11:02+08:00">
                 2017-02-14
               </time>
             
@@ -1806,9 +1942,9 @@ int main() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-13T23:13:46+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-13T23:13:46+08:00">
                 2017-02-13
               </time>
             
@@ -2068,9 +2204,9 @@ mHandler.sendMessage(msg);
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-13T23:12:08+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-13T23:12:08+08:00">
                 2017-02-13
               </time>
             
@@ -2244,9 +2380,9 @@ shared_ptr&lt;connection&gt; con_p(connction,end_connection);
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-09T12:38:52+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-09T12:38:52+08:00">
                 2017-02-09
               </time>
             
@@ -2502,260 +2638,6 @@ public View onCreateView(String name, Context context, AttributeSet attrs) {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/03/Google-MVVM-示例代码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/03/Google-MVVM-示例代码分析/" itemprop="url">Google MVVM 示例代码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-03T22:54:03+08:00">
-                2017-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目的代码位于 <a href="https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-databinding/" target="_blank" rel="external">github</a> 上</p>
-<p>项目中采用了MVVM方式进行开发，与之前的MVP项目模式相比，直接去掉了MVP模式中的Presenter，数据加载的操作直接用ViewModel中开始. 在获取到了数据之后，通过databiding 来完成数据的展示。</p>
-<p>在to-do中，有几个部分，下面是主界面的分析内容。</p>
-<p>在TasksViewModel 这个类当中，封装了数据所有的操作，包括数据的加载，判空（isEmpty），清除， 添加过滤条件。</p>
-<p>同时应该注意到TasksViewModel 继承了 BaseObservable 这个对象，BaseObservable 最终实现了Observable 接口， 这个接口提供了让数据绑定的UI接受数据变化的通知。<br>同时 BaseObservable 还有其他的类型的子类，例如 ObservableField 等。</p>
-<p>在 TasksViewModel 我们也可以找到 BaseObservable 类型的属性，通过这些属性，可以监听到具体属性值 的变化。</p>
-<p>除了属性值之外，还可以将方法转可以监听的对象，做法就是给方法加上  @Bindable 注解。<br>下面是这个注解的说明</p>
-<p><em>The Bindable annotation should be applied to any getter accessor method of an<br> {@link Observable} class. Bindable will generate a field in the BR class to identify<br> the field that has changed.</em></p>
-<p>它用来修饰任意一个get method，被这个注解修饰的方法会在 BR.java这个类中生成对应的属性，例如如果定义了 String getName()方法，那么就会在BR中添加一个name的常量字段。当数据发生变化我们需要通过getName来获取最新的数据的时候，调用 BaseObserverable 的 notifyPropertyChanged(BR.name)，之后getName将再次被调用。</p>
-<p>同时也可以看到这个被 @Bindable 注解修饰的方法，可以在 布局文件中直接通过 xxx.name 的方式来访问。</p>
-<p>上面说到数据加载操作也是在TasksViewModel中完成的，在loadTasks方法中 调用了 mTasksRepository 的 getTasks， 然后在callback中将数据 添加到了 items当中去，<br>item 是一个 ObservableList </p>
-<pre><code>public final ObservableList&lt;Task&gt; items = new ObservableArrayList&lt;&gt;();
-</code></pre><p>当调用了 <em>items.addAll(tasksToShow);</em> 方法之后，数据就被绑定到界面上去了。</p>
-<p>下面跟踪一下，数据绑定是如何实现的。</p>
-<p>在TasksViewModel当中，有一个 ObservableBoolean类型的成员变量dataLoading.在这个类中提供了一个set方法，在改变了value的值之后，它调用了notifyChange(); </p>
-<p>notifyChange 是一个定义在其父类 BaseObservable 中的一个同步的方法， 这个方法当中简单调用了PropertyChangeRegistry 这个类的 notifyCallbacks 方法 ，进入到notifyCallbacks 方法，实际上这个方法又是定义在其父类CallbackRegistry之中，通过CallbackRegistry的说明可知，这个类是用来存放callback和进行各种回调的，但是CallbackRegistry对于回调的处理实际上只是对回调的集合进行了管理，它通过递归的方式来通知集合中所有的回调，这里之所以采用递归的方式，文档之中给出的说明是避免在堆上进行临时状态的分配（但是采用递归需要每次都在栈上分配内存，并且堆上同样会有内存的分配，这里还不清楚），既然CallbackRegistry只是集合回调的管理，那么真正的回调应该如何处理实际上 是通过其内部类 NotifierCallback 来完成。</p>
-<pre><code>/**
- * Class used to notify events from CallbackRegistry.
- *
- * @param &lt;C&gt; The callback type.
- * @param &lt;T&gt; The notification sender type. Typically this is the containing class.
- * @param &lt;A&gt; An opaque argument to pass to the notifier
- */
-public abstract static class NotifierCallback&lt;C, T, A&gt; {
-    /**
-     * Called by CallbackRegistry during
-     * {@link CallbackRegistry#notifyCallbacks(Object, int, Object)}} to notify the callback.
-     *
-     * @param callback The callback to notify.
-     * @param sender The opaque sender object.
-     * @param arg The opaque notification parameter.
-     * @param arg2 An opaque argument passed in
-     *        {@link CallbackRegistry#notifyCallbacks}
-     * @see CallbackRegistry#CallbackRegistry(CallbackRegistry.NotifierCallback)
-     */
-    public abstract void onNotifyCallback(C callback, T sender, int arg, A arg2);
-}
-</code></pre><p>通过实际上在CallbackRegistry 处理回调的时候就是调用了其 onNotifyCallback来处理。</p>
-<p>所以在CallbackRegistry 的说明中可以看到 一句话 ：<em>A subclass of CallbackRegistry.NotifierCallback must be passed to the constructor to define how notifications should be called</em></p>
-<p>简单说就是由 NotifierCallback的子类来处理notification。</p>
-<p>回到 PropertyChangeRegistry 当中看 NOTIFIER_CALLBACK</p>
-<pre><code>private static final CallbackRegistry.NotifierCallback&lt;Observable.OnPropertyChangedCallback, Observable, Void&gt; NOTIFIER_CALLBACK = new CallbackRegistry.NotifierCallback&lt;Observable.OnPropertyChangedCallback, Observable, Void&gt;() {
-    @Override
-    public void onNotifyCallback(Observable.OnPropertyChangedCallback callback, Observable sender,
-            int arg, Void notUsed) {
-        callback.onPropertyChanged(sender, arg);
-    }
-};
-</code></pre><p>在接收到通知之后，实际上会调用Observable.OnPropertyChangedCallback的 onPropertyChanged 方法。</p>
-<p>从上面的分析可以看来，CallbackRegistry 实际上是一个事件分发中心和订阅中，所有的事件回调都是通过CallbackRegistry来处理，但是真正对事件的处理，却是通过自定义的 NotifierCallback来完成的。</p>
-<p>在android的databinding中，同样是通过这样一套机制来工作的，在ViewDataBinding中，定义了WeakPropertyListener，通过重写 onPropertyChanged  方法完成对数据的重新绑定。</p>
-<p>回到 TasksFragBinding.java 这个类是tasks_frag_xml这个文件生成的。<br>在其中定义了一个变量， mViewmodel ，因此在这个类中，也为我们生成了一个setViewmodel 方法，在这个方法当中，完成了对数据的mViewmodel 的赋值，然后调用了notifyPropertyChanged 方法，这个方法在前面提到过，定义BaseObservable 当中，所以可以简单的推断 ViewDataBinding 也是继承于BaseObservable。</p>
-<p>通过mViewmodel 同样可以推断出，如果我们只是修改了 mViewmodel 的内部属性是无法导致试图被刷新的（已经验证），所以在TaskViewModel 这个类中，我们可以看到，在定义了 private final ObservableField<task> mTaskObservable = new ObservableField&lt;&gt;();之后有这么一段代码 </task></p>
-<pre><code>mTaskObservable.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
-        @Override
-        public void onPropertyChanged(Observable observable, int i) {
-            Task task = mTaskObservable.get();
-            if (task != null) {
-                title.set(task.getTitle());
-                description.set(task.getDescription());
-            } else {
-                title.set(mContext.getString(R.string.no_data));
-                description.set(mContext.getString(R.string.no_data_description));
-            }
-        }
-    });
-</code></pre><p>需要自己手动去添加一个监听器来数据的更新。</p>
-<p>参照这个例子，如果需要一个更新了成员变量也会刷新对应试图的对象，应该这么定义 </p>
-<pre><code>public class Task {
-    public final ObservableField&lt;String&gt; title = new ObservableField();
-    public final ObservableField&lt;String&gt; content = new ObservableField();
-
-    public Task(String title, String content) {
-        this.title.set(title);
-        this.content.set(content);
-    }
-
-    public void setContent(String content) {
-        this.content.set(content);
-    }
-}
-</code></pre><p>对应的布局文件如下</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;layout  xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
-    &lt;data&gt;
-        &lt;variable
-            name=&quot;task&quot;
-            type=&quot;com.devtom.databindingtest.Task&quot;/&gt;
-    &lt;/data&gt;
-
-    &lt;RelativeLayout
-        xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-        android:id=&quot;@+id/activity_main&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-        android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-        android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-        android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-        tools:context=&quot;com.devtom.databindingtest.MainActivity&quot;&gt;
-
-        &lt;TextView
-            android:id=&quot;@+id/title&quot;
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_centerHorizontal=&quot;true&quot;
-            android:text=&quot;@{task.title}&quot; /&gt;
-
-        &lt;TextView
-            android:id=&quot;@+id/content&quot;
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_centerInParent=&quot;true&quot;
-            android:text=&quot;@{task.content}&quot; /&gt;
-
-        &lt;Button
-            android:layout_width=&quot;match_parent&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:text=&quot;Change&quot;
-            android:onClick=&quot;change&quot;
-            android:layout_alignParentBottom=&quot;true&quot;
-            /&gt;
-    &lt;/RelativeLayout&gt;
-&lt;/layout&gt;
-</code></pre><p>Activity 代码如下</p>
-<pre><code>public class MainActivity extends AppCompatActivity {
-        private Task task;
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            View view = this.findViewById(R.id.activity_main);
-            ActivityMainBinding mainBinding = DataBindingUtil.bind(view);
-            task = new Task(&quot;this is title&quot;,&quot;kai gong da ji&quot;);
-            mainBinding.setTask(task);
-        }
-
-        public void change(View view) {
-            task.setContent(&quot;this is chinese new year&quot;);
-        }
-}
-</code></pre><p>当手动的去改变task的某一个属性的时候，也会去刷新对应的试图。</p>
-<p>这里需要注意的是Task其中的两个成员变量可以定义为public的也可以定义为private 然后给他添加对应的private 方法。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2805,8 +2687,8 @@ public abstract static class NotifierCallback&lt;C, T, A&gt; {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">27</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
               </a>
             </div>
           
@@ -2818,8 +2700,8 @@ public abstract static class NotifierCallback&lt;C, T, A&gt; {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
               
             </div>
           
@@ -2869,11 +2751,11 @@ public abstract static class NotifierCallback&lt;C, T, A&gt; {
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
-  Theme -
+  主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
