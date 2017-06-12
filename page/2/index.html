@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="">
+<html class="theme-next muse use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -135,7 +135,7 @@
   <title>Learning</title>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="">
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
   
 
@@ -201,7 +201,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -211,7 +211,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -254,6 +254,372 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/28/Android中AIDL的理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/28/Android中AIDL的理解/" itemprop="url">Android中AIDL的理解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-28T19:39:45+08:00">
+                2017-01-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>首先定义 </p>
+<pre><code>// IMyService.aidl
+package com.devtom.myservice;
+
+interface IMyService {
+    void printLog(String message);
+}
+</code></pre><p>定义完成了之后，编译工具会自动帮我们生成接口相关的文件。<br>生成的代码文件如下</p>
+<pre><code>package com.devtom.myservice;
+
+public interface IMyService extends android.os.IInterface {
+    /**
+     * Local-side IPC implementation stub class.
+     */
+    public static abstract class Stub extends android.os.Binder implements com.devtom.myservice.IMyService {
+        private static final java.lang.String DESCRIPTOR = &quot;com.devtom.myservice.IMyService&quot;;
+
+        /**
+         * Construct the stub at attach it to the interface.
+         */
+        public Stub() {
+            this.attachInterface(this, DESCRIPTOR);
+        }
+
+        /**
+         * Cast an IBinder object into an com.devtom.myservice.IMyService interface,
+         * generating a proxy if needed.
+         */
+        public static com.devtom.myservice.IMyService asInterface(android.os.IBinder obj) {
+            if ((obj == null)) {
+                return null;
+            }
+            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            if (((iin != null) &amp;&amp; (iin instanceof com.devtom.myservice.IMyService))) {
+                return ((com.devtom.myservice.IMyService) iin);
+            }
+            return new com.devtom.myservice.IMyService.Stub.Proxy(obj);
+        }
+
+        @Override
+        public android.os.IBinder asBinder() {
+            return this;
+        }
+
+        @Override
+        public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
+            switch (code) {
+                case INTERFACE_TRANSACTION: {
+                    reply.writeString(DESCRIPTOR);
+                    return true;
+                }
+                case TRANSACTION_printLog: {
+                    data.enforceInterface(DESCRIPTOR);
+                    java.lang.String _arg0;
+                    _arg0 = data.readString();
+                    this.printLog(_arg0);
+                    reply.writeNoException();
+                    return true;
+                }
+            }
+            return super.onTransact(code, data, reply, flags);
+        }
+
+        private static class Proxy implements com.devtom.myservice.IMyService {
+            private android.os.IBinder mRemote;
+
+            Proxy(android.os.IBinder remote) {
+                mRemote = remote;
+            }
+
+            @Override
+            public android.os.IBinder asBinder() {
+                return mRemote;
+            }
+
+            public java.lang.String getInterfaceDescriptor() {
+                return DESCRIPTOR;
+            }
+
+            @Override
+            public void printLog(java.lang.String message) throws android.os.RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeString(message);
+                    mRemote.transact(Stub.TRANSACTION_printLog, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+        }
+
+        static final int TRANSACTION_printLog = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+    }
+
+    public void printLog(java.lang.String message) throws android.os.RemoteException;
+}
+</code></pre><p>再来看看service相关的实现</p>
+<pre><code>public class MyRemoteService extends Service {
+
+    private static final String TAG = &quot;MyRemoteService&quot;;
+
+    public static class MyServiceBinder extends IMyService.Stub {
+        @Override
+        public void printLog(String message) throws RemoteException {
+            Log.e(TAG, &quot;this is message from remote &quot; + message);
+        }
+    }
+
+    private MyServiceBinder binder;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        binder = new MyServiceBinder();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+}
+</code></pre><p>客户端调用的代码如下 </p>
+<pre><code>public class MainActivity extends Activity {
+
+    private IMyService binder;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Intent intent = new Intent(this, MyRemoteService.class);
+        bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+        this.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    binder.printLog(&quot;this is message from client&quot;);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = MyRemoteService.MyServiceBinder.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            binder = null;
+        }
+    };
+}
+</code></pre><p>目前按照个人理解 </p>
+<ol>
+<li><p>MainActivity当中通过ServiceConnect 拿到的对象实际上是IMyService 当中的Proxy 对象的引用，之所以会有这个代理对象的存在，目前的理解是，系统为了方便我们调用，通过这个代理对象完成了调用远程服务数据的封装，所以我们在Proxy当中可以看到代理对printLog的实现：</p>
+<pre><code>@Override
+public void printLog(java.lang.String message) throws android.os.RemoteException {
+    android.os.Parcel _data = android.os.Parcel.obtain();
+    android.os.Parcel _reply = android.os.Parcel.obtain();
+    try {
+        _data.writeInterfaceToken(DESCRIPTOR);
+        _data.writeString(message);
+        mRemote.transact(Stub.TRANSACTION_printLog, _data, _reply, 0);
+        _reply.readException();
+    } finally {
+        _reply.recycle();
+        _data.recycle();
+    }
+}
+</code></pre></li>
+</ol>
+<p>在Proxy的实现中，主要是完成了对数据的封装，并没有实现其他的逻辑，完成数据的封装之后，然后调用了 mRemote的transact方法。</p>
+<ol>
+<li><p>Proxy 中成员变量 mRemote 所指向的对象是 IMyService.Stub ,因为Stub 是一个抽象类，所以最终mRemote指向的实例也就是IMyService.Stub 的实现类了</p>
+<pre><code> @Override
+public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
+    switch (code) {
+        case INTERFACE_TRANSACTION: {
+            reply.writeString(DESCRIPTOR);
+            return true;
+        }
+        case TRANSACTION_printLog: {
+            data.enforceInterface(DESCRIPTOR);
+            java.lang.String _arg0;
+            _arg0 = data.readString();
+            this.printLog(_arg0);
+            reply.writeNoException();
+            return true;
+        }
+    }
+    return super.onTransact(code, data, reply, flags);
+}
+</code></pre><p> 在onTransact 方法当中实现了对数据的解析，将获取到的数据传给自己定义的方法当中去，最终调用了自己实现的方法。</p>
+</li>
+</ol>
+<p>３.通过这个例子，最重要的还是里面的Binder， 数据的传递，解析都是Binder这个对象来完成的。</p>
+<p>知道AIDL 的套路之后，可以自己手写一个实现。</p>
+<pre><code>public class MyServiceBinderImpl extends Binder implements MyServiceInterface, IInterface{
+
+    public static final String TAG  = &quot;MyServiceBinderImpl&quot;;
+
+    public static final String DESCRIPTOR = &quot;com.devtom.myservice.MyServiceBinderImpl&quot;;
+
+    @Override
+    protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+        switch (code) {
+            case INTERFACE_TRANSACTION:
+                reply.writeString(DESCRIPTOR);
+                break;
+            case Binder.FIRST_CALL_TRANSACTION + 0:
+                data.enforceInterface(DESCRIPTOR);
+                String strData = data.readString();
+                printLog(strData);
+                reply.writeNoException();
+                break;
+        }
+        return super.onTransact(code, data, reply, flags);
+    }
+
+    @Override
+    public void printLog(String message) {
+        Log.e(TAG, &quot;this message is &quot; + message);
+    }
+
+    @Override
+    public IBinder asBinder() {
+        return this;
+    }
+}
+</code></pre><p>这个实际上就是自己动手去解析数据。</p>
+<p>调用了也很简单 ，</p>
+<pre><code>android.os.Parcel _data = android.os.Parcel.obtain();
+           android.os.Parcel _reply = android.os.Parcel.obtain();
+           try {
+               _data.writeInterfaceToken(MyServiceBinderImpl.DESCRIPTOR);
+               _data.writeString(&quot;this my own aidl implement&quot;);
+               binder.transact(IMyService.Stub.TRANSACTION_printLog, _data, _reply, 0);
+               _reply.readException();
+           } catch (RemoteException e) {
+
+           } finally {
+               _reply.recycle();
+               _data.recycle();
+           }
+</code></pre><p>此处的binder对象就是从ServiceConnection的onServiceConnected 方法参数中获取的，因为我们去掉了代理帮帮我们封装数据，所以这里就只能自己手动的去封装数据了。</p>
+<p>其实从上面自己手动实现AIDL 的功能可以看出，我们新建的service只是为了方便我们自己调用，我们完全可以去掉了这些方法（printLog）在onTrasaction里面来实现各种功能,当然这个只是扯淡。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/22/Android中的状态保存/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -283,7 +649,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-22T23:07:38+08:00">
                 2017-01-22
@@ -597,7 +963,7 @@ protected void dispatchSaveInstanceState(SparseArray&lt;Parcelable&gt; container
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-20T23:14:42+08:00">
                 2017-01-20
@@ -761,7 +1127,7 @@ int main(void) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-15T10:37:59+08:00">
                 2017-01-15
@@ -994,7 +1360,7 @@ public class HotFixUtil {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T22:15:45+08:00">
                 2016-12-12
@@ -1293,7 +1659,7 @@ public void watch(Object watchedReference, String referenceName) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-10T21:58:26+08:00">
                 2016-12-10
@@ -1428,7 +1794,7 @@ public void watch(Object watchedReference, String referenceName) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T14:05:24+08:00">
                 2016-12-08
@@ -1579,7 +1945,7 @@ the test has been recycled and the free memory is 123802440
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-15T17:24:43+08:00">
                 2016-10-15
@@ -1714,7 +2080,7 @@ return result;
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-08T08:46:44+08:00">
                 2016-10-08
@@ -1973,7 +2339,7 @@ int main() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-25T11:05:41+08:00">
                 2016-09-25
@@ -2092,157 +2458,6 @@ int main() {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/25/C-函数学习/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/25/C-函数学习/" itemprop="url">C++函数学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-25T11:03:38+08:00">
-                2016-09-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><strong>内联函数</strong><br>编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。</p>
-<pre><code>inline function(int x, int y) {
-    cout&lt;&lt;x - y;
-} 
-</code></pre><p><strong>函数的缺省值</strong></p>
-<pre><code>//设置函数的缺省值 
-void function(int x, int y = 2, int z = 3) {
-    cout&lt;&lt;x+y+z;
-}
-</code></pre><p><strong>构造函数</strong></p>
-<p>对象所占用的存储空间并不是由构造函数分配的，构造只是在对象的存储空间分配之后，来完成一写初始化的工作。</p>
-<p><strong>复制构造函数</strong></p>
-<p>只能有一个参数，即同类对象的引用。如果自己不写复制构造函数，系统将提供一个默认的复制构造函数，这儿构造函数的功能完成对对象的拷贝。<br>复制构造函数起作用的三种情况：</p>
-<ul>
-<li>用一个对象去初始化另一个对象。例如 Complex c2 = c1 //初始化语句</li>
-<li>如果某一个函数的形参是类A的对象，调用该函数的时候，类A的复制构造函数将被调用 用来 初始化形参。</li>
-<li>如果一个函数的返回值是类A的对象，那么函数返回的时候类A的复制构造函数将被调用。复制构造函数用来初始化作为返回值存在的类A对象，例如函数method()的返回值赋值给a, 那么类的A的复制构造函数用来初始化a.</li>
-</ul>
-<p><strong>析构函数</strong><br>析构函数与构造函数相反是在一个对象被释放掉的时候调用，与Java中Object的finalize 方法相似。析构函数有以下几个调用的时机</p>
-<ul>
-<li>使用 delete 删除 new所分配的对象。</li>
-<li>当一个作用域结束的时候，其中对象的析构方法将被调用。</li>
-<li>临时对象的生存期结束。</li>
-<li>程序结束，并且存在全局或静态对象，对象的析构函数将被调用。</li>
-<li><p>显示的调用一个对象的析构方法时。</p>
-<p>使用析构函数时，如果一个类中都是对象和基本类型，那么在析构函数调用的时候将自动的调用这些对象和基本类型的析构函数，如果其中包含了自己手动申请的空间，那么需要自己手动的在析构函数中去释放这些空间。</p>
-<p>  public:</p>
-<pre><code>Book* book;
-
-MyClass(Book* book) {
-    this-&gt;book = book;
-}
-~MyClass() {
-    book-&gt;~Book();
-    cout&lt;&lt;&quot;MyClass析构函数被调用&quot;&lt;&lt;endl; 
-}
-</code></pre><p> };</p>
-<p> 如果在MyClass的析构函数中没有手动去的去调用~Book(),那么book所指向的内存将不会释放。</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2292,8 +2507,8 @@ MyClass(Book* book) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">26</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -2305,8 +2520,8 @@ MyClass(Book* book) {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">32</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">tags</span>
               
             </div>
           
@@ -2356,7 +2571,7 @@ MyClass(Book* book) {
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

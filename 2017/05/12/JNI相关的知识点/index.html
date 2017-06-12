@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Java,引用类型," />
+  <meta name="keywords" content="JNI,Java," />
 
 
 
@@ -93,17 +93,17 @@
 
 
 
-<meta name="description" content="弱引用也是用来描述非必需的对象，但是他的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前，当垃圾收集工作时，无论当前内存是否足够，都会回收掉被弱引用关联的对象，在JDK1.2之后，提供了WeakReference类实现弱引用。 看下面的代码 public class TestClient {         public static void main(String[]">
-<meta name="keywords" content="Java,引用类型">
+<meta name="description" content="extern “C” extern是C/C++语言中表明函数和全局变量作用范围（可见性）的关键字，该关键字告诉编译器，其声明的函数和变量可以在本模块或其它模块中使用。通常，在模块的头文件中对本模块提供给其它模块引用的函数和全局变量以关键字extern声明。例如，如果模块B欲引用该模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样，模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不">
+<meta name="keywords" content="JNI,Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java中弱引用的理解">
-<meta property="og:url" content="http://yoursite.com/2016/12/08/Java中弱引用的理解/index.html">
+<meta property="og:title" content="JNI相关的知识点">
+<meta property="og:url" content="http://yoursite.com/2017/05/12/JNI相关的知识点/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="弱引用也是用来描述非必需的对象，但是他的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前，当垃圾收集工作时，无论当前内存是否足够，都会回收掉被弱引用关联的对象，在JDK1.2之后，提供了WeakReference类实现弱引用。 看下面的代码 public class TestClient {         public static void main(String[]">
-<meta property="og:updated_time" content="2016-12-10T14:07:33.000Z">
+<meta property="og:description" content="extern “C” extern是C/C++语言中表明函数和全局变量作用范围（可见性）的关键字，该关键字告诉编译器，其声明的函数和变量可以在本模块或其它模块中使用。通常，在模块的头文件中对本模块提供给其它模块引用的函数和全局变量以关键字extern声明。例如，如果模块B欲引用该模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样，模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不">
+<meta property="og:updated_time" content="2017-06-12T14:25:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java中弱引用的理解">
-<meta name="twitter:description" content="弱引用也是用来描述非必需的对象，但是他的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前，当垃圾收集工作时，无论当前内存是否足够，都会回收掉被弱引用关联的对象，在JDK1.2之后，提供了WeakReference类实现弱引用。 看下面的代码 public class TestClient {         public static void main(String[]">
+<meta name="twitter:title" content="JNI相关的知识点">
+<meta name="twitter:description" content="extern “C” extern是C/C++语言中表明函数和全局变量作用范围（可见性）的关键字，该关键字告诉编译器，其声明的函数和变量可以在本模块或其它模块中使用。通常，在模块的头文件中对本模块提供给其它模块引用的函数和全局变量以关键字extern声明。例如，如果模块B欲引用该模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样，模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不">
 
 
 
@@ -131,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/12/08/Java中弱引用的理解/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/05/12/JNI相关的知识点/"/>
 
 
 
 
 
-  <title>Java中弱引用的理解 | Learning</title>
+  <title>JNI相关的知识点 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -257,7 +257,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/08/Java中弱引用的理解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/12/JNI相关的知识点/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tom Liu">
@@ -274,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Java中弱引用的理解</h1>
+          <h1 class="post-title" itemprop="name headline">JNI相关的知识点</h1>
         
 
         <div class="post-meta">
@@ -286,8 +286,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T14:05:24+08:00">
-                2016-12-08
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-12T22:24:17+08:00">
+                2017-05-12
               </time>
             
 
@@ -321,46 +321,22 @@
       
 
       
-        <p>弱引用也是用来描述非必需的对象，但是他的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前，当垃圾收集工作时，无论当前内存是否足够，都会回收掉被弱引用关联的对象，在JDK1.2之后，提供了WeakReference类实现弱引用。</p>
-<p>看下面的代码</p>
-<pre><code>public class TestClient {
-        public static void main(String[] args) throws Exception {
-                int count = 5;
-    System.out.println(&quot;before create object the current memory size = &quot; +                 Runtime.getRuntime().freeMemory());
-    Test test = new Test();
-    System.out.println(&quot;after create object the current memory size = &quot; + Runtime.getRuntime().freeMemory());
-    WeakReference&lt;Test&gt; weakReference = new WeakReference&lt;Test&gt;(test);
-    while(true) {
-        count--;
-        System.gc();
-        Thread.sleep(5000);
-        if(weakReference.get() == null) {
-            System.out.println(&quot;the test has been recycled and the free memory is &quot; + Runtime.getRuntime().freeMemory());
-        } else {
-            System.out.println(&quot;the test has not been recycled and the free memory is &quot; + Runtime.getRuntime().freeMemory());
-            if(count == 0) {
-                test = null;
-            }
-        }
-    }
-    }
-}
-class Test  {
-    byte data [] = new byte[10 * 1024 * 1024];
-}
-</code></pre><p>上述代码运行的结果如下</p>
-<pre><code>before create object the current memory size = 122179856
-after create object the current memory size = 111694080
-the test has not been recycled and the free memory is 112663384
-the test has not been recycled and the free memory is 112666448
-the test has not been recycled and the free memory is 113316792
-the test has not been recycled and the free memory is 113316792
-the test has not been recycled and the free memory is 113316792
-the test has been recycled and the free memory is 123802584
-the test has been recycled and the free memory is 123802440
-the test has been recycled and the free memory is 123802440
-</code></pre><p>我们可以发现我们通过WeakReference 引用到了 Test 对象，但是一旦我们把test这个强引用置为null之后，test对象马上就被回收了。</p>
-<p>如果把弱引用改为软引用，那么会发现即使把test置为空，这个对象依然被软引用引用到了，不会不会被垃圾回收器回收。在Java虚拟机中，被软引用引用到的对象只会在内存不够用的情况下才会回收这一部分内存。</p>
+        <h2 id="extern-“C”"><a href="#extern-“C”" class="headerlink" title="extern “C”"></a>extern “C”</h2><ol>
+<li>extern是C/C++语言中表明<strong>函数和全局变量作用范围（可见性）的关键字，该关键字告诉编译器，其声明的函数和变量可以在本模块或其它模块中使用</strong>。通常，在模块的头文件中对本模块提供给其它模块引用的函数和全局变量以关键字extern声明。例如，如果模块B欲引用该模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样，模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不到该函数，但是并不会报错；它会在连接阶段中从模块A编译生成的目标代码中找到此函数。</li>
+</ol>
+<p>与extern对应的关键字是 static，被它<strong>修饰的全局变量和函数只能在本模块中</strong>使用。因此，一个函数或变量只可能被本模块使用时，其不可能被extern “C”修饰。</p>
+<ol>
+<li>典型的，一个C++程序包含其它语言编写的部分代码。类似的，C++编写的代码片段可能被使用在其它语言编写的代码中。不同语言编写的代码互相调用是困难的，甚至是同一种编写的代码但不同的编译器编译的代码。例如，不同语言和同种语言的不同实现可能会在注册变量保持参数和参数在栈上的布局，这个方面不一样。</li>
+</ol>
+<p>为了使它们遵守统一规则，可以使用extern指定一个编译和连接规约。例如，声明C和C++标准库函数strcyp()，并指定它应该根据C的编译和连接规约来链接：</p>
+<p><a href="https://pqpo.me/2017/05/31/system-loadlibrary/" target="_blank" rel="external">JNI技术</a></p>
+<p>动态加载的几个知识点：</p>
+<ol>
+<li>System.loadLibrary会优先查找apk中的so目录，再查找系统目录，系统目录包括：/vendor/lib(64)，/system/lib(64)</li>
+<li>不能使用不同的ClassLoader加载同一个动态库</li>
+<li>System.loadLibrary加载过程中会调用目标库的JNI_OnLoad方法，我们可以在动态库中加一个JNI_OnLoad方法用于动态注册如果加了JNI_OnLoad方法，其的返回值为JNI_VERSION_1_2，JNI_VERSION_1_4，JNI_VERSION_1_6其一。我们一般使用JNI_VERSION_1_4即可</li>
+<li>Android动态库的加载与Linux一致使用dlopen系列函数，通过动态库的句柄和函数名称来调用动态库的函数</li>
+</ol>
 
       
     </div>
@@ -390,9 +366,9 @@ the test has been recycled and the free memory is 123802440
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
+            <a href="/tags/JNI/" rel="tag"># JNI</a>
           
-            <a href="/tags/引用类型/" rel="tag"># 引用类型</a>
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
         </div>
       
@@ -405,8 +381,8 @@ the test has been recycled and the free memory is 123802440
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/15/Android-View测量模式/" rel="next" title="Android View测量模式">
-                <i class="fa fa-chevron-left"></i> Android View测量模式
+              <a href="/2017/04/06/Retrofit-源码学习/" rel="next" title="Retrofit 源码学习">
+                <i class="fa fa-chevron-left"></i> Retrofit 源码学习
               </a>
             
           </div>
@@ -414,10 +390,6 @@ the test has been recycled and the free memory is 123802440
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/10/C-显式类型转换/" rel="prev" title="C++显式类型转换">
-                C++显式类型转换 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -464,8 +436,17 @@ the test has been recycled and the free memory is 123802440
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -518,6 +499,22 @@ the test has been recycled and the free memory is 123802440
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#extern-“C”"><span class="nav-number">1.</span> <span class="nav-text">extern “C”</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
