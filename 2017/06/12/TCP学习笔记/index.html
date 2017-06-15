@@ -102,7 +102,7 @@
 <meta property="og:description" content="TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花">
 <meta property="og:image" content="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png">
 <meta property="og:image" content="http://docs.52im.net/extend/docs/book/tcpip/vol1/19/images2/52im_net_1.png">
-<meta property="og:updated_time" content="2017-06-12T15:48:31.000Z">
+<meta property="og:updated_time" content="2017-06-15T15:44:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP学习笔记">
 <meta name="twitter:description" content="TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花">
@@ -325,7 +325,7 @@
 
       
         <p>TCP 和UDP 都是运行在IP层之上的协议，但是和UDP协议很大的一个不同点是，TCP面向连接的可靠协议。面向连接是指在TCP开始传输数据之前，传输的端点之间需要先建立一条连接，然后再开始传输数据，可靠是指TCP协议中对数据的可达性作出了保证，如果在传输的过程中出现了数据丢失的情况，那么会对数据进行重传，正是因为这两个不同点，所以TCP协议比UDP协议会复杂很多，在TCP/IP协议详解一书中，花了六个章节来讲解其中的知识。其中的基本知识点包括：连接的建立，超时和重传，数据流和窗口管理，拥塞和控制.</p>
-<h1 id="TCP-数据格式"><a href="#TCP-数据格式" class="headerlink" title="TCP 数据格式"></a>TCP 数据格式</h1><p>TCP的数据格式如下图所示</p>
+<h2 id="TCP-数据格式"><a href="#TCP-数据格式" class="headerlink" title="TCP 数据格式"></a>TCP 数据格式</h2><p>TCP的数据格式如下图所示</p>
 <p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/17/images2/52im_net_2.png" alt="此处输入图片的描述"></p>
 <ol>
 <li>每个TCP的头部都包含了目的地的端口号和源端口号，TCP层的端口号和IP成的ip地址，组成了一个四元组，这个四元组唯一标识一个连接。 </li>
@@ -334,7 +334,7 @@
 <li>4位的头部长度标识tcp头部的长度，这个值最大位15，每位标识32位的长度，所以TCP头部长度限制为 15 * 32(bit) = 60字节，在不带选项的情况下，头部长度为20字节。</li>
 <li>当前TCP协议当中还有8位字段，分别标识 1.拥塞窗口减 2.ECN回显 3.URG 4.ACK 5.PSH 6.RST 7.SYN 8.FIN 这些置位分别在连接的不同阶段起作用</li>
 </ol>
-<h1 id="TCP连接的建立"><a href="#TCP连接的建立" class="headerlink" title="TCP连接的建立"></a>TCP连接的建立</h1><p>TCP连接的建立需要经典的三次握手的过程。过程如下</p>
+<h2 id="TCP连接的建立"><a href="#TCP连接的建立" class="headerlink" title="TCP连接的建立"></a>TCP连接的建立</h2><p>TCP连接的建立需要经典的三次握手的过程。过程如下</p>
 <p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/19/images2/52im_net_1.png" alt="此处输入图片的描述"></p>
 <ol>
 <li>客户端首先发送一个SYN报文(TCP头部中的SYN被置位)，并且指明自己想要连接的端口号和给定一个初始化的序列号SYN(c)。（第一次握手）</li>
@@ -342,12 +342,21 @@
 <li>为了确认服务器端SYN（S），客户端会将服务器端的S + 1之后放在ACK(S+1)中，发送给服务端。（第三次握手）</li>
 </ol>
 <p>三次握手的过程不仅让通信的双方了解到一个连接正在建立，同时也在利用数据包的选项来交换初始序列号。</p>
-<h1 id="TCP连接的断开"><a href="#TCP连接的断开" class="headerlink" title="TCP连接的断开"></a>TCP连接的断开</h1><p>与TCP 连接的建立相比，TCP 连接的断开多了一步，一共需要四个步骤。</p>
+<h2 id="TCP连接的断开"><a href="#TCP连接的断开" class="headerlink" title="TCP连接的断开"></a>TCP连接的断开</h2><p>与TCP 连接的建立相比，TCP 连接的断开多了一步，一共需要四个步骤。</p>
 <ol>
 <li>连接的主动关闭者（Client），发送一个FIN报文来表示自己想关闭连接，同时这个报文里面还包括一个ACK来确认对方最近一次发来的数据。</li>
 <li>服务端接收到客户端断开的请求之后，发送一个ACK对客户端的FIN 报文做出响应，这个时候连接处于半关闭状态。</li>
 <li>服务端在发送完数据之后，同样发送一个FIN给客户端，来关闭连接。</li>
 <li>客户端接收到了FIN之后，对服务端的FIN做出一个响应，至此连接关闭。</li>
+</ol>
+<h2 id="初始化序列号"><a href="#初始化序列号" class="headerlink" title="初始化序列号"></a>初始化序列号</h2><p>TCP建立的连接的时候需要选择一个初始化序列号，这个初始化序列号随着时间的变化而变化，所以每个连接的初始化序列号都不一样。</p>
+<p>TCP连接是由双方的端口和IP地址这个四元组组成，选择有效的初始化序列号可以有效避免连接超时重连后，无效的数据重新到达目的主机导致的数据混乱问题，这个时候选择有效的初始化序列号可以最大限度的避免这一问题。在双方通信的过程中，一个TCP报文只有同时具备连接四元组和当前活动窗口的序列号才会被通信双方接受。</p>
+<h2 id="TCP选项"><a href="#TCP选项" class="headerlink" title="TCP选项"></a>TCP选项</h2><p>TCP的头部可以包含多个选项，常用的选项如下</p>
+<ol>
+<li>最大段大小选项 指的是允许从对方接收到的最大报文段，这个报文段大小只记录器数据的厂区而不包括TCP和IP包头的长度。</li>
+<li>选择确认选项 这个可以帮助TCP实现快速重传，并且帮助发送方了解到接收方的空洞，</li>
+<li>窗口缩放选项（待补充）</li>
+<li>时间戳选项和防回绕序列 这个选项要求发送方在每一个报文中添加2-4个字节的时间戳数字，接收方会在响应中反映这些数字，这也允许发送方来测量一个RTT</li>
 </ol>
 
       
@@ -519,7 +528,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-数据格式"><span class="nav-number">1.</span> <span class="nav-text">TCP 数据格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP连接的建立"><span class="nav-number">2.</span> <span class="nav-text">TCP连接的建立</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP连接的断开"><span class="nav-number">3.</span> <span class="nav-text">TCP连接的断开</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-数据格式"><span class="nav-number">1.</span> <span class="nav-text">TCP 数据格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP连接的建立"><span class="nav-number">2.</span> <span class="nav-text">TCP连接的建立</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP连接的断开"><span class="nav-number">3.</span> <span class="nav-text">TCP连接的断开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化序列号"><span class="nav-number">4.</span> <span class="nav-text">初始化序列号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP选项"><span class="nav-number">5.</span> <span class="nav-text">TCP选项</span></a></li></ol></div>
             
 
           </div>
