@@ -254,6 +254,265 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/08/C-多态/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/10/08/C-多态/" itemprop="url">C++多态</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-08T08:46:44+08:00">
+                2016-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在函数定义中有vitural关键字的函数就是虚函数，不能用在构造函数和静态函数上面。</p>
+<p>虚函数只能借助于指针或者引用来达到多态的效果。</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+
+using namespace std;
+
+class  A {
+
+private:
+    string name;    
+public:
+
+    A(string n):name(n) {
+
+    }
+
+    string getName() {
+        return name;
+    }
+
+    void print() {
+        cout&lt;&lt;&quot;A&quot;&lt;&lt;endl; 
+    }
+
+    virtual void hutrted() {
+        cout&lt;&lt;name&lt;&lt;&quot; get hurted&quot;&lt;&lt;endl;
+    }
+
+    virtual void attack(A* a) {
+        cout&lt;&lt;name&lt;&lt;&quot;attack &quot; &lt;&lt; a-&gt;getName()&lt;&lt;endl;
+        a-&gt;hutrted();
+    }
+};
+
+class B:public A{
+
+public:
+    B(string n):A(n) {
+
+    } 
+
+     void hutrted() {
+        A::hutrted();
+        cout&lt;&lt;&quot;this is b override hutrted&quot;&lt;&lt;endl;
+    }
+
+     void attack(A* a) {
+        A::attack(a);
+        cout&lt;&lt;&quot;this is b override attack&quot;&lt;&lt;endl;
+    }
+
+};
+
+int main() {
+    A* a = new A(&quot;A&quot;);
+    A* b = new B(&quot;B&quot;);
+
+    b-&gt;attack(a);
+
+    cout&lt;&lt;&quot;---------------------&quot;&lt;&lt;endl;
+    a-&gt;attack(b); 
+
+    delete a;
+    delete b;
+    return 0; 
+} 
+</code></pre><p>在上面的例子中就实现了多态，如果将基类A 方法中的virtual关键字去掉，那么这个时候将无法实现多态。</p>
+<p>虚函数的作用在于实现了动态关联，即一个类的函数调用在编译的时候并不能确定而需要在程序运行的时候决定。</p>
+<p>如果将A 中的virtual关键字去掉，那么函数的调用在编译的时候即决定。无法实现多态。</p>
+<p><strong>与java对比的话，在java当中只需要通过继承并且重写父类的方法即可实现多态</strong></p>
+<p>在构造函数和析构函数中不会形成多态，因为这个是在编译期间就确定了其行为。在构造函数和析构函数中调用虚函数，调用的是本类中定义的函数（如果没有定义就从父类中去找）。<em>之所以这么设计是因为如果在父类的构造器中调用了虚函数，在构造子类的时候会先调用父类的构造器这个时候虚函数如果是多态，那么会调用子类的方法，但是这个时候子类还没有生成对象，这个时候调用会产生错误，析构函数同理，子类对象会先于父类对象被析构。这个时候如果在父类的析构函数中调用了虚函数，即在一个已经析构的对象上调用方法，也会产生错误</em></p>
+<p><strong>虚析构函数</strong><br>看下面的这段代码</p>
+<pre><code>class Super{
+public:
+~Super(){
+    cout&lt;&lt;&quot;~Super invoked&quot;&lt;&lt;endl;
+} 
+};
+
+class Son : public Super {
+    ~Son(){
+        cout&lt;&lt;&quot;~Son invoked&quot;&lt;&lt;endl;
+    } 
+}; 
+
+int main() {
+    Super* son = new Son;
+    delete son; 
+    return 0;
+} 
+</code></pre><p>当我们动态的分配内存空间给son的时候，如果使用delete删除掉son，这个时候只会调用Super的析构函数，这个时候Son的构造函数并没有得到调用，那么这就有可能造成内存泄露，为了解决这种问题，就出现了<em>虚析构函数</em></p>
+<pre><code>class Super{
+
+public:
+    virtual~Super(){
+        cout&lt;&lt;&quot;~Super invoked&quot;&lt;&lt;endl;
+    } 
+};
+
+class Son : public Super {
+    ~Son(){
+        cout&lt;&lt;&quot;~Son invoked&quot;&lt;&lt;endl;
+    } 
+}; 
+int main() {
+    Super* son = new Son;
+    delete son; 
+    return 0;
+} 
+</code></pre><p>即在在父类的析构函数前加上virtual关键字。这样当我们再次调用delete son的时候，会先调用Son的析构函数在调用Super的析构函数。</p>
+<p><strong>C++多态实现的原理</strong><br>在C++当中，如果一个类中包含了虚函数，那么这个类中就会存在虚函数表。并且该类的任何对象中都存在这虚函数表的指针</p>
+<pre><code>class Super{
+public:
+    int a;
+    virtual~Super(){
+        cout&lt;&lt;&quot;~Super invoked&quot;&lt;&lt;endl;
+    } 
+};
+</code></pre><p>所以当我们输出sizeof(Super)的时候，会输出16(在64位的dev C++中)，这就说明了函数表中存在其他的内容，而这个内容就是虚函数表，多态的函数调用语句被编译成一系列根据基类指针所指向对象中存放的虚函数表的地址，在虚函数表中查找虚函数的地址，并调用虚函数的指令。</p>
+<p><strong>纯虚函数和抽象类</strong><br>纯虚函数是指没有函数体的虚函数，那么包含了纯虚函数的类就是抽象类了，抽象类不能生成对象（但是可以使用抽象的指针指向基类），只能作为派生类的基类来使用，并且在类的构造方法和析构函数中不能调用纯虚函数。</p>
+<p>一个子类只有实现了父类当中定义的所有纯虚函数才能变成非抽象类，否则还是一个抽象类。</p>
+<pre><code>class Super{
+public:
+    int a;
+    virtual~Super(){
+        cout&lt;&lt;&quot;~Super invoked&quot;&lt;&lt;endl;
+    } 
+
+    virtual void method() = 0; //纯虚函数
+};
+
+class Son : public Super {
+    int b;
+    ~Son(){
+        cout&lt;&lt;&quot;~Son invoked&quot;&lt;&lt;endl;
+    } 
+
+    void method() { //纯虚函数实现
+
+    }
+}; 
+
+int main() {
+    Super* son = new Son;
+    delete son; 
+    return 0;
+} 
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/25/C-const/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1462,7 +1721,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1475,7 +1734,7 @@ defaultConfig {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="C++,函数," />
+  <meta name="keywords" content="FFMPEG," />
 
 
 
@@ -93,17 +93,17 @@
 
 
 
-<meta name="description" content="内联函数编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。 inline function(int x, int y) {     cout&amp;lt;&amp;lt;x - y; }  函数的缺省值 //设置函数的缺省值  void function(int x, int y = 2, int z = 3) {     cout&amp;lt;&amp;lt;x+y+z; } 构造函数 对象">
-<meta name="keywords" content="C++,函数">
+<meta name="description" content="使用的两个关键命令  ffmpeg      -framerate 10      -start_number 1      -i app_imagecache/3461686%04d.png      -i logo.png      -i pa.png      -vframes 44      -filter_complex &amp;quot;[1:v]scale=50:50[water];[0:">
+<meta name="keywords" content="FFMPEG">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C++函数学习">
-<meta property="og:url" content="http://yoursite.com/2016/09/25/C-函数学习/index.html">
+<meta property="og:title" content="FFMPEG记录">
+<meta property="og:url" content="http://yoursite.com/2017/06/24/FFMPEG记录/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="内联函数编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。 inline function(int x, int y) {     cout&amp;lt;&amp;lt;x - y; }  函数的缺省值 //设置函数的缺省值  void function(int x, int y = 2, int z = 3) {     cout&amp;lt;&amp;lt;x+y+z; } 构造函数 对象">
-<meta property="og:updated_time" content="2016-09-25T03:08:37.000Z">
+<meta property="og:description" content="使用的两个关键命令  ffmpeg      -framerate 10      -start_number 1      -i app_imagecache/3461686%04d.png      -i logo.png      -i pa.png      -vframes 44      -filter_complex &amp;quot;[1:v]scale=50:50[water];[0:">
+<meta property="og:updated_time" content="2017-06-24T12:51:23.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++函数学习">
-<meta name="twitter:description" content="内联函数编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。 inline function(int x, int y) {     cout&amp;lt;&amp;lt;x - y; }  函数的缺省值 //设置函数的缺省值  void function(int x, int y = 2, int z = 3) {     cout&amp;lt;&amp;lt;x+y+z; } 构造函数 对象">
+<meta name="twitter:title" content="FFMPEG记录">
+<meta name="twitter:description" content="使用的两个关键命令  ffmpeg      -framerate 10      -start_number 1      -i app_imagecache/3461686%04d.png      -i logo.png      -i pa.png      -vframes 44      -filter_complex &amp;quot;[1:v]scale=50:50[water];[0:">
 
 
 
@@ -131,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/25/C-函数学习/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/24/FFMPEG记录/"/>
 
 
 
 
 
-  <title>C++函数学习 | Learning</title>
+  <title>FFMPEG记录 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/25/C-函数学习/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/24/FFMPEG记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tom Liu">
@@ -274,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">C++函数学习</h1>
+          <h1 class="post-title" itemprop="name headline">FFMPEG记录</h1>
         
 
         <div class="post-meta">
@@ -286,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-25T11:03:38+08:00">
-                2016-09-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-24T20:50:21+08:00">
+                2017-06-24
               </time>
             
 
@@ -321,46 +321,34 @@
       
 
       
-        <p><strong>内联函数</strong><br>编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。</p>
-<pre><code>inline function(int x, int y) {
-    cout&lt;&lt;x - y;
-} 
-</code></pre><p><strong>函数的缺省值</strong></p>
-<pre><code>//设置函数的缺省值 
-void function(int x, int y = 2, int z = 3) {
-    cout&lt;&lt;x+y+z;
-}
-</code></pre><p><strong>构造函数</strong></p>
-<p>对象所占用的存储空间并不是由构造函数分配的，构造只是在对象的存储空间分配之后，来完成一写初始化的工作。</p>
-<p><strong>复制构造函数</strong></p>
-<p>只能有一个参数，即同类对象的引用。如果自己不写复制构造函数，系统将提供一个默认的复制构造函数，这儿构造函数的功能完成对对象的拷贝。<br>复制构造函数起作用的三种情况：</p>
+        <p>使用的两个关键命令 </p>
+<pre><code>ffmpeg 
+    -framerate 10 
+    -start_number 1 
+    -i app_imagecache/3461686%04d.png 
+    -i logo.png 
+    -i pa.png 
+    -vframes 44 
+    -filter_complex &quot;[1:v]scale=50:50[water];[0:v][water]overlay=0:0[x];[x][2:v] paletteuse,reverse&quot; 
+    -y logo.gif
+</code></pre><p>下面来简单的解析一下这段命令 </p>
 <ul>
-<li>用一个对象去初始化另一个对象。例如 Complex c2 = c1 //初始化语句</li>
-<li>如果某一个函数的形参是类A的对象，调用该函数的时候，类A的复制构造函数将被调用 用来 初始化形参。</li>
-<li>如果一个函数的返回值是类A的对象，那么函数返回的时候类A的复制构造函数将被调用。复制构造函数用来初始化作为返回值存在的类A对象，例如函数method()的返回值赋值给a, 那么类的A的复制构造函数用来初始化a.</li>
+<li>framerate 指定生成gif的 帧率，目前ffmpeg 最快支持为 20ms/每帧，所以这里的帧率最大0为 50</li>
+<li>start_number 指定图片输入序列的启示位置</li>
+<li>-i  app_imagecache/3461686%04d.png 指定生成gif的 图片序列</li>
+<li>-i logo.png 指定水印</li>
+<li>vframes 指定帧数</li>
+<li>-filter_complex “[1:v]scale=50:50[water];[0:v] [water]overlay=0:0[x];[x][2:v]paletteuse,reverse”</li>
 </ul>
-<p><strong>析构函数</strong><br>析构函数与构造函数相反是在一个对象被释放掉的时候调用，与Java中Object的finalize 方法相似。析构函数有以下几个调用的时机</p>
-<ul>
-<li>使用 delete 删除 new所分配的对象。</li>
-<li>当一个作用域结束的时候，其中对象的析构方法将被调用。</li>
-<li>临时对象的生存期结束。</li>
-<li>程序结束，并且存在全局或静态对象，对象的析构函数将被调用。</li>
-<li><p>显示的调用一个对象的析构方法时。</p>
-<p>使用析构函数时，如果一个类中都是对象和基本类型，那么在析构函数调用的时候将自动的调用这些对象和基本类型的析构函数，如果其中包含了自己手动申请的空间，那么需要自己手动的在析构函数中去释放这些空间。</p>
-<p>  public:</p>
-<pre><code>Book* book;
-
-MyClass(Book* book) {
-    this-&gt;book = book;
-}
-~MyClass() {
-    book-&gt;~Book();
-    cout&lt;&lt;&quot;MyClass析构函数被调用&quot;&lt;&lt;endl; 
-}
-</code></pre><p> };</p>
-<p> 如果在MyClass的析构函数中没有手动去的去调用~Book(),那么book所指向的内存将不会释放。</p>
-</li>
-</ul>
+<p>这一段指定对输入的处理 [1:v]实际上指定了命令的中的输入参数，这里的 1 表示参数的序号，序号是基于0开始的，这里实际上指向了第二个输入参数也就是 logo.png. scale说明对这个水印的大小，这里指定了高宽为 50、接下来跟着了一个[water]这个就表示对上一个步骤处理结果的重命名，在后续的操作中就可以用这个重命名来指代。接下来使用[water] 表示上一步指定为 50:50 的这个水印 偏移量 为0:0； 接下来是[x][2:v] 这两个单独的意思都能理解，放在一起的理解应该是对将[2:v]所致的结果应用到[x]上面去，[2:v] 执行了第三个输入参数即pa.png， 后面跟着了paletteuse，加上这个是为了提升了gif图像的质量，为gif制定了一个全局的调色盘。</p>
+<p>再接下来的reverse 制定了整个gif按照倒序的方式生成。</p>
+<p>刚刚说到了gif的调色盘，生成的方式如下</p>
+<pre><code>ffmpeg
+-i source
+-vf palettegen
+-y palettegen.png
+</code></pre><p>-i 即我们制定的生成调色盘的源文件，在项目中，我们的gif来源于视频，所以在生成调色盘的时候，这里制定为 视频的路径。</p>
+<p>开发的时候遇到一个问题， 从制定的时间开始取视频帧的时候，非常的慢，因为需要从头开始解析，所以后来的做法就是先截取视频，然后截取后的视频中开始取帧。</p>
 
       
     </div>
@@ -390,9 +378,7 @@ MyClass(Book* book) {
       
         <div class="post-tags">
           
-            <a href="/tags/C/" rel="tag"># C++</a>
-          
-            <a href="/tags/函数/" rel="tag"># 函数</a>
+            <a href="/tags/FFMPEG/" rel="tag"># FFMPEG</a>
           
         </div>
       
@@ -405,8 +391,8 @@ MyClass(Book* book) {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/18/C-引用学习笔记/" rel="next" title="C++引用学习笔记">
-                <i class="fa fa-chevron-left"></i> C++引用学习笔记
+              <a href="/2017/06/12/TCP学习笔记/" rel="next" title="TCP学习笔记">
+                <i class="fa fa-chevron-left"></i> TCP学习笔记
               </a>
             
           </div>
@@ -414,10 +400,6 @@ MyClass(Book* book) {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/25/C-const/" rel="prev" title="C++ const">
-                C++ const <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
