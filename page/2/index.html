@@ -254,6 +254,182 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/13/C-动态内存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/13/C-动态内存/" itemprop="url">C++动态内存</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-13T23:12:08+08:00">
+                2017-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>C++ 支持动态分配对象，动态分配对象的生存周期和他们在哪里创建的无关，这有当显示的释放时，这些对象才会被销毁。</p>
+<p>静态内存用来保存局部static变量，类static的成员和任何定义在函数之外的变量。栈内存用来保存定义在函数内的非static对象。分配在静态内存或者栈内存中的对象由编译器自动创建和销毁，对于栈对象，仅在其定义的程序块运行时才存在，static对象在使用前被分配，在程序结束的时候销毁。</p>
+<p>除了静态内存和栈内存，每个程序还拥有一个内存池，这部分内存被称作自由空间或者堆，程序用堆来存储动态分配的对象，动态对象的生存周期由程序来控制，<strong>也就是说当动态对象不再使用的时候，我们的代码必须显示的销毁</strong></p>
+<p>动态内存和智能指针<br>在C++中，动态内存的管理是通过一对运算符来实现的，<br><strong>new</strong>: 在动态内存中为对象分配空间并返回一个指向该对象的指针，可以选择对对象进行初始化，<br><strong>delete</strong>: 接受一个动态对象指针，销毁该对象，并释放与之关联的内存。</p>
+<p>新的标准库提供了两种智能指针，两种智能指针的区别在于管理底层指针的方式，shared_ptr 允许多个指针指向同一个对象，unique_str 则是 “独占”所指向的对象.</p>
+<p>shared_ptr 的拷贝和赋值<br>当进行拷或者赋值操作的时候，每个shared_ptr都会记录有多少个其他shared_ptr指向相同的对象。<br>可以认为每个shared_ptr都有一个关联的计数器，通常称其为<em>引用计数</em>,当我们通过任何手段导致指向同一个对象的shared_ptr增加时都会导致引用计数器的递增。当改变了shared_ptr指向的对象，或者shared_ptr被销毁，计数器会递减。<strong>一旦一个shared_ptr的计数器为0，它就会自动释放自己所管理的对象</strong>。</p>
+<p>动态生存使用的目的</p>
+<ul>
+<li>程序自己不知道需要使用多少对象</li>
+<li>程序不知道所需对象的准确类型</li>
+<li>程序需要在多个对象间共享数据</li>
+</ul>
+<p><strong>使用new动态分配和初始化对象</strong><br>建议的做法是对动态分配的对象进行初始化</p>
+<p>动态创建的对象的时候，任然需要保持构造参数的匹配。</p>
+<p>一个动态分配的const对象必须进行初始化，对于定义了默认构造函数的类型，其const对象可以隐式的初始化，而其他的类型必须显式的初始化，</p>
+<p><strong>内存耗尽</strong><br>在默认情况下如果new不能分配所要求的内存空间，它会抛出一个类型为bad_alloc的异常。<br>但是可以改变new 的使用方式来变异抛出异常</p>
+<pre><code>int* p = new (nothrow) int;
+</code></pre><p>这个时候如果分配失败，将返回一个空指针。</p>
+<p>这种形式的new称为<em>定位new</em>,定位new表达式将允许向new传达额外的参数</p>
+<p><strong>释放内存</strong><br>delete表达式接受一个指针，销毁给定指针指向的对象，释放对应的内存。</p>
+<p>传递给delete的指针必须只向动态分配的内存，或者是一个空指针。释放一块非new分配的内存其行为是未定义的。通常情况下编译器不能分辨一个指针指向的内存是静态内存还是动态内存，所以这些问题在编译的时候很难被发现。</p>
+<p>在指针delete之后，指针就成了悬空指针，即指向一块曾经保存数据但是现在已经无效的内存的指针。如果我们还需要继续使用这个指针，可以先将其值设为nullptr</p>
+<p>当两个指针指向同样的内存，delete了其中一个，此时另外一个也将变得无效。</p>
+<p><strong>shared_ptr和new结合使用</strong><br>必须使用直接初始化的方式来初始化一个智能指针,同时不能进行内置指针到隐智能指针的隐式准换。</p>
+<pre><code>shared_ptr&lt;int&gt; p1 = new int(1034); // 错误的用法
+shared_ptr&lt;int&gt; p2(new int(1024)); // 正确的用法
+</code></pre><p>默认情况下用来初始化智能指针的普通指针必须指向动态内存，因为智能指针默认使用delete释放它所关联的对象。</p>
+<p>当将一个shared_ptr绑定到一个普通指针的时候，我们就将内存管理的责任交给了这个shared_ptr，一旦这样做了，就不应该在使用再使用内置指针来访问shard_ptr所指向的内存了。</p>
+<p>考虑下面一段程序：</p>
+<pre><code>void process(shared_ptr&lt;int&gt; ptr) {
+
+} // 离开了这个方法之后，ptr所指向对象的引用计数器会 -1;
+</code></pre><p>调用</p>
+<pre><code>int* x = new int(88);
+process(share_ptr&lt;int&gt;(x)); 
+int xValue = *x;
+</code></pre><p>当执行完了了process之后，再去访问x实际上会造成未知的结果，因为调用了process方法的时候，我们构建了一个智能指针对象，这个时候为对象的引用计数器 +1，但是离开了process方法之后，智能指针所指对象的引用计数器会 -1，此时对象的引用数最终为0，所以其指向的对象会被释放掉，因此x 这个时候就变成了悬空指针，xValue 去访问x所指的内存就会出现未知的操作。</p>
+<p><em>从上面的例子也可以看出来，智能指针的引用计数和内置指针是完全分开的，只要智能指针计算的引用计数为零，这个指针指向的内存就会被释放掉，而并没有在乎是否有内置的指针还指向这块内存</em></p>
+<p>智能指针类型定义了一个名为get的函数，它返回一个内置指针，指向智能指针管理的对象，此函数是为了这样一种情况而设计：我们需要向不能使用智能指针的代码传递一个内置指针，使用get返回指针的代码不能delete此指针。</p>
+<p>get用来将指针的访问权限传递给代码，只有在确保代码不会delete指针的情况下才能使用get，特别是，永远不要用get初始化一个智能指针或者为另一个智能指针赋值（这是为了避免将一块动态内存绑定到多个独立创建的智能指针上，因为这些独立的智能指针不知道彼此的存在，很可能造成A释放了B正在使用的内存）。</p>
+<p><strong>智能指针和异常</strong><br>函数的退出有两种可能，正常处理结束或者发生了异常，无论哪种情况，局部对象都会被销毁。与之相对的是，发生异常时，我们直接管理的内存不会被直接释放掉。</p>
+<pre><code>void f() {
+    int* x = new int(0);
+    //抛出异常，切未在f中处理
+    delete x;
+}
+</code></pre><p>在上面的函数中，在new之后，delete之前出现了异常，且异常尚未在f中捕获，则内存永远都无法释放掉，因为在函数f之外没有指针指向这块内存，因此也就无法释放了。</p>
+<p><em>使用自己的释放操作</em><br>默认情况下，shared_ptr在销毁一个对象的时候，它对它管理的指针进行delete操作，但是我们可以设定自己的释放对象操作，来代替默认的操作。例如我们需要释放一个数据库的连接connection，当我们创建创建一个shard_ptr的时候，可以传递一个指向删除器函数的参数，如下 </p>
+<pre><code>void end_connection(connection* con) {
+    //do something to release connection
+}  
+
+//调用
+shared_ptr&lt;connection&gt; con_p(connction,end_connection);
+</code></pre><p>这样当con_p被销毁的时候，它不会对保存的指针执行delete操作，而是调用end_connection函数，那么不管con_p所处的方法是正常结束还是发生了异常，p都会被销毁，从而保证了连接被关闭。</p>
+<p>总结下来，使用智能指针有以下需要注意的地方</p>
+<ol>
+<li>不使用相同的内置指针初始化多个智能指针</li>
+<li>不delete get()返回的内置指针</li>
+<li>不使用get 初始化或者reset另一个智能指针</li>
+<li>如果使用了get返回的内置指针，当最后一个智能指针被销毁后，这个内置指针也将变得无效</li>
+<li>如果使用智能指针管理的资源不是new 分配的内存，那么手动传递给它一个删除器</li>
+</ol>
+<h2 id="智能指针之Unique-ptr"><a href="#智能指针之Unique-ptr" class="headerlink" title="智能指针之Unique_ptr"></a>智能指针之Unique_ptr</h2><p>一个unique_ptr拥有它所指向的对象，并且某个时候只能有一个unique_ptr指向一个给定的对象，因此unique_ptr不支持普通的拷贝或赋值操作，和shared_ptr类似，初始化unique_ptr必须采用直接初始化的形式。</p>
+<p>调用unique_ptr的release方法会切断unique_ptr和它原来管理对象之间的联系，通常release返回的指针被用来初始化另一个智能指针或者给另一个智能指针赋值，我们拿到这个内置指针之后，就由我们来负责指针的销毁。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/09/Andriod中的资源管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2457,141 +2633,6 @@ the test has been recycled and the free memory is 123802440
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/15/Android-View测量模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/15/Android-View测量模式/" itemprop="url">Android View测量模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-15T17:24:43+08:00">
-                2016-10-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天看android源码的时候无意中发现了源码中关于测量模式的解释，简单的记录一下，一看就是恍然大悟了。</p>
-<pre><code>  int result = desiredSize;
-int specMode = MeasureSpec.getMode(measureSpec);
-int specSize =  MeasureSpec.getSize(measureSpec);
-switch (specMode) {
-    case MeasureSpec.UNSPECIFIED:
-        /* Parent says we can be as big as we want. Just don&apos;t be larger
-           than max size imposed on ourselves.
-        */
-        result = Math.min(desiredSize, maxSize);
-        break;
-    case MeasureSpec.AT_MOST:
-        // Parent says we can be as big as we want, up to specSize. 
-        // Don&apos;t be larger than specSize, and don&apos;t be larger than 
-        // the max size imposed on ourselves.
-        result = Math.min(Math.min(desiredSize, specSize), maxSize);
-        break;
-    case MeasureSpec.EXACTLY:
-        // No choice. Do what we are told.
-        result = specSize;
-        break;
-}
-return result;
-</code></pre><p>看着代码中的注释应该很容易明白以后测量模式应该怎么用了。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2641,7 +2682,7 @@ return result;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
