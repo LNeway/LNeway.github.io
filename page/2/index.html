@@ -254,6 +254,268 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/13/Android-PackageManager-Service-学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/13/Android-PackageManager-Service-学习笔记/" itemprop="url">Android PackageManager Service 学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-13T23:13:46+08:00">
+                2017-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>PMS 主要包含三部分的内容</p>
+<ul>
+<li>提供一个能够根据Intent 匹配找到Activity，Provider， Service ，即通过intent来找到具体的组件</li>
+<li>进行权限的检查，当应用程序需要调用一个需要权限的函数的时候，系统能够判断当前调用者是否具有改该权限。</li>
+<li>提供安装删除应用程序的接个口</li>
+</ul>
+<p>PMS服务运行时使用两个目录下的xml文件保存相关的包管理信息，<br>第一个目录是<em>/system/etc/premissions</em>该目录下的xml用于permission的管理，具体包含两个，第一个是定义系统中都包含了那些featrue, 应用程序可以在AndroidManifest.xml中使用 use-featrue 声明程序需要哪些freatrue<br>例如： <use-feature android:name="android.hardware.wifi" android:required="true"><br>该标签表示应用程序需要使用这个功能，如果required = true, 但是设备上没有wifi,那么程序将无法安装</use-feature></p>
+<p>设备都包含了那些feature就是在该目录下声明的，如果用户给系统添加了GPS或者蓝牙的功能，则必须在该目录下声明相关的xml文件来告诉framework。 </p>
+<p>该目录下还有一个platform.xml文件，该文件为一些特别的uid和gid分配了一些默认的权限，</p>
+<p>第二个目录是<em>/data/system/packages.xml</em>,该文件保存了所有安装程序的基本信息，类似注册表。<br>下面是从文件里面拷贝出来的一段</p>
+<pre><code>&lt;package name=&quot;xxxxxxx.xxx&quot; codePath=&quot;/data/app/xxxxxxx&quot; nativeLibraryPath=&quot;/data/app/com.tools.freereminder-1/lib&quot; primaryCpuAbi=&quot;armeabi-v7a&quot; flags=&quot;4767300&quot; ft=&quot;15a1c7833a0&quot; it=&quot;15a1c783548&quot; ut=&quot;15a1c783548&quot; version=&quot;170208&quot; userId=&quot;10223&quot;&gt;
+    &lt;sigs count=&quot;1&quot;&gt;
+        &lt;cert index=&quot;12&quot; key=&quot;xxxxxx&quot; /&gt;
+    &lt;/sigs&gt;
+    &lt;perms&gt;
+        &lt;item name=&quot;android.permission.DOWNLOAD_WITHOUT_NOTIFICATION&quot; /&gt;
+        &lt;item name=&quot;android.permission.WRITE_SETTINGS&quot; /&gt;
+        &lt;item name=&quot;android.permission.SYSTEM_ALERT_WINDOW&quot; /&gt;
+        &lt;item name=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot; /&gt;
+        &lt;item name=&quot;android.permission.GET_TASKS&quot; /&gt;
+        &lt;item name=&quot;android.permission.INTERNET&quot; /&gt;
+        &lt;item name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot; /&gt;
+        &lt;item name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; /&gt;
+        &lt;item name=&quot;android.permission.READ_PHONE_STATE&quot; /&gt;
+        &lt;item name=&quot;android.permission.ACCESS_NETWORK_STATE&quot; /&gt;
+        &lt;item name=&quot;android.permission.DISABLE_KEYGUARD&quot; /&gt;
+        &lt;item name=&quot;android.permission.GET_ACCOUNTS&quot; /&gt;
+        &lt;item name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;
+        &lt;item name=&quot;android.permission.VIBRATE&quot; /&gt;
+        &lt;item name=&quot;android.permission.ACCESS_WIFI_STATE&quot; /&gt;
+        &lt;item name=&quot;com.android.launcher.permission.INSTALL_SHORTCUT&quot; /&gt;
+        &lt;item name=&quot;android.permission.WAKE_LOCK&quot; /&gt;
+    &lt;/perms&gt;
+    &lt;proper-signing-keyset identifier=&quot;322&quot; /&gt;
+    &lt;signing-keyset identifier=&quot;322&quot; /&gt;
+&lt;/package&gt;
+</code></pre><p>PMS 在启动的时候，会从这两个目录中解析相关的xml文件，从而建立一个包信息树，应用程序可以间接从这个信息树中查询所有所需的包信息。</p>
+<p>除了PMS外，还有两个辅助系统服务用于程序安装，一个是DefaultContainerService,该服务主要把安装程序复制到程序目录中；另一个是installer服务，该服务实际上不是一个binder,而是一个socket客户端，PMS直接和Socket客户端交互，Socket的服务端主要完成程序文件的解压工作及数据目录的创建，比如从APK文件中提取出dex文件，删除delvik-cache目前下的dex文件，创建程序专属的数据目录。</p>
+<p>就像所有的操作系统一样，Android中的程序文件也由相关的程序文件组成，这些程序文件可以分为三个部分。<br>第一部分：程序文件，所有的系统程序文件保存在/system/app下，所有第三方的应用程序保存在/data/app下。/data/dalvik-cache目录保存了程序中执行的代码，PMS会从APK中提取出dex保存在该目录下，以便以后能快速的运行。<br>第二部分：framework 库文件，这些库文件位于/system/framework/ 目录下，库文件类型是apk或者jar,系统开机之后，dalvik虚拟机会加载这些库文件，而在PMS启动的时候如果这些jar或者APK还没有被转换为dex文件，PMS会将这些库文件转为dex文件，并且保存到/data/dalvik-cache目录下。(目前为止，我将dex导出之后，从反编译工具去打开这个dex文件，提示不是一个dex文件)<br>第三部分：程序自身的数据文件.</p>
+<p>系统安装一个apk的过程分析</p>
+<p>入口方法在于PMS的installPackageAsUser 方法。</p>
+<p>在方法的开始会进行一系列的权限检查，然后相关的信息封装成一个message 通过自定义的packagehandler 发送出去，关键代码如下 </p>
+<pre><code>final File originFile = new File(originPath);
+final OriginInfo origin = OriginInfo.fromUntrustedFile(originFile);
+final Message msg = mHandler.obtainMessage(INIT_COPY);
+final VerificationInfo verificationInfo = new VerificationInfo(
+        null , null, -1, callingUid);
+final InstallParams params = new InstallParams(origin, null, observer,
+        installFlags, installerPackageName, null, verificationInfo, user,
+        null, null,null);
+params.setTraceMethod(&quot;installAsUser&quot;).setTraceCookie(System.identityHashCode(params));
+msg.obj = params;
+Trace.asyncTraceBegin(TRACE_TAG_PACKAGE_MANAGER, &quot;installAsUser&quot;,
+        System.identityHashCode(msg.obj));
+Trace.asyncTraceBegin(TRACE_TAG_PACKAGE_MANAGER, &quot;queueInstall&quot;,
+        System.identityHashCode(msg.obj));
+mHandler.sendMessage(msg);
+</code></pre><p>处理消息的代码可以在PackgetHanlder当中找到，定义在doHandler当中，之前发送的消息类型是INIT_COPY。</p>
+<p>处理的代码为下面一段</p>
+<pre><code>HandlerParams params = (HandlerParams) msg.obj;
+                int idx = mPendingInstalls.size();
+                if (DEBUG_INSTALL) Slog.i(TAG, &quot;init_copy idx=&quot; + idx + &quot;: &quot; + params);
+                // If a bind was already initiated we dont really
+                // need to do anything. The pending install
+                // will be processed later on.
+                if (!mBound) {
+                    Trace.asyncTraceBegin(TRACE_TAG_PACKAGE_MANAGER, &quot;bindingMCS&quot;,
+                            System.identityHashCode(mHandler));
+                    // If this is the only one pending we might
+                    // have to bind to the service again.
+                    if (!connectToService()) {
+                        Slog.e(TAG, &quot;Failed to bind to media container service&quot;);
+                        params.serviceError();
+                        Trace.asyncTraceEnd(TRACE_TAG_PACKAGE_MANAGER, &quot;bindingMCS&quot;,
+                                System.identityHashCode(mHandler));
+                        if (params.traceMethod != null) {
+                            Trace.asyncTraceEnd(TRACE_TAG_PACKAGE_MANAGER, params.traceMethod,
+                                    params.traceCookie);
+                        }
+                        return;
+                    } else {
+                        // Once we bind to the service, the first
+                        // pending request will be processed.
+                        mPendingInstalls.add(idx, params);
+                    }
+                } else {
+                    mPendingInstalls.add(idx, params);
+                    // Already bound to the service. Just make
+                    // sure we trigger off processing the first request.
+                    if (idx == 0) {
+                        mHandler.sendEmptyMessage(MCS_BOUND);
+                    }
+                }
+                break;
+</code></pre><p>首先会去检查一个mBound的状态，这个状态表示和系统service的connect结果，PackageHanlder在内部定义了一个方法，connectToService(), 这个service是DefaultContainerService. 在这个类的说明上可以知道这个类主要是做了关于移动存储设备上文件检查和复制的工作。如果这个时候已经成功绑定了服务，那么可以将安装的请求添加到 mPendingInstalls 这个集合当中去。</p>
+<p>接下来发送的消息类型是MSC_BOUND<br>在这个消息的处理中还是先判断绑定服务的状态，如果判断当前的状态是没有连接，那么这个时候调用prams的serviceError方法，表示安装失败，这个时候也会清空 mPendingInstalls<br>如果这个时候服务绑定成功，并且mPendingInstalls中有安装请求，这个时候会从集合中拿到第一个安装请求参数，然后开始调用startCopy方法</p>
+<pre><code>final boolean startCopy() {
+        boolean res;
+        try {
+            if (DEBUG_INSTALL) Slog.i(TAG, &quot;startCopy &quot; + mUser + &quot;: &quot; + this);
+            if (++mRetries &gt; MAX_RETRIES) {
+                Slog.w(TAG, &quot;Failed to invoke remote methods on default container service. Giving up&quot;);
+                mHandler.sendEmptyMessage(MCS_GIVE_UP);
+                handleServiceError();
+                return false;
+            } else {
+                handleStartCopy();
+                res = true;
+            }
+        } catch (RemoteException e) {
+            if (DEBUG_INSTALL) Slog.i(TAG, &quot;Posting install MCS_RECONNECT&quot;);
+            mHandler.sendEmptyMessage(MCS_RECONNECT);
+            res = false;
+        }
+        handleReturnCode();
+        return res;
+    }
+</code></pre><p>里面加了重试的逻辑，如果重试之后还是失败，那么将进行安装失败通知，核心copy的逻辑在handleStartCopy，这个方法是一个抽象方法，具体的实现看InstallParams。</p>
+<pre><code>// If we&apos;re already staged, we&apos;ve firmly committed to an install location
+       if (origin.staged) {
+           if (origin.file != null) {
+               installFlags |= PackageManager.INSTALL_INTERNAL;
+               installFlags &amp;= ~PackageManager.INSTALL_EXTERNAL;
+           } else if (origin.cid != null) {
+               installFlags |= PackageManager.INSTALL_EXTERNAL;
+               installFlags &amp;= ~PackageManager.INSTALL_INTERNAL;
+           } else {
+               throw new IllegalStateException(&quot;Invalid stage location&quot;);
+           }
+       }
+</code></pre><p>方法之中首先开始检查安装的位置，如果找到不到将抛出异常。<br>在检查完安装位置之后，开始安装的的空间是否足够，如果不够，系统会尝试清除一些缓存，再来判断是否可以安装。</p>
+<p>如果在上面的检查当中没有出现问题，那么接下来获取安装的位置，并且在这个过程中判断安装是否有版本的回退，如果这个情况也没有，那么将会再设置一次installFlags.</p>
+<p>接下来会去检查package verification 是否开启了，如果没有开启将会调用远程服务开始拷贝文件的过程。<br>关于拷贝的过程可以看InstallArgs其中一个子类的实现，FileInstallArgs, copyApk的真正过程在doCopyApk方法当中。</p>
+<p>在doCopyApk的方法当中，首先调用了</p>
+<pre><code>File tempDir = mInstallerService.allocateStageDirLegacy(volumeUuid, isEphemeral);
+</code></pre><p>这个方法用来指定res和code存放的临时目录，在这个步骤中创建了一些临时文件，之所以这么做是因为内部文件系统会为临时文件分配内存，提高效率。</p>
+<pre><code>imcs.copyPackage(origin.file.getAbsolutePath(), target);
+</code></pre><p>这个imcs的实现在DefaultContainerService当中，安装apk的时候第一步就是检查到这个service的连接。</p>
+<p>所以实际上imcs就是 IMediaContainerService.Stub的一个引用，copyPackage 之中又调用了copyPackageInner方法，方法的代码如下</p>
+<pre><code>private int copyPackageInner(PackageLite pkg, IParcelFileDescriptorFactory target)
+        throws IOException, RemoteException {
+    copyFile(pkg.baseCodePath, target, &quot;base.apk&quot;);
+    if (!ArrayUtils.isEmpty(pkg.splitNames)) {
+        for (int i = 0; i &lt; pkg.splitNames.length; i++) {
+            copyFile(pkg.splitCodePaths[i], target, &quot;split_&quot; + pkg.splitNames[i] + &quot;.apk&quot;);
+        }
+    }
+    return PackageManager.INSTALL_SUCCEEDED;
+}
+</code></pre><p>在copyFile这个方法当中看到了一个熟悉的名字“base.apk”，我们在/data/app/包名下同样有这个文件名的存在，在这里就完成了apk的拷贝。</p>
+<p>接下来就是拷贝二进制文件的过程了。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/13/C-动态内存/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2482,162 +2744,11 @@ public void watch(Object watchedReference, String referenceName) {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/08/Java中弱引用的理解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/08/Java中弱引用的理解/" itemprop="url">Java中弱引用的理解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-08T14:05:24+08:00">
-                2016-12-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>弱引用也是用来描述非必需的对象，但是他的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前，当垃圾收集工作时，无论当前内存是否足够，都会回收掉被弱引用关联的对象，在JDK1.2之后，提供了WeakReference类实现弱引用。</p>
-<p>看下面的代码</p>
-<pre><code>public class TestClient {
-        public static void main(String[] args) throws Exception {
-                int count = 5;
-    System.out.println(&quot;before create object the current memory size = &quot; +                 Runtime.getRuntime().freeMemory());
-    Test test = new Test();
-    System.out.println(&quot;after create object the current memory size = &quot; + Runtime.getRuntime().freeMemory());
-    WeakReference&lt;Test&gt; weakReference = new WeakReference&lt;Test&gt;(test);
-    while(true) {
-        count--;
-        System.gc();
-        Thread.sleep(5000);
-        if(weakReference.get() == null) {
-            System.out.println(&quot;the test has been recycled and the free memory is &quot; + Runtime.getRuntime().freeMemory());
-        } else {
-            System.out.println(&quot;the test has not been recycled and the free memory is &quot; + Runtime.getRuntime().freeMemory());
-            if(count == 0) {
-                test = null;
-            }
-        }
-    }
-    }
-}
-class Test  {
-    byte data [] = new byte[10 * 1024 * 1024];
-}
-</code></pre><p>上述代码运行的结果如下</p>
-<pre><code>before create object the current memory size = 122179856
-after create object the current memory size = 111694080
-the test has not been recycled and the free memory is 112663384
-the test has not been recycled and the free memory is 112666448
-the test has not been recycled and the free memory is 113316792
-the test has not been recycled and the free memory is 113316792
-the test has not been recycled and the free memory is 113316792
-the test has been recycled and the free memory is 123802584
-the test has been recycled and the free memory is 123802440
-the test has been recycled and the free memory is 123802440
-</code></pre><p>我们可以发现我们通过WeakReference 引用到了 Test 对象，但是一旦我们把test这个强引用置为null之后，test对象马上就被回收了。</p>
-<p>如果把弱引用改为软引用，那么会发现即使把test置为空，这个对象依然被软引用引用到了，不会不会被垃圾回收器回收。在Java虚拟机中，被软引用引用到的对象只会在内存不够用的情况下才会回收这一部分内存。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2682,7 +2793,7 @@ the test has been recycled and the free memory is 123802440
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
