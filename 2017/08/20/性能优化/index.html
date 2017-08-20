@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="C++,指针," />
+  <meta name="keywords" content="Android,性能优化,锁,内存," />
 
 
 
@@ -93,17 +93,17 @@
 
 
 
-<meta name="description" content="int* p 定义一个int类型的指针（此处的额int 是作为一个类型符号存在）\p 指向了内存的一块，我们可以可以直接使用*p来操作其所指向内存的内容 那么实际上p只是指向了内存的某一个地址，打印出p的值的时候，会发现这就是一个普通的整数型的值 看下面的代码： #includeusing namespace std;int main() {    int a = 888;    int p =">
-<meta name="keywords" content="C++,指针">
+<meta name="description" content="最近在做一个相机的的APP，其中涉及到了很多以前没有接触过的知识，APP做到现在功能也都基本完成了，现在有心思把精力放在一些以前比较奇怪的代码上。 内存优化在目前的实现中，相机的预览页采用了open GL 的方式来展示摄像头采集的数据，但是在根据人脸识别后的添加的sticker上还是采用了Bitmap和 canvas 实现的方式，看到了bitmap就知道内存抖动这块一定是跟它有关了  问题一：st">
+<meta name="keywords" content="Android,性能优化,锁,内存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C++指针学习笔记">
-<meta property="og:url" content="http://yoursite.com/2016/09/03/C-指针学习笔记/index.html">
+<meta property="og:title" content="性能优化">
+<meta property="og:url" content="http://yoursite.com/2017/08/20/性能优化/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="int* p 定义一个int类型的指针（此处的额int 是作为一个类型符号存在）\p 指向了内存的一块，我们可以可以直接使用*p来操作其所指向内存的内容 那么实际上p只是指向了内存的某一个地址，打印出p的值的时候，会发现这就是一个普通的整数型的值 看下面的代码： #includeusing namespace std;int main() {    int a = 888;    int p =">
-<meta property="og:updated_time" content="2016-09-03T11:44:20.000Z">
+<meta property="og:description" content="最近在做一个相机的的APP，其中涉及到了很多以前没有接触过的知识，APP做到现在功能也都基本完成了，现在有心思把精力放在一些以前比较奇怪的代码上。 内存优化在目前的实现中，相机的预览页采用了open GL 的方式来展示摄像头采集的数据，但是在根据人脸识别后的添加的sticker上还是采用了Bitmap和 canvas 实现的方式，看到了bitmap就知道内存抖动这块一定是跟它有关了  问题一：st">
+<meta property="og:updated_time" content="2017-08-20T14:16:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++指针学习笔记">
-<meta name="twitter:description" content="int* p 定义一个int类型的指针（此处的额int 是作为一个类型符号存在）\p 指向了内存的一块，我们可以可以直接使用*p来操作其所指向内存的内容 那么实际上p只是指向了内存的某一个地址，打印出p的值的时候，会发现这就是一个普通的整数型的值 看下面的代码： #includeusing namespace std;int main() {    int a = 888;    int p =">
+<meta name="twitter:title" content="性能优化">
+<meta name="twitter:description" content="最近在做一个相机的的APP，其中涉及到了很多以前没有接触过的知识，APP做到现在功能也都基本完成了，现在有心思把精力放在一些以前比较奇怪的代码上。 内存优化在目前的实现中，相机的预览页采用了open GL 的方式来展示摄像头采集的数据，但是在根据人脸识别后的添加的sticker上还是采用了Bitmap和 canvas 实现的方式，看到了bitmap就知道内存抖动这块一定是跟它有关了  问题一：st">
 
 
 
@@ -131,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/03/C-指针学习笔记/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/20/性能优化/"/>
 
 
 
 
 
-  <title>C++指针学习笔记 | Learning</title>
+  <title>性能优化 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/03/C-指针学习笔记/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/20/性能优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tom Liu">
@@ -274,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">C++指针学习笔记</h1>
+          <h1 class="post-title" itemprop="name headline">性能优化</h1>
         
 
         <div class="post-meta">
@@ -286,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-03T19:43:07+08:00">
-                2016-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-20T22:15:15+08:00">
+                2017-08-20
               </time>
             
 
@@ -321,23 +321,24 @@
       
 
       
-        <p>int* p 定义一个int类型的指针（此处的额int<em> 是作为一个类型符号存在）<br>\</em>p 指向了内存的一块，我们可以可以直接使用*p来操作其所指向内存的内容</p>
-<p>那么实际上p只是指向了内存的某一个地址，打印出p的值的时候，会发现这就是一个普通的整数型的值</p>
-<p>看下面的代码：</p>
-<p>#include<iostream><br>using namespace std;<br>int main() {<br>    int a = 888;<br>    int<em> p = &a;<br>    cout&lt;&lt;p &lt;&lt; endl;   打印p所指向的地址<br>     cout&lt;&lt;</em>p;        // 打印p所指向地址的值<br>     return 0;<br>} </iostream></p>
-<p>在C/C++中，数组的名字就是数组的内存的地址，他表示的是数组中的第一个元素在内存中位置，同时数组名本身就是一个指针类型。</p>
-<p>在C/C++中数组是没有长度信息的，总是表示一个内存地址，所以我们在使用数组的时候需要一个额外的参数表示数组长度的信息。</p>
-<p><strong>使用指针来传参的优势</strong></p>
+        <p>最近在做一个相机的的APP，其中涉及到了很多以前没有接触过的知识，APP做到现在功能也都基本完成了，现在有心思把精力放在一些以前比较奇怪的代码上。</p>
+<h2 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h2><p>在目前的实现中，相机的预览页采用了open GL 的方式来展示摄像头采集的数据，但是在根据人脸识别后的添加的sticker上还是采用了Bitmap和 canvas 实现的方式，看到了bitmap就知道内存抖动这块一定是跟它有关了</p>
 <ol>
-<li><p>可以返回多个值（通过指针来完成多个输出参数）</p>
-</li>
-<li><p>效率上优势<br>使用普通方式来传递参数的时候，实行的是按值传递,及对传入方法的参数先进行一个拷贝，然后把拷贝的值传入，这个时候实际上是在内存区域内再次申请了一块内存来存储这个值，然后在进行拷贝，如果这个参数值在占用内存比较大的情况下，会造成效率和内存空间的浪费，这个时候如果采用指针来传递参数，那么将会避免申请内存（可以直接读原来参数的内存） 和进行拷贝，有助于提升参数的效率。</p>
-</li>
+<li>问题一：sticker 资源的加载<br>在优化前实现中，采用的是通过glide同步的获取bitmap对象，同时通过一个队列来缓存加载的图片，但是这样面对的一个问题是在一个动态的sticker中，如果出现的sticker过多，那么很可能造成这个队列不够用，那么实际上造成的效果是bitmap对象根本没有办法复用。例如实际上这个队列的最大容量是 10， 但是我们有40张图片需要加载的时候，这个队列根本起不到缓存的作用，并且在sticker较大的时候还是比较大的OOM 风险。</li>
 </ol>
-<p><strong>使用const关键字</strong><br> const关键字用来表示修饰的变量时不可以更改的，<br> const int a = 8;<br> 这个时候，我们就无法在来更改a的值。</p>
-<p>const 修饰指针的时候，表示指针所指向的内存区域是不可以修改的。</p>
-<p>  int a = 8;<br>  int b = 9;<br>  const int<em> p = &a;
-  </em>p = 9;  // 报错，不能修改指针所指向的内存<br>  p = &b;  // 不能修改指针所指向的内存，但是可以修改指针的指向。<br>  cout &lt;&lt; *p; // 输出 9。<br>  a = 10;    // 可以正常赋值<br>  cout &lt;&lt; a; // </p>
+<p>1.1 减少bitmap.<br>   首先切换了思路，我们并没有采用队列的方式来缓存所有的图片，而是针对每一个类型的sticker资源都只缓存2个bitmap，这样就内存里面关于sticker的bitmap数量最大为10个（有些类型的sticker只有一个图片资源），这样大大的减少了sticker的内存占用，在这种情况下，也基本上不会出现OOM 的风险，虽然这个时候可能会出现sticker加载慢导致的sticker掉帧情况，但是实际上这个对视觉上的影响并不大，同时加载本地资源的时候，sticker加载的速度还是很快的，并且因为在子线程执行所以这个优化方法是可以采纳的。</p>
+<p>1.2 使用option.inBitmap 和 option.inMutable</p>
+<p>   option.inBitmap 是ANDROID 11  之后推出的属性，通过这个属性在加载bitmap时候可以复用inBItmap 所指向对象的内存而不用重新开辟内存的占用，这个属性在不同的sdk基本上有不同的限制要求，使用的时候需要注意，因为我们的同类型的sticker序列的图片大小都是相同的，所以在使用的时候不用担心这个限制问题。</p>
+<p>  option.inMutable 通过这个属性我们可以让每次返回的bitmap都是之前的同一个对象</p>
+<p> 这里引用一下一篇<a href="https://juejin.im/entry/57cd1c7cbf22ec006c2e2261" target="_blank" rel="external">博客</a>的内容</p>
+<blockquote>
+<p>inBitmap<br>Android在API11添加的属性，用于重用已有的Bitmap，这样可以减少内存的分配与回收，提高性能。但是使用该属性存在很多限制： 在API19及以上，存在两个限制条件：<br>被复用的Bitmap必须是Mutable。违反此限制，不会抛出异常，且会返回新申请内存的Bitmap。<br>被复用的Bitmap的内存大小（通过Bitmap.getAllocationByteCount方法获得，API19及以上才有）必须大于等于被加载的Bitmap的内存大小。违反此限制，将会导致复用失败，抛出异常IllegalArgumentException(Problem decoding into existing bitmap）<br>在API11 ~ API19之间，还存在额外的限制：<br>被复用的Bitmap的宽高必须等于被加载的Bitmap的原始宽高。（注意这里是指原始宽高，即没进行缩放之前的宽高）<br>被加载Bitmap的Options.inSampleSize必须明确指定为1。<br>被加载Bitmap的Options.inPreferredConfig字段设置无效，因为会被被复用的Bitmap的inPreferredConfig值所覆盖（不然，所占内存可能就不一样了）</p>
+</blockquote>
+<p>1.3 使用bitmap pool</p>
+<p>因为在最终的绘制到canvas的时候使用的是一个bitmap，在优化前每次都重新创建了一个bitmap对象，实际上这是没有必要的，在使用完了bitmap之后可以通过bitmap pool 缓存起来，然后再次使用，在再次使用之前通过btimap.erase() 方法来擦除之前的数据信息即可，这样就避免了每次都重复创建新的bitmap对象。</p>
+<h2 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h2><p>在多线程的环境下锁的使用的确是避不开的，但是在一定条件下，是可以避免锁的使用的。例如在这次开发的APP中，摄像头的数据通过回调的方式传递过来（主线程），同时通过人脸识别的子线程对这个数据进行人脸识别的数据的处理。因为摄像头数据存放在一个类的成员变量中，主线程会进行写操作，而子线程会进行读写两个操作，在优化前两个线程操作这个数据都加上了锁。但是实际上分析一下会发现加锁的情况是可以避免的。锁的作用就是让两个操作在多线程的情况下不会交叉进行，既然是多线程的情况，我们把这个情况变成单线程的即可,在单线程的情况下就不会有这个问题了。</p>
+<p>所以优化操作中，直接把子线程读写操作放到了主线程当中，这样数据的操作就避免加锁的情况。</p>
+<p>通过对比前后的操作，一个方法的平均执行时间从32ms降低到了 0.4ms,优化有极大的提升。</p>
 
       
     </div>
@@ -367,9 +368,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/C/" rel="tag"># C++</a>
+            <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/指针/" rel="tag"># 指针</a>
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+            <a href="/tags/锁/" rel="tag"># 锁</a>
+          
+            <a href="/tags/内存/" rel="tag"># 内存</a>
           
         </div>
       
@@ -382,8 +387,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/02/BuildConfig-DEBUG的值/" rel="next" title="BuildConfig.DEBUG的值">
-                <i class="fa fa-chevron-left"></i> BuildConfig.DEBUG的值
+              <a href="/2017/06/25/锁的可重入/" rel="next" title="锁的可重入">
+                <i class="fa fa-chevron-left"></i> 锁的可重入
               </a>
             
           </div>
@@ -391,10 +396,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/04/C-指针学习笔记-2/" rel="prev" title="C++指针学习笔记(2)">
-                C++指针学习笔记(2) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -441,8 +442,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -495,6 +505,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存优化"><span class="nav-number">1.</span> <span class="nav-text">内存优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁优化"><span class="nav-number">2.</span> <span class="nav-text">锁优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

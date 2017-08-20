@@ -254,6 +254,141 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/10/C-显式类型转换/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/10/C-显式类型转换/" itemprop="url">C++显式类型转换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-10T21:58:26+08:00">
+                2016-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>static_cast</strong><br>任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast,例如将一个整形的运算对象强制转换为doule类型。static_cast常见的用法有以下两种：</p>
+<ul>
+<li>类型之间的转换，例如 doule 转为 int.</li>
+<li><p>可以用于编译器无法自动执行的类型转换也非常有用，可以使用static_cast找回存在于void* 指针中的值，例如</p>
+<p> void<em> p =&d;<br> double </em>dp = static_cast<double*>(p);</double*></p>
+</li>
+</ul>
+<p>当我们把指针保存在void<em>当中，并且使用static_cast找回转换的值得时候，应该保证void</em> 指针的值不变，如果一旦类型发生了变换，那么将产生未定义的后果。</p>
+<p>static_cast作类型转换的时候需要我们自己去确保转换的类型是匹配的，static_cast可以用在指针和引用上，还可以用在基础数据和对象上,用static_cast来处理的转换就需要两者具有”一定的关系”了,实际上继承关系是可以被static_cast接受的，其他情况的指针和引用转换都会被static_cast直接扔出编译错误，而这层关系上的转换又几乎都可以被dynamic_cast所代替</p>
+<p><strong>const_cast</strong><br>const_cast 只能改变运算对象底层的const修饰、<br>对于将常量对象转为非常量对象的行为，我们一般称之为去掉const性质，一旦我们去掉了某个对象的const性质，编译器就不在阻止我们对该对象进行修改了，虽然我们可以获取修改对象的权限，但是这样的操作时未定义的。<a href="http://www.cnblogs.com/ider/archive/2011/07/22/cpp_cast_operator_part2.html" target="_blank" rel="external">阅读</a></p>
+<p><strong>reinterpret_cast</strong><br>reinterpret_cast运算符用来处理无关类型之间的转换，他会产生一个新值，这个值会与原始参数有完全相同的bit位。<br>IBM的C++指南里倒是明确告诉了我们reinterpret_cast可以，或者说应该在什么地方用来作为转换运算符：</p>
+<ul>
+<li>从指针类型到一个足够大的整数类型</li>
+<li>从整数类型或者枚举类型到指针类型</li>
+<li>从一个指向函数的指针到另一个不同类型的指向函数的指针</li>
+<li>从一个指向对象的指针到另一个不同类型的指向对象的指针</li>
+<li>从一个指向类函数成员的指针到另一个指向不同类型的函数成员的指针</li>
+<li>从一个指向类数据成员的指针到另一个指向不同类型的数据成员的指针</li>
+</ul>
+<p><strong>dynamic_cast</strong><br>与static_cast一样，dynamic_cast的转换也需要目标类型和源对象有一定的关系：继承关系。 更准确的说，dynamic_cast是用来检查两者是否有继承关系。因此该运算符实际上只接受基于类对象的指针和引用的类转换。</p>
+<p>对于从子类到基类的指针转换，static_cast和dynamic_cast都是成功并且正确的（所谓成功是说转换没有编译错误或者运行异常；所谓正确是指方法的调用和数据的访问输出是期望的结果），这是面向对象多态性的完美体现。</p>
+<p>而从基类到子类的转换，static_cast和dynamic_cast都是成功的，但是正确性方面，我对两者的结果都先进行了是否非空的判别：dynamic_cast的结果显示是空指针，而static_cast则是非空指针。但很显然，static_cast的结果应该算是错误的。</p>
+<p>如果基类或者子类没有任何虚函数（如果基类有虚函数表，子类当然是自动继承了该表），当他们作为dynamic_cast的源类型进行转换时，编译也会失败。</p>
+<p>这种情况是有可能存在的，因为在设计的时候，我们可能不需要让子类重写任何基类的方法。但实际上，这是不合理的，<br>如果要用继承，那么一定要让析构函数是虚函数；如果一个函数是虚函数，那么在子类中也要是虚函数。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/08/Java中弱引用的理解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1672,172 +1807,6 @@ int main() {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/02/BuildConfig-DEBUG的值/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/02/BuildConfig-DEBUG的值/" itemprop="url">BuildConfig.DEBUG的值</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-02T00:02:46+08:00">
-                2016-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天在做项目的时候遇到一个很奇怪的问题：项目中子模块的BuildConfig 的值永远都是release模式下的值，在debug的时候，依然是这样.在我的项目中有这样一段代码</p>
-<pre><code>public int getPriority() {
-    int priority = Log.VERBOSE;
-    if (!BuildConfig.DEBUG) {
-        priority = Log.INFO;
-    }
-    return priority;
-}
-</code></pre><p>这段代码用来控制日志的的输出级别，如果在debug的模式下，应该是输出所有的log,如果是在release的模式下，应该是输出INFO级别的log，但是在实际中发现，即使是debug下，BuildConfig.Debug的值永远都是false.</p>
-<p>这是因为在gradle构建的过程当中，子模块的模式永远都是release模式，但是这个可以通过我们在gradle的配置中去更改。详细的gralde教程请看<a href="https://yeungeek.gitbooks.io/gradle-plugin-user-guide/content/library_publication.html" target="_blank" rel="external">这里</a></p>
-<p>下面说一下项目中解决办法<br>在我的项目中，依赖层级是这样的 app &gt; lib_stub &gt; lib_sdk  ,因此在配置的时候三个模块的配置文件都需要修改</p>
-<p>说明如下，app依赖lib_stub 那么需要在 dependencies 当中添加两种依赖，一种是release，一种是debug。<br>同时在lib_stub的defaultConfig当中添加两个配置项，defaultPublishConfig 和publishNonDefault（具体的含义在上面的提及的文档里面有详细的说面）<br>lib_stub 在依赖lib_sdk的时候同样需要添加两种依赖，并且在lib_sdk的defaultConfig中添加同样的配置。</p>
-<p>主要的修改部分如下<br>build.gralde(app)</p>
-<pre><code>dependencies {
-    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])
-    testCompile rootProject.ext.dependencies[&quot;junit&quot;]
-    debugCompile project(path:&apos;:lib_stub&apos;, configuration: &quot;debug&quot;)
-    releaseCompile project(path:&apos;:lib_stub&apos;, configuration: &quot;release&quot;)
-}
-</code></pre><p>build.gradle(lib_stub)</p>
-<pre><code>android {
-compileSdkVersion rootProject.ext.android[&quot;compileSdkVersion&quot;]
-buildToolsVersion rootProject.ext.android[&quot;buildToolsVersion&quot;]
-
-defaultConfig {
-    minSdkVersion rootProject.ext.android[&quot;minSdkVersion&quot;]
-    targetSdkVersion rootProject.ext.android[&quot;targetSdkVersion&quot;]
-    versionCode rootProject.ext.android[&quot;versionCode&quot;]
-    versionName rootProject.ext.android[&quot;versionName&quot;]
-    defaultPublishConfig  &quot;release&quot;
-    publishNonDefault true
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    testCompile rootProject.ext.dependencies[&quot;junit&quot;]
-    debugCompile project(path:&apos;:lib_sdk&apos;, configuration: &quot;debug&quot;)
-    releaseCompile project(path:&apos;:lib_sdk&apos;, configuration: &quot;release&quot;)
-    }
-</code></pre><p>build.gralde(lib_sdk)</p>
-<pre><code>android {
-compileSdkVersion rootProject.ext.android[&quot;compileSdkVersion&quot;]
-buildToolsVersion rootProject.ext.android[&quot;buildToolsVersion&quot;]
-
-defaultConfig {
-    minSdkVersion rootProject.ext.android[&quot;minSdkVersion&quot;]
-    targetSdkVersion rootProject.ext.android[&quot;targetSdkVersion&quot;]
-    versionCode rootProject.ext.android[&quot;versionCode&quot;]
-    versionName rootProject.ext.android[&quot;versionName&quot;]
-    defaultPublishConfig  &quot;release&quot;
-    publishNonDefault true
-    }
-}
-</code></pre><p>这样修改完成之后，就可以正确的使用BuildConfig.DEBUG 的值了。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1887,7 +1856,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1900,7 +1869,7 @@ defaultConfig {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
