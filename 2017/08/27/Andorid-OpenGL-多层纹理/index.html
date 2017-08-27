@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android,OpenGL,多层纹理," />
 
 
 
@@ -93,16 +93,17 @@
 
 
 
-<meta name="description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
+<meta name="description" content="在opengl 可以使用多个纹理单元，从而实现了使用多成纹理渲染，在使用的时候也需要绑定多个纹理单元，然后在GLSL中使用多个纹理绘制即可。 话不多少直接上代码 public class TextureRender implements GLSurfaceView.Renderer {  private Context context;  private int program; private">
+<meta name="keywords" content="Android,OpenGL,多层纹理">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu Android Studio运行不结束问题">
-<meta property="og:url" content="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/index.html">
+<meta property="og:title" content="Andorid OpenGL 多层纹理">
+<meta property="og:url" content="http://yoursite.com/2017/08/27/Andorid-OpenGL-多层纹理/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
-<meta property="og:updated_time" content="2016-08-29T16:15:34.000Z">
+<meta property="og:description" content="在opengl 可以使用多个纹理单元，从而实现了使用多成纹理渲染，在使用的时候也需要绑定多个纹理单元，然后在GLSL中使用多个纹理绘制即可。 话不多少直接上代码 public class TextureRender implements GLSurfaceView.Renderer {  private Context context;  private int program; private">
+<meta property="og:updated_time" content="2017-08-27T13:30:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu Android Studio运行不结束问题">
-<meta name="twitter:description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
+<meta name="twitter:title" content="Andorid OpenGL 多层纹理">
+<meta name="twitter:description" content="在opengl 可以使用多个纹理单元，从而实现了使用多成纹理渲染，在使用的时候也需要绑定多个纹理单元，然后在GLSL中使用多个纹理绘制即可。 话不多少直接上代码 public class TextureRender implements GLSurfaceView.Renderer {  private Context context;  private int program; private">
 
 
 
@@ -130,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/27/Andorid-OpenGL-多层纹理/"/>
 
 
 
 
 
-  <title>Ubuntu Android Studio运行不结束问题 | Learning</title>
+  <title>Andorid OpenGL 多层纹理 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +257,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/27/Andorid-OpenGL-多层纹理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tom Liu">
@@ -273,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Ubuntu Android Studio运行不结束问题</h1>
+          <h1 class="post-title" itemprop="name headline">Andorid OpenGL 多层纹理</h1>
         
 
         <div class="post-meta">
@@ -285,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-30T00:09:54+08:00">
-                2016-08-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-27T21:26:57+08:00">
+                2017-08-27
               </time>
             
 
@@ -320,16 +321,149 @@
       
 
       
-        <p>今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错</p>
-<blockquote>
-<p>Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, make sure the aapt execute at C:\Users\android\AppData\Local\Android\sdk\build-tools\23.0.2\aapt.exe can run successfully (some anti-virus may block it) or try setting environment variable </p>
-</blockquote>
-<p>解决办法：</p>
-<ol>
-<li>首先修改build-tools的版本，换成 24.0.2或者其他版本</li>
-<li>在Ubuntu的环境变量中添加 <strong>SLAVE_AAPT_TIMEOUT=30</strong></li>
-</ol>
+        <p>在opengl 可以使用多个纹理单元，从而实现了使用多成纹理渲染，在使用的时候也需要绑定多个纹理单元，然后在GLSL中使用多个纹理绘制即可。</p>
+<p>话不多少直接上代码</p>
+<pre><code>public class TextureRender implements GLSurfaceView.Renderer {
 
+private Context context;
+
+private int program;
+private final float vertext [] = {
+        1, 1, 0,   // top right
+        -1, 1, 0,  // top left
+        -1, -1, 0, // bottom left
+        1, -1, 0,  // bottom right
+};
+
+private final short position [] = {0, 1, 2, 2, 3, 0};
+
+
+private FloatBuffer verextBuffer = null;
+private ShortBuffer shortBuffer = null;
+private FloatBuffer texBuffer;
+
+private int v_position;
+private int tex_position;
+private int texture;
+private int textureUniform;
+private int matrix;
+private int watermark;
+private int watermarkUniform;
+
+private float texure [] = {
+        0f, 0f,
+        1f, 0f,
+        1f, 1f,
+        0f, 1f };
+
+public TextureRender(Context context){
+    this.context =  context;
+    verextBuffer = ByteBuffer.allocateDirect(vertext.length * 4)
+            .order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertext);
+    verextBuffer.position(0);
+
+    shortBuffer = ByteBuffer.allocateDirect(position.length * 2)
+            .order(ByteOrder.nativeOrder()).asShortBuffer().put(position);
+    shortBuffer.position(0);
+
+    texBuffer = ByteBuffer.allocateDirect(texure.length * 4)
+            .order(ByteOrder.nativeOrder()).asFloatBuffer().put(texure);
+    texBuffer.position(0);
+}
+
+@Override
+public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    program = GLES20.glCreateProgram();
+    int vertex = Util.createShade(GLES20.GL_VERTEX_SHADER,
+            Util.readTextResourceFromRaw(context, R.raw.texture_vertex));
+    int fragment = Util.createShade(GLES20.GL_FRAGMENT_SHADER,
+            Util.readTextResourceFromRaw(context, R.raw.texture_fragment));
+
+    GLES20.glAttachShader(program, vertex);
+    GLES20.glAttachShader(program, fragment);
+    GLES20.glLinkProgram(program);
+    GLES20.glUseProgram(program);
+
+    v_position = GLES20.glGetAttribLocation(program, &quot;aPos&quot;);
+    GLES20.glEnableVertexAttribArray(v_position);
+    GLES20.glVertexAttribPointer(v_position, 3, GLES20.GL_FLOAT, false, 12, verextBuffer);
+
+    tex_position = GLES20.glGetAttribLocation(program, &quot;v_texCoord&quot;);
+    GLES20.glEnableVertexAttribArray(tex_position);
+    GLES20.glVertexAttribPointer(tex_position, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
+
+    textureUniform = GLES20.glGetUniformLocation(program, &quot;u_samplerTexture&quot;);
+    GLES20.glUniform1i(textureUniform, 0);
+
+    watermarkUniform = GLES20.glGetUniformLocation(program, &quot;watermark&quot;);
+    GLES20.glUniform1i(watermarkUniform, 1);
+
+
+    try {
+        texture = Util.createTexture(BitmapFactory.decodeStream(context.getAssets().open(&quot;texture.png&quot;)));
+        watermark = Util.createTexture(BitmapFactory.decodeStream(context.getAssets().open(&quot;watermark.png&quot;)));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+@Override
+public void onSurfaceChanged(GL10 gl, int width, int height) {
+    GLES20.glViewport(0, 0, width, height);
+    //设置相机位置
+}
+
+@Override
+public void onDrawFrame(GL10 gl) {
+    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
+    GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, watermark);
+
+    // 用 glDrawElements 来绘制，mVertexIndexBuffer 指定了顶点绘制顺序
+    GLES20.glDrawElements(GLES20.GL_TRIANGLES, position.length,
+            GLES20.GL_UNSIGNED_SHORT, shortBuffer);
+}}
+</code></pre><p>下面是createTexture方法</p>
+<pre><code>public static int createTexture(Bitmap bitmap) {
+    int[] texture = new int[1];
+    if (bitmap != null &amp;&amp; !bitmap.isRecycled()) {
+        // 生成纹理
+        GLES20.glGenTextures(1, texture, 0);
+        // 生成纹理
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[0]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        return texture[0];
+    }
+
+    return 0;
+}
+</code></pre><p><strong>顶点着色器</strong></p>
+<pre><code>attribute vec3 aPos;
+attribute vec2 v_texCoord;
+varying vec2 outTexCoord;
+void main() {
+    gl_Position =  vec4(aPos, 1.0);
+    outTexCoord = v_texCoord;
+}
+</code></pre><p><strong>片段着色器</strong></p>
+<pre><code>precision mediump float;
+varying vec2 outTexCoord;
+uniform sampler2D u_samplerTexture;
+uniform sampler2D watermark;
+void main(){
+ gl_FragColor = mix(texture2D(u_samplerTexture, outTexCoord) * vec4(0, 1, 0, 1),           texture2D(watermark, vec2(1.0 - outTexCoord.x, outTexCoord.y)), 0.2);
+}
+</code></pre>
       
     </div>
 
@@ -356,6 +490,16 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+            <a href="/tags/多层纹理/" rel="tag"># 多层纹理</a>
+          
+        </div>
+      
 
       
       
@@ -365,15 +509,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/08/20/性能优化/" rel="next" title="性能优化">
+                <i class="fa fa-chevron-left"></i> 性能优化
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/02/BuildConfig-DEBUG的值/" rel="prev" title="BuildConfig.DEBUG的值">
-                BuildConfig.DEBUG的值 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>

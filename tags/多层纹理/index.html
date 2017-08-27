@@ -93,16 +93,12 @@
 
 
 
-<meta name="description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu Android Studio运行不结束问题">
-<meta property="og:url" content="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Learning">
+<meta property="og:url" content="http://yoursite.com/tags/多层纹理/index.html">
 <meta property="og:site_name" content="Learning">
-<meta property="og:description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
-<meta property="og:updated_time" content="2016-08-29T16:15:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu Android Studio运行不结束问题">
-<meta name="twitter:description" content="今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错  Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, mak">
+<meta name="twitter:title" content="Learning">
 
 
 
@@ -130,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/"/>
+  <link rel="canonical" href="http://yoursite.com/tags/多层纹理/"/>
 
 
 
 
 
-  <title>Ubuntu Android Studio运行不结束问题 | Learning</title>
+  <title>标签: 多层纹理 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -162,7 +158,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -246,150 +242,44 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/30/Ubuntu-Android-Studio运行不结束问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
+  <div id="posts" class="posts-collapse">
+    <div class="collection-title">
+      <h1>多层纹理<small>标签</small>
+      </h1>
+    </div>
 
     
-      <header class="post-header">
+      
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">Ubuntu Android Studio运行不结束问题</h1>
-        
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2017/08/27/Andorid-OpenGL-多层纹理/" itemprop="url">
               
-                <span class="post-meta-item-text">发表于</span>
+                <span itemprop="name">Andorid OpenGL 多层纹理</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-30T00:09:54+08:00">
-                2016-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>今天在Ubuntu16 04 上搭建andorid的开发环境之后遇到一个奇怪的问题，在android studio 中点击运行之后gradle 一直在运行，其中报错</p>
-<blockquote>
-<p>Exception in thread “png-cruncher_6” java.lang.RuntimeException: Timed out while waiting for slave aapt process, make sure the aapt execute at C:\Users\android\AppData\Local\Android\sdk\build-tools\23.0.2\aapt.exe can run successfully (some anti-virus may block it) or try setting environment variable </p>
-</blockquote>
-<p>解决办法：</p>
-<ol>
-<li>首先修改build-tools的版本，换成 24.0.2或者其他版本</li>
-<li>在Ubuntu的环境变量中添加 <strong>SLAVE_AAPT_TIMEOUT=30</strong></li>
-</ol>
-
-      
-    </div>
-
-    <div>
-      
+            </a>
         
+      </h2>
 
-      
-    </div>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-08-27T21:26:57+08:00"
+              content="2017-08-27" >
+          08-27
+        </time>
+      </div>
 
-    <div>
-      
-        
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/02/BuildConfig-DEBUG的值/" rel="prev" title="BuildConfig.DEBUG的值">
-                BuildConfig.DEBUG的值 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
+    </header>
   </article>
 
 
-
-    <div class="post-spread">
-      
-    </div>
+    
   </div>
+
+  
 
 
           </div>
@@ -397,10 +287,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -587,10 +473,10 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-
+  
 
   
 

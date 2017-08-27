@@ -254,6 +254,260 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/26/C-拷贝控制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/26/C-拷贝控制/" itemprop="url">C++拷贝控制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-26T14:50:26+08:00">
+                2017-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当定义一个类的时候，我们显示或者隐式的制定这个类的对象在拷贝，移动，赋值或者销毁的时候做什么，一个类通过定义五中特殊的成员函数来控制这些操作，包括 <strong>拷贝构造函数， 拷贝赋值运算符，移动构造函数，移动赋值运算符和析构函数</strong></p>
+<p>拷贝和移动构造函数定义了当用同类型的另一个对象初始化本对象时做什么。<br>拷贝和移动赋值运算符定义了将一个对象赋予同类型的另一个对象时做什么。<br>析构函数定义了此类型对象销毁的时候做什么。</p>
+<p><strong>拷贝构造函数</strong><br>如果一个构造函数的第一个参数子自身类型的引用，并且任何额外类型的参数都有默认值，则此构造函数是拷贝构造参数。</p>
+<pre><code>class Foo {
+    Foo(); // 默认构造参数
+    Foo(Foo&amp; f); // 拷贝构造参数
+}
+</code></pre><p>一般而言，合成的拷贝构造函数会将其参数的成员逐个拷贝到正在创建的对象中，编译器从给定对象中依次将每个非 static的成员拷贝到正在创建的对象中。</p>
+<p>每个成员的类型决定了它是如何拷贝的：类类型的成员会使用其拷贝构造函数，内置类型则是直接拷贝，虽然我们<strong>不能拷贝一个数组</strong>，但是合成拷贝函数会逐元素的拷贝一个数组类型的成员，如果数组元素是类类型，则使用元素的拷贝构造函数来拷贝。</p>
+<p>拷贝初始化不仅发生在使用 = 定义变量的时候发生，还有以下情况 </p>
+<ul>
+<li>将对象作为一个实参传递给一个非引用类型的形参</li>
+<li>从一个返回类型为非引用类型的函数返回一个对象(方法不能返回一个方法内对象的引用)</li>
+<li>用花括号列表初始化一个数组中的元素或者一个聚合类中的成员。</li>
+</ul>
+<p>拷贝构造参数被从来初始化非引用类型参数，这一特性解释了为什么拷贝构造函数自己的参数必须是引用类型。如果不是，那么调用拷贝构造函数的时候，其参数有需要拷贝初始化，这样就陷入了死循环</p>
+<p><em>拷贝构造函数必须是存在且可以访问的（例如不能是private）</em></p>
+<pre><code>Point foo(Point p) { // 传递参数调用一次
+    Point local = p;  // = 调用一次
+    Point* heap = new Point(p); // 调用一次
+    *heap = p; // 不会调用拷贝构造函数
+    Point pa[4] = {local, *heap}; // 调用两次
+    return local;
+}
+</code></pre><p><strong>拷贝赋值运算符（ = 操作符 ）</strong><br>与类控制其对象如何初始化一样， 类也可以控制其对象如何赋值<br>与处理拷贝构造函数一样，如果一个类未定义自己的拷贝赋值运算符，编译器会为它生成一个合成拷贝赋值运算符，合成拷贝赋值运算符返回一个指向其左侧运算对象的引用。</p>
+<p><strong>析构函数</strong><br>析构函数执行与构造函数相反的工作，析构函数释放对象使用的资源，并且销毁对象的非static成员数据，析构函数是一个类的成员函数，名字由 ~ 加上类名构成，它没有返回值也没有参数，所以析构函数不能被重载。</p>
+<p>在一个析构函数中首先执行函数体然后销毁成员，成员按照初始化的顺序逆序销毁。销毁类类型的成员需要执行成员自己的析构函数，内置类型没有析构函数，因此销毁内置类型成员什么也不需要做，需要注意的是，当隐式的销毁一个内置类型的成员不会delete 它所指向的对象。</p>
+<p>与普通指针不同，智能指针是类类型，所有具有析构函数，只能指针成员在析构阶段会被自动销毁。</p>
+<p><strong>合成析构函数</strong><br>当一个类未定义自己的析构函数时，编译器会为它定义一个合成析构函数，类似拷贝构造函数和拷贝赋值运算符，对于某些类，合成析构函数被用来阻止该类型的对象被销毁。</p>
+<p>成员是在析构函数之后隐含的析构阶段被销毁的，在整个对象被销毁的过程中，析构函数作为成员销毁步骤之外的另一部分而进行鍀</p>
+<p><strong>三/五法则</strong></p>
+<ul>
+<li>需要析构函数的类需要拷贝和赋值操作</li>
+<li>需要拷贝操作的类也需要赋值操作，反之亦然</li>
+</ul>
+<p><strong>阻止拷贝</strong></p>
+<ul>
+<li>定义删除的函数，在函数的参数列表后面加上=delete,来指出我们希望将它定义为删除的。=delete通知编译器以及我们代码的读者，我们不希望定义这些成员，因此可以使用 = delete 放在拷贝参数的后面来阻止拷贝。但是需要注意的是析构函数不能使用=delete. 如果析构函数被删除，那么久无法销毁此类型的对象了，对于一个删除了析构函数的类型，编译器将不允许定义该类型的变量或者创建该类型的变量和是临时对象。对于定义了析构函数的类型，虽然我们不能定义这种类型的变量或者成员，但是可以动态的分配这种类型的对象。<br><em>本质上，当含有不可能拷贝，赋值或者销毁的成员时，类的合成拷贝控制函数就被定义成删除的、</em></li>
+<li>在新的标准发布之前，类是通过将其拷贝函数和拷贝赋值运算符定义为private 来阻止拷贝。</li>
+</ul>
+<p><em>希望阻止拷贝的类应该使用=delete 来定义他们自己的拷贝构造函数和拷贝赋值运算符、</em></p>
+<h2 id="拷贝控制和资源管理"><a href="#拷贝控制和资源管理" class="headerlink" title="拷贝控制和资源管理"></a>拷贝控制和资源管理</h2><p>通常定义类外管理资源的类，都必须定义拷贝控制成员，为了定义这些成员，我们必须定义此类对象的拷贝语义，一般来说有两种选择，可以定义拷贝操作使类的类型看起来像一个值或者像一个指针，类的行为像一个值意味着它应该有自己的状态，副本和对象完全是独立的，改变副本也不会对原有的对象由任何影响，反之亦然。 行为像指针的类则共享状态，当我们拷贝这类的对象时，副本和对象使用相同的底层数据，改变副本也会改变对象，反之亦然。</p>
+<p><strong>赋值运算符</strong><br>当编写赋值运算符的时候有两点需要注意</p>
+<ul>
+<li>如果将一个对象赋予它自身，赋值运算符必须能正确的工作</li>
+<li>大多数赋值运算符组合了析构函数和拷贝构函数的工作。</li>
+</ul>
+<p>当编写一个赋值运算符的饿时候，一个好的模式是现将右侧运算对象拷贝到一个局部临时变量中，当完成拷贝之后销毁左侧运算对象的现有成员就是安全的了，完成之后就可以将剩下的数据拷贝到左侧对象的成员中了。</p>
+<p><strong>定义行为像指针的类</strong></p>
+<p>对行为类似指针的类，我们需要为期定义拷贝构造函数和拷贝赋值运算符，来拷贝指针成员本身而不是其指向的对象，自定义的类任然需要自己的析构函数来释放接受构造函数所指向的内存，但是析构函数不能单方面的释放内存，只有当最后一个指针被销毁的时候才能释放所指向的内存。令一个类展现类似指针最好的方法就是使用shared_ptr。但是如果我们希望自己直接来管理，那么使用引用计数会是一个很好的选择。</p>
+<p><em>引用计数</em><br> 引用计数的工作方式如下：</p>
+<ul>
+<li>除了初始化对象，每个构造函数都要创建一个引用计数，用来记录有多少对象与正在创建的对象共享状态，当我们创建一个对象的时候，只有一个对象共享状态，因此计数器的值为1</li>
+<li>拷贝构造函数不分配新的计数器，而是与拷贝给定对象的数据成员，包括计数器。拷贝构造函数递增共享的计数器。</li>
+<li>析构函数递减计数器，表示共享状态的对象少了一个，当一个计数器为零的时候，析构函数需要释放对象。</li>
+<li>拷贝赋值运算符递增右侧运算对象的计算器，递减左侧运算对象的计数器，如果左侧运算对象的计数器为零，那么拷贝赋值运算符需要销毁对象。</li>
+</ul>
+<p><strong>C++ swap 函数</strong></p>
+<p>在大多数时候，使用默认的swap函数就足够了， 但是对于一些自定义的类型来说就不是了，因为在默认的实现中，交换两个对象需要一次拷贝和两次赋值，但是对于某些类型来说，拷贝的代价太大，所以需要尽可能的避免拷贝，同时，在自定义的类型的成员变量中，存在成员指针，这个时候我们只需要交换指针即可，而不需要拷贝指针所指向的对象。</p>
+<p><strong>移动函数</strong><br>在C++的新特性中，一个很重要的特性就是移动而非拷贝的能力，因为在很多情况下，我们在完成了拷贝之后马上就将拷贝对象原来所占用的内存销毁掉了，如果这个时候使用移动而非拷贝就可以避免一部分开销，有助于性能的提升。</p>
+<p><strong>右值引用</strong></p>
+<p>在新的C++标准中为了支持移动操作，添加了这一种新的引用类型，右值引用。所谓的右值引用就是必须绑定到右值上， 可以通过&amp;&amp; 来绑定到一个右值上。左值引用这右值引用有明显的区别：左值有持久的状态，而右值要么是常亮要么是求值过程中临时创建的对象。右值引用只能绑定到临时对象，那么右值引用的对象即将被销毁，而且该对象没有其他的用户=。</p>
+<p>变量是一个左值，变量可以看做只有一个运算对象而没有运算符的表达式。因此我们不能将右值引用绑定到一个对象上，即使这个变量是右值引用类型也不行。</p>
+<p>虽然不能直接将一个右值引用绑定到一个左值上，但是可以使用std::move() 函数来显示的将一个左值引用转换为一个右值引用。但是需要注意的一点是：调用move就意味着除了对传入的引用的赋值或者销毁外，将不再使用这个引用。在调用move之后，不能对对象的状态作任何假设。</p>
+<p><strong>移动构造函数</strong><br>移动构造函数的第一个参数是该类类型的一个右值引用，除此之外所有其他的参数都应该有默认值除了完成资源的移动，移动构函数还必须保证对移动源对象的销毁操作是无害的。特别需要注意的是，一旦资源完成移动，源对象就不在只想被移动的资源。</p>
+<p><strong>移动操作，标准库容器和异常</strong><br>由于移动构造函数通常只是移动资源而不分配任何资源，所以移动操作通常不会抛出任何异常。当我们需要定义一个不抛出异常的函数时，我们需要在函数声明的后面手动加上<em>noexcept</em>,如果我们不这样做，那么标准库会认为移动自定义的对象可能会抛出异常，并且为了处理这种可能性而做一些额外的工作。</p>
+<p>为什么需要noexcept:</p>
+<ul>
+<li>虽然移动操作通常不会抛出异常，但是抛出异常是允许的</li>
+<li>标准库容器能对异常发生时自身的行为提供保障</li>
+</ul>
+<p>比如有以下情况的存在，自定义类 </p>
+<pre><code>class A {
+    void * data1;
+    void * data2;
+}
+</code></pre><p> 当需要完成移动构造函数时，如果在移动了data1 之后出现了异常，无法完成data2的移动，那么这个时候将无法满足A 自身保持不变的情况（data1已经被改变）。 另一方面，如果使用拷贝构造函数，那么这个时候无论拷贝有没有出现异常，原来的A都不会受到影响。</p>
+<p> 因此为了避免这种潜在的问题，除非标准库知道元素类型在移动构造函数不会抛异常，否则在重新分配内存的过程中，它就必须使用拷贝构造函数而不是移动构造函数。如果希望标准库容器在重新分配内存的情况使用自定义的移动构造函数而不是拷贝构造函数就必须将移动构造函数声明为noexcept。</p>
+<p> <strong>移动赋值运算符</strong><br> 移动赋值运算符执行与析构函数和移动构造函数相同的工作，与移动构造函数一样，如果移动赋值运算符不抛出任何异常，应该将其标记为noexcept，类似拷贝赋值运算符，移动赋值运算符必须正确处理自赋值的情况。</p>
+<p> 下面是使用移动构造函数和移动赋值运算符的一个示例、</p>
+<pre><code>#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+
+using namespace std;
+class MyClass {
+
+private:
+    string* name;
+
+public:
+    MyClass(string * name_ = new string(&quot;MyClass....&quot;)) : name(name_) {
+
+    }   
+
+    MyClass(const MyClass &amp; other) {
+        this-&gt;name = new string(*other.name);
+        cout&lt;&lt;&quot;copy construct is invoked&quot;&lt;&lt;endl;
+    }
+
+    MyClass(MyClass &amp;&amp; right) noexcept {
+        if (this != &amp;right) {
+            delete name;
+            this-&gt;name = right.name;
+            right.name = nullptr;
+        }
+        cout&lt;&lt;&quot;move construct is invoked&quot;&lt;&lt;endl;
+    }
+
+    ~MyClass() {
+        if (name) {
+            delete name;
+        }
+    }
+
+    string getString() const {
+        return *name;
+    }
+
+    MyClass&amp; operator=(MyClass &amp;&amp; right) noexcept {
+        if (this != &amp;right) {
+            delete name;
+            this-&gt;name = right.name;
+            right.name = nullptr;
+        }
+        cout&lt;&lt;&quot;move assigment is invoked&quot;&lt;&lt;endl;
+        return *this;
+    }
+};
+
+int main() {
+    string name = &quot;xxxxxx&quot;;
+    MyClass test(&amp;name);
+    MyClass test1;
+    test1 = std::move(test);
+    cout&lt;&lt;test1.getString()&lt;&lt;endl;
+}
+</code></pre><p><strong>移动后源对象必须可析够</strong></p>
+<p>从一个源对象移动数据并不会销毁这个对象，但是有时候在完成移动操作之后，源对象会被销毁，因此当我们编写一个移动操作时，必须确保一个源对象进入可析够状态。</p>
+<p><em>所有五个拷贝控制成员应该看做一个整体:一般说来，如果一个类定义了任何一个拷贝操作，它就应该定义所有的五个操作，如前所述，这些类必须定义拷贝构造函数，拷贝赋值运算符和析构函数才能正确工作，这些类通常拥有一个资源，而拷贝成员必须拷贝此资源，一般说来，拷贝一个资源会导致一些额外开销，在这种拷贝非必要的情况下，定义了移动构造函数和赋值运算符的类就可以避免此问题。</em></p>
+<p>需要注意的是，不建议随意使用移动操作，由于一个移动源对象具有不确定状态，对其调用std::move是危险的，当调用std::move的时候，必须确定移动后源对象没有其他的用户，通过在类代码中小心使用move可以大幅提升性能。</p>
+<p><strong>右值和左值引用成员函数</strong><br>在旧的标准中，不能阻止对对右值进行赋值，为了维持向后兼容性，新的标准库任然允许想右值赋值，但是在自定义的类中，可以阻止这种情况的出现。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/Linux学习笔记之进程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2464,305 +2718,6 @@ public class HotFixUtil {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/LeakCanary源码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/12/LeakCanary源码分析/" itemprop="url">LeakCanary源码分析(1)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-12T22:15:45+08:00">
-                2016-12-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>LeakCanary是在Android上一款开源的内存泄露分析工具，通过这款工具你可以实时的观察到当前app中出现的内存泄露情况，并且提供泄露路径方便用户来查找内存泄露的根源，[链接]是GitHub上的项目<a href="https://github.com/square/leakcanary" target="_blank" rel="external">1</a></p>
-<p>LeakCanary 项目中，包括了五个模块，分别是</p>
-<ul>
-<li>leakcanary-analyser(为解析hprof文件，找到泄露的对象)</li>
-<li>leakcanry-android(主要包含了暴漏给android使用的接口)</li>
-<li>leakcanary-anroid-no-op(没有用到)</li>
-<li>leakcanary-smaple(示例代码)</li>
-<li>leakcanary-watcher(监视对象，触发GC并且生成hprof文件)</li>
-</ul>
-<p>下面从示例代码中开始入手看LeakCanary是如何发挥作用的</p>
-<h2 id="leakcanary-smaple"><a href="#leakcanary-smaple" class="headerlink" title="leakcanary-smaple"></a>leakcanary-smaple</h2><p>在这个模块当中只有两个类，一个是自定义的ExampleApplication，继承于Application，一个是MainActivity.</p>
-<pre><code>@Override
-public void onCreate() {
-    super.onCreate();
-    if (LeakCanary.isInAnalyzerProcess(this)) {
-        // This process is dedicated to LeakCanary for heap analysis.
-        // You should not init your app in this process.
-        return;
-    }
-    enabledStrictMode();
-    LeakCanary.install(this);
-}
-</code></pre><p>在onCreate方法当中，首先判断当前的进程是不是分析进程，在LeakCanary当中为了避免在用户程序的进程当中占用太多的资源，所以整个分析过程是在一个单独的进程当中。</p>
-<p>这个方法最终是调用了LeakCanaryInternals这个类的isInServiceProcess方法，这个方法比较简单，主要是通过比较当前Application所在进程的名字是不是HeapAnalyzerService在AndroidManifest.xml中所指定的名字来判断当前的进程是不是应用所在的进程，如果是应用所在的进程    <em>LeakCanary.isInAnalyzerProcess(this)</em>  最终会返回一个false, 这个时候将会继续往下执行，最后执行到LeakCanary.install(this); 如果当前进程的名字就是HeapAnalyzerService在AndroidManifest.xml中所指定的名字，那么表示当前进程是分析hprof的进程，这个时候就直接返回。</p>
-<p>接下来进入到 <em>LeakCanary.install(this)</em> 当中，方法的代码如下</p>
-<pre><code>  /**
-  * Creates a {@link RefWatcher} that works out of the box, and starts watching activity
-  * references (on ICS+).
-*/
- public static RefWatcher install(Application application) {
-    return refWatcher(application).listenerServiceClass(DisplayLeakService.class)
-    .excludedRefs(AndroidExcludedRefs.createAppDefaults().build())
-    .buildAndInstall();
-    }
-</code></pre><p>整个方法中都是用调用了通过调用 LeakCanary中的静态方法refWather返回了一个AndroidRefWatcherBuilder对象，这个对象中采用了建造者模式，来设置我们内存泄露中我们设置的一些参数</p>
-<ul>
-<li>listenerServiceClass()解析结果处理的IntentService. 这个Service需要继承AbstractAnalysisResultService 并且重写onHeapAnalyzed(HeapDump, AnalysisResult)方法来处理得到的分析结果。</li>
-<li>excludedRefs 用来方便用户去掉一些特定的引用，当进行内存泄露分析的时候这些引用将不会被考虑在内。</li>
-<li><p>buildAndInstall() 创建了RefWatcher实例，并且开始监听Activity的引用。</p>
-<pre><code>public RefWatcher buildAndInstall() {
-    RefWatcher refWatcher = build();
-    if (refWatcher != DISABLED) {
-        LeakCanary.enableDisplayLeakActivity(context);
-        ActivityRefWatcher.installOnIcsPlus((Application) context, refWatcher);
-    }
-    return refWatcher;
-}
-</code></pre></li>
-</ul>
-<p>从上面代码不难看出其中最重要的方法调用是ActivityRefWatcher.installOnIcsPlus。</p>
-<pre><code>@TargetApi(ICE_CREAM_SANDWICH)
-public final class ActivityRefWatcher {
-
-    public static void installOnIcsPlus(Application application, RefWatcher refWatcher) {
-        if (SDK_INT &lt; ICE_CREAM_SANDWICH) {
-            // If you need to support Android &lt; ICS, override onDestroy() in your base activity.
-            return;
-        }
-        ActivityRefWatcher activityRefWatcher = new ActivityRefWatcher(application, refWatcher);
-        activityRefWatcher.watchActivities();
-    }
-
-    private final Application.ActivityLifecycleCallbacks lifecycleCallbacks =
-            new Application.ActivityLifecycleCallbacks() {
-                @Override
-                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                }
-
-                @Override
-                public void onActivityStarted(Activity activity) {
-                }
-
-                @Override
-                public void onActivityResumed(Activity activity) {
-                }
-
-                @Override
-                public void onActivityPaused(Activity activity) {
-                }
-
-                @Override
-                public void onActivityStopped(Activity activity) {
-                }
-
-                @Override
-                public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                }
-
-                @Override
-                public void onActivityDestroyed(Activity activity) {
-                    ActivityRefWatcher.this.onActivityDestroyed(activity);
-                }
-            };
-
-    private final Application application;
-    private final RefWatcher refWatcher;
-
-    /**
-     * Constructs an {@link ActivityRefWatcher} that will make sure the activities are not leaking
-     * after they have been destroyed.
-     */
-    public ActivityRefWatcher(Application application, final RefWatcher refWatcher) {
-        this.application = checkNotNull(application, &quot;application&quot;);
-        this.refWatcher = checkNotNull(refWatcher, &quot;refWatcher&quot;);
-    }
-
-    void onActivityDestroyed(Activity activity) {
-        refWatcher.watch(activity);
-    }
-
-    public void watchActivities() {
-        // Make sure you don&apos;t get installed twice.
-        stopWatchingActivities();
-        application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
-    }
-
-    public void stopWatchingActivities() {
-        application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
-    }
-}
-</code></pre><p>看到 lifecycleCallbacks 变量的类型的类型，就应该恍然大悟了，<strong>LeakCanary就是通过在Application当中注册了Activity 生命周期的监听器来实现对Acitivity 引用泄露的分析。</strong> , 每当一个调用一个Activity onDestroy方法之前会调用lifecycleCallbacks的onActivityDestroyed方法。<br>最终会进入到RefWatcher实例的watch(Object ref, String reference Name)方法当中，代码如下：</p>
-<pre><code>/**
- * Watches the provided references and checks if it can be GCed. This method is non blocking,
- * the check is done on the {@link WatchExecutor} this {@link RefWatcher} has been constructed
- * with.
- *
- * @param referenceName An logical identifier for the watched object.
- */
-public void watch(Object watchedReference, String referenceName) {
-    if (this == DISABLED) {
-        return;
-    }
-    checkNotNull(watchedReference, &quot;watchedReference&quot;);
-    checkNotNull(referenceName, &quot;referenceName&quot;);
-    final long watchStartNanoTime = System.nanoTime();
-    String key = UUID.randomUUID().toString();
-    retainedKeys.add(key);
-    final KeyedWeakReference reference =
-            new KeyedWeakReference(watchedReference, key, referenceName, queue);
-
-    ensureGoneAsync(watchStartNanoTime, reference);
-}
-</code></pre><p>在解释这段代码之前简单的说一下判断一个对象有没有被回收的原理：</p>
-<p><strong>在Java中，当我们使用WeakReference指向一个对象的时候，如果这个对象已经被回收了，那么WeakReference 将会被添加到一个指定的队列当中去</strong></p>
-<p>在这个方法中，LeakCanary 创建了一个指向Activity的弱引用KeyedWeakReference 对象，KeyedWeakReference继承于WeakReference 但是做了一定的扩展就是添加了两个字符串类型的字段name 和 key。这个key 也就是通过UUID生成的字符串。然后把这个key 添加到了 retainedKeys 代表的字符串集合当中去，只要key还在retainedKeys 当中就表示和 key 绑定的weakreference所指向的对象还没有被回收。</p>
-<p>ensureGoneAsync()只是把分析方法通过异步的方式来处理（里面还有很多内容可以分析），在里面最终的调用的方法是 <em>ensureGone(final KeyedWeakReference reference, final long watchStartNanoTime)</em> 方法</p>
-<p>放代码</p>
-<pre><code>Retryable.Result ensureGone(final KeyedWeakReference reference, final long watchStartNanoTime) {
-    ....
-
-    removeWeaklyReachableReferences();
-
-    ...
-    if (gone(reference)) {
-        return DONE;
-    }
-    gcTrigger.runGc();
-    removeWeaklyReachableReferences();
-    if (!gone(reference)) {
-        File heapDumpFile = heapDumper.dumpHeap();
-        if (heapDumpFile == RETRY_LATER) {
-            // Could not dump the heap.
-            return RETRY;
-        }
-
-        heapdumpListener.analyze(
-                new HeapDump(heapDumpFile, reference.key, reference.name, excludedRefs, watchDurationMs,
-                        gcDurationMs, heapDumpDurationMs));
-    }
-    return DONE;
-}
-</code></pre><p>首先进入removeWeaklyReachableReferences() 方法</p>
-<pre><code>private void removeWeaklyReachableReferences() {
-    // WeakReferences are enqueued as soon as the object to which they point to becomes weakly
-    // reachable. This is before finalization or garbage collection has actually happened.
-    KeyedWeakReference ref;
-    while ((ref = (KeyedWeakReference) queue.poll()) != null) {
-        retainedKeys.remove(ref.key);
-    }
-}
-</code></pre><p>在方法的注释当中我们可以清楚的明白方法的含义：<br>一个对象如果变得只有一个弱引用指向它，那么它就会被添加到指定的队列当中去，就是在前面提到过的queue，这个时候我们可以通过KeyedWeakReference 来找出当初匹配的weakference , name , key，然后将key 从集合中移除，表明key对应引用所指向的对象已经被回收。</p>
-<p>接下来这个时候我们在判断一下引用的所指向的对象是不是被回收了，这个判断还是通过判断key 在不在集合当中，如果不在表示这个对象已经完全被回收，可以直接返回。</p>
-<p>接下来会触发一次GC. 之所以这样做是为了尽可能的避免进行内存的dump和分析操作。有些对象在这个时候本应该是只有weakreference 可达，但是却不在对队列当中，这个时候触发一次GC并且再进行一次引用分析可以有效地避免一些误判。</p>
-<p>这里触发GC的代码如下</p>
-<pre><code>// System.gc() does not garbage collect every time. Runtime.gc() is
-  // more likely to perfom a gc.
-  Runtime.getRuntime().gc();
-</code></pre><p>GC完成之后，接下来再进行一次引用的检查，如果这个时候对象还是没有回收那么接下来就要开始内存的dump 操作了。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2812,7 +2767,7 @@ public void watch(Object watchedReference, String referenceName) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2825,7 +2780,7 @@ public void watch(Object watchedReference, String referenceName) {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">41</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
