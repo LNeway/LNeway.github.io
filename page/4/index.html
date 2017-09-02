@@ -254,6 +254,186 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/04/C-指针学习笔记-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/04/C-指针学习笔记-2/" itemprop="url">C++指针学习笔记(2)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-04T22:03:04+08:00">
+                2016-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>空指针</strong><br>空指针不指向任何实际的对象或者函数。反过来说，任何对象或者函数的地址都不可能是空指针。<br>例如， int <em>p = 0;<br>不能对空指针进行</em> 操作</p>
+<p><strong>野指针</strong><br>野指针不是空指针，是一个指向垃圾内存的指针。</p>
+<p>野指针形成原因：</p>
+<ol>
+<li><strong>声明指针变量的时候没有初始化</strong></li>
+<li><strong>指针被free或者delete之后，没有设置为NULL，让人误以为这是一个合法指针</strong>。<em>free和delete只是把指针所指向的内存给释放掉，但并没有把指针本身给清理掉。这时候的指针依然指向原来的位置</em>，只不过这个位置的内存数据已经被毁尸灭迹，此时的这个指针指向的内存就是一个垃圾内存。但是此时的指针由于并不是一个NULL指针（在没有置为NULL的前提下），在做如下指针校验的时候</li>
+<li><strong>指针操作超越了变量的作用范围</strong>。由于C/C++中指针有++操作，因而在执行该操作的时候，稍有不慎，就容易指针访问越界，访问了一个不该访问的内存，结果程序崩溃另一种情况是指针指向一个临时变量的引用，当该变量被释放时，此时的指针就变成了一个野指针，如下</li>
+</ol>
+<p><strong>使用指针需要注意的地方</strong><br>(1) 声明指针的时候为空指针。<br>在函数内部可以通过判断来确定一个指针是否是空指针，从而避免异常的操作，但是并没有办法判断野指针。所以在使用的时候要避免野指针。</p>
+<pre><code>int main() {
+    int* p; //野指针
+    int* p1 = 0 ; //空指针 
+}
+</code></pre><p>   在使用指针之前可以先先判断检查，是否为空指针。</p>
+<pre><code>int main() {
+    int* p = 0; //空指针 
+    if(p) {
+        cout&lt;&lt;&quot;you can user * operation&quot;;
+    } else {
+        cout&lt;&lt;&quot;this is null point&quot;;
+    }
+}
+</code></pre><p>运行上面的代码会输出 <em>this is null point</em> </p>
+<p>但是如果使用野指针，那么在程序中就没办法判断了。</p>
+<pre><code>int main() {
+    int* p; //空指针 
+    if(p) {
+        cout&lt;&lt;&quot;you can user * operation&quot;; //会执行这一句 
+    } else {
+        cout&lt;&lt;&quot;this is null point&quot;;
+    }
+}
+</code></pre><p>(2)防止使用指针的时候出现数组越界的异常。</p>
+<pre><code>int main() {
+    int arr[4] = {1,2,3,4};
+    int* p = arr;
+    p = p+4;
+    cout &lt;&lt; *p;
+   }
+</code></pre><p>在上面的代码中就出现了数组越界的情况。这个时候在程序中会有巨大的隐患，要注意避免。</p>
+<p>(3)防止出现指针所指向地址失效的情况。</p>
+<pre><code>using namespace std;
+int a = 188;
+int* test() {
+    return &amp;a;
+}
+
+int main() {
+    int* p = test();
+    cout &lt;&lt;*p;
+}
+
+
+这个时候并没有能够正常的输出188。因为变量a在程序运行的声明周期之内一直都在内存之中，所以这个时候访问是没有问题的。
+
+但是代码改成下面这个样子就有问题了
+
+
+using namespace std;
+int* test() {
+    int a = 188;
+    return &amp;a;
+}
+int main() {
+    int* p = test();
+    cout &lt;&lt;*p;
+}
+</code></pre><p>这个时候p指向的是一个临时变量，这个时候可能会形成野指针。</p>
+<p>[注] 文章关于野指针的说明部分引用了<a href="http://blog.csdn.net/fu_zk/article/details/21030607" target="_blank" rel="external">博客</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/03/C-指针学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -708,7 +888,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

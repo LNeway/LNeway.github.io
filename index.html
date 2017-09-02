@@ -254,6 +254,141 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/02/Android-OpenGL-lookAt-函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/02/Android-OpenGL-lookAt-函数/" itemprop="url">Android OpenGL lookAt 函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-02T16:05:34+08:00">
+                2017-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Android-OpenGL-3D中的LookAt的理解"><a href="#Android-OpenGL-3D中的LookAt的理解" class="headerlink" title="Android OpenGL 3D中的LookAt的理解"></a>Android OpenGL 3D中的LookAt的理解</h1><p>在opengl中的坐标空间有几种， 物体坐标，世界坐标系，相机坐标系，裁剪空间坐标系。</p>
+<p>其他的几种坐标系相对好理解，这个相机坐标系反复试验才明白其中含义。</p>
+<p>先来看一下安卓中GLES20中的lookatM函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);</div></pre></td></tr></table></figure>
+<p>在文档中给出的注释如下 </p>
+<blockquote>
+<p>Defines a viewing transformation in terms of an eye point, a center of view, and an up vector.</p>
+</blockquote>
+<p>看着这个注释还是没理解。</p>
+<p>函数中的的参数前两个可以忽略，后面的九个参数分为三组</p>
+<p><strong>第一组是眼睛在空间的坐标</strong></p>
+<p>这个就是相机在一个空间直角坐标系中的绝对位置</p>
+<p><strong>第二组是物体在空间中的坐标</strong></p>
+<p>这个坐标就是我们看的物体在空间坐标系中的位置。</p>
+<p><strong>第三组坐标实际上是相机顶部的的指向</strong></p>
+<p>这里第三组参数决定了📷顶部方向，大家使用这个参数的时候可以想象一下我们自己的眼睛看东西的时候，实际上这个参数的值是（0, 1, 0）,因为把我们自己的头想象称为一个相机，那么这个相机顶部实际上永远指向的天空（假设天空是正轴方向），现在假设我们看屏幕的时候，想把屏幕倒着看，除了不旋转屏幕，我们还有一个选项就是让自己的头顶朝地，这样我们看屏幕的时候就可以实现倒着看了，那么这个时候向量的值应该是(0, -1, 0)。</p>
+<p>具体的话大家可以看下面的<a href="https://github.com/LNeway/OpenGL-learning" target="_blank" rel="external">例子</a>，下面的实例中我们的物体始终都在（0, 0, 0）这个位置不变。</p>
+<p><img src="../images/WechatIMG1.png" alt=""></p>
+<p>第一组数据是我们眼睛的位置，目前参数值在（-2，-2，2）,也就是从立方体的一个顶点的正上方看过去的，现在（upX, upY, upZ）这组参数设定的值是(0, 1, 0), 紫红色是在图形下面的位置，按照上面的解释，如果把upY的值改为-1，表示相机顶部是向下了，那么这个时候最终看到的图形，紫红色是在图像的上部。</p>
+<p><img src="../images/WechatIMG2.png" alt=""></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li>这个参数的设定不能和视线平行，在这个例子当中我们的向量是（-2，-2，-2）,如果设定这个up值是x * （-2, -2, -2), 那么将看不到任何图像。</li>
+<li>这个值得含义是表示顶点指向的方向，所以最终含义是在方向这个意思上面，所以（0, -1, 0）和 （0, -x, 0) (x 的取值大于0) 的含义是一样的，最终看到的图像也就没有区别了。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/27/Andorid-OpenGL-多层纹理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2033,255 +2168,6 @@ class Example9c {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/28/Java-泛型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/28/Java-泛型/" itemprop="url">Java 泛型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-28T22:21:52+08:00">
-                2017-03-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Java中的泛型是在编译器这个级别实现的，在生成的Java字节码当中是没有泛型中的类型信息的，使用泛型的时候加上的类型参数会在编译的时候去掉，这个过程称作为类型擦除，如在代码中定义的List<object> 和 List<string>， 在编译之后都变成了List, JVM看到的只有List （所以这一点和C++中的模板是不同的，在C++中为每一个模板类生成一个类， 此外在Java中，泛型中还不支持基本类型） 而由泛型附加的类型信息对JVM来说是不可见的，Java编译器会在编译的时候尽可能发现出错的地方，但是仍然无法避免运行时刻出现的强制类型转换异常，类型擦除也是Java的泛型实现方式与C++模板机制实现方式之间的重要区别。</string></object></p>
-<p>泛型的很多奇怪特性都与类型擦除有关：</p>
-<ul>
-<li>泛型没有自己独有的Class类对象，比如不存在List<string>.class ，只有List.class;</string></li>
-<li>静态变量被泛型类所有的实例共享，例如MyClass<t> 中定义静态变量 var , 访问这个静态变量的方式任然是MyClass.var。</t></li>
-<li>泛型的参数类型不能用在Java的异常处理中，以为异常处理是由JVM的 Runtime 来处理的，但是由于类型擦除，所以JVM是不知道这个类型信息的存在的，对于JVM来说都是MyException.也就无法执行对应的catche语句。(目前在Intelij IDE中，定义的一个泛型的异常直接报错(Generic class may not extends java.lang.Throwable))</li>
-</ul>
-<p>这些原因的根源都是泛型的类型信息只是在编译期存在的，而在程序执行的时候无法找到的。</p>
-<p>但是这里又有另外一个问题了，我们在程序运行的时候明明是可以通过API 拿到另一个类的泛型信息的，<br>class 对象由这两个方法 </p>
-<ul>
-<li>getGenericSuperclass()</li>
-<li>getGenericInterface()</li>
-</ul>
-<p>那么这两个类拿到的泛型信息又是从哪里获取的呢？<br>Java文件在编译之后会生成字节码文件，字节码文件的结构如下图所示</p>
-<p><img src="http://img.my.csdn.net/uploads/201209/04/1346768613_6175.png" alt="此处输入图片的描述"></p>
-<p>接下来，先定义两个类型， </p>
-<pre><code>public class MyClass  {
-    List data;
-    public void setData(List data) {
-        this.data = data;
-    }
-}
-public class MyClassString {
-    List&lt;String&gt; data;
-    public void setData(List&lt;String&gt; data) {
-        this.data = data;
-    }
-}
-</code></pre><p>在编译完成之后，我们可以通过javap 来获取两者生成的字节码</p>
-<p>运行 javap -c MyClassString 结果如下</p>
-<pre><code>public class com.baidu.accweather.MyClassString {
-  java.util.List&lt;java.lang.String&gt; data;
-  public com.baidu.accweather.MyClassString();
-    Code:
-       0: aload_0
-       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
-       4: return
-
-  public void setData(java.util.List&lt;java.lang.String&gt;);
-    Code:
-       0: aload_0
-       1: aload_1
-       2: putfield      #2                  // Field data:Ljava/util/List;
-       5: return
-}
-</code></pre><p>运行javap  -c MyClass  结果如下</p>
-<pre><code>public class com.baidu.accweather.MyClass {
-  java.util.List data;
-  public com.baidu.accweather.MyClass();
-    Code:
-       0: aload_0
-       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
-       4: return
-
-  public void setData(java.util.List);
-    Code:
-       0: aload_0
-       1: aload_1
-       2: putfield      #2                  // Field data:Ljava/util/List;
-       5: return
-}
-</code></pre><p>这个时候通过对比发现出列data 的声明不同之外其他的地方完全一样，特别需要注意的是在setData当中，从注释来看 data， 它的类型信息里面已经没有了泛型类型的信息。</p>
-<p>接下来我们需要用 -verbose 参数打印堆栈大小、各方法的locals及args参数，以及class文件的编译版本</p>
-<p>运行javap -verbose MyClassString , 其常量池的信息输出如下（MyClass 的就不贴出来了）</p>
-<pre><code>   Classfile /D:/javaworkspace/AccWeather/out/production/AccWeather/com/baidu/accweather/MyClassString.class
-  Last modified 2017-3-27; size 610 bytes
-  MD5 checksum caaccea4d689459e3464f2088a3efb34
-  Compiled from &quot;MyClassString.java&quot;
-public class com.baidu.accweather.MyClassString
-  SourceFile: &quot;MyClassString.java&quot;
-  minor version: 0
-  major version: 51
-  flags: ACC_PUBLIC, ACC_SUPER
-Constant pool:
-   #1 = Methodref          #4.#22         //  java/lang/Object.&quot;&lt;init&gt;&quot;:()V
-   #2 = Fieldref           #3.#23         //  com/baidu/accweather/MyClassString.data:Ljava/util/List;
-   #3 = Class              #24            //  com/baidu/accweather/MyClassString
-   #4 = Class              #25            //  java/lang/Object
-   #5 = Utf8               data
-   #6 = Utf8               Ljava/util/List;
-   #7 = Utf8               Signature
-   #8 = Utf8               Ljava/util/List&lt;Ljava/lang/String;&gt;;
-   #9 = Utf8               &lt;init&gt;
-  #10 = Utf8               ()V
-  #11 = Utf8               Code
-  #12 = Utf8               LineNumberTable
-  #13 = Utf8               LocalVariableTable
-  #14 = Utf8               this
-  #15 = Utf8               Lcom/baidu/accweather/MyClassString;
-  #16 = Utf8               setData
-  #17 = Utf8               (Ljava/util/List;)V
-  #18 = Utf8               LocalVariableTypeTable
-  #19 = Utf8               (Ljava/util/List&lt;Ljava/lang/String;&gt;;)V
-  #20 = Utf8               SourceFile
-  #21 = Utf8               MyClassString.java
-  #22 = NameAndType        #9:#10         //  &quot;&lt;init&gt;&quot;:()V
-  #23 = NameAndType        #5:#6          //  data:Ljava/util/List;
-  #24 = Utf8               com/baidu/accweather/MyClassString
-  #25 = Utf8               java/lang/Object
-{
-  java.util.List&lt;java.lang.String&gt; data;
-    flags:
-    Signature: #8                           // Ljava/util/List&lt;Ljava/lang/String;&gt;;
-
-  public com.baidu.accweather.MyClassString();
-    flags: ACC_PUBLIC
-    Code:
-      stack=1, locals=1, args_size=1
-         0: aload_0
-         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
-         4: return
-      LineNumberTable:
-        line 8: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-        0       5      0      this   Lcom/baidu/accweather/MyClassString;
-
-  public void setData(java.util.List&lt;java.lang.String&gt;);
-    flags: ACC_PUBLIC
-    Code:
-      stack=2, locals=2, args_size=2
-         0: aload_0
-         1: aload_1
-         2: putfield      #2                  // Field data:Ljava/util/List;
-         5: return
-      LineNumberTable:
-        line 12: 0
-        line 13: 5
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-          0       6     0    this   Lcom/baidu/accweather/MyClassString;
-          0       6     1    data   Ljava/util/List;
-      LocalVariableTypeTable:
-        Start  Length  Slot  Name   Signature
-          0       6     1    data   Ljava/util/List&lt;Ljava/lang/String;&gt;;
-    Signature: #19                          // (Ljava/util/List&lt;Ljava/lang/String;&gt;;)V
-}
-</code></pre><p>从setData 方法输出的信息来看， 里面有两张表，一个本地变量表，一个是变量类型表，从 LocalVariableTypeTable 中可以看出来 变量 data 的类型信息是 java/util/List<ljava lang="" string;=""><br>而最后 Signature 的属性在这里具体指明了是常量池中的#19，这里具体说明了这个方法的信息。</ljava></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2331,7 +2217,7 @@ Constant pool:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

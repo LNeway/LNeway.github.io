@@ -254,6 +254,255 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/28/Java-泛型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/28/Java-泛型/" itemprop="url">Java 泛型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-28T22:21:52+08:00">
+                2017-03-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Java中的泛型是在编译器这个级别实现的，在生成的Java字节码当中是没有泛型中的类型信息的，使用泛型的时候加上的类型参数会在编译的时候去掉，这个过程称作为类型擦除，如在代码中定义的List<object> 和 List<string>， 在编译之后都变成了List, JVM看到的只有List （所以这一点和C++中的模板是不同的，在C++中为每一个模板类生成一个类， 此外在Java中，泛型中还不支持基本类型） 而由泛型附加的类型信息对JVM来说是不可见的，Java编译器会在编译的时候尽可能发现出错的地方，但是仍然无法避免运行时刻出现的强制类型转换异常，类型擦除也是Java的泛型实现方式与C++模板机制实现方式之间的重要区别。</string></object></p>
+<p>泛型的很多奇怪特性都与类型擦除有关：</p>
+<ul>
+<li>泛型没有自己独有的Class类对象，比如不存在List<string>.class ，只有List.class;</string></li>
+<li>静态变量被泛型类所有的实例共享，例如MyClass<t> 中定义静态变量 var , 访问这个静态变量的方式任然是MyClass.var。</t></li>
+<li>泛型的参数类型不能用在Java的异常处理中，以为异常处理是由JVM的 Runtime 来处理的，但是由于类型擦除，所以JVM是不知道这个类型信息的存在的，对于JVM来说都是MyException.也就无法执行对应的catche语句。(目前在Intelij IDE中，定义的一个泛型的异常直接报错(Generic class may not extends java.lang.Throwable))</li>
+</ul>
+<p>这些原因的根源都是泛型的类型信息只是在编译期存在的，而在程序执行的时候无法找到的。</p>
+<p>但是这里又有另外一个问题了，我们在程序运行的时候明明是可以通过API 拿到另一个类的泛型信息的，<br>class 对象由这两个方法 </p>
+<ul>
+<li>getGenericSuperclass()</li>
+<li>getGenericInterface()</li>
+</ul>
+<p>那么这两个类拿到的泛型信息又是从哪里获取的呢？<br>Java文件在编译之后会生成字节码文件，字节码文件的结构如下图所示</p>
+<p><img src="http://img.my.csdn.net/uploads/201209/04/1346768613_6175.png" alt="此处输入图片的描述"></p>
+<p>接下来，先定义两个类型， </p>
+<pre><code>public class MyClass  {
+    List data;
+    public void setData(List data) {
+        this.data = data;
+    }
+}
+public class MyClassString {
+    List&lt;String&gt; data;
+    public void setData(List&lt;String&gt; data) {
+        this.data = data;
+    }
+}
+</code></pre><p>在编译完成之后，我们可以通过javap 来获取两者生成的字节码</p>
+<p>运行 javap -c MyClassString 结果如下</p>
+<pre><code>public class com.baidu.accweather.MyClassString {
+  java.util.List&lt;java.lang.String&gt; data;
+  public com.baidu.accweather.MyClassString();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+
+  public void setData(java.util.List&lt;java.lang.String&gt;);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #2                  // Field data:Ljava/util/List;
+       5: return
+}
+</code></pre><p>运行javap  -c MyClass  结果如下</p>
+<pre><code>public class com.baidu.accweather.MyClass {
+  java.util.List data;
+  public com.baidu.accweather.MyClass();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+
+  public void setData(java.util.List);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #2                  // Field data:Ljava/util/List;
+       5: return
+}
+</code></pre><p>这个时候通过对比发现出列data 的声明不同之外其他的地方完全一样，特别需要注意的是在setData当中，从注释来看 data， 它的类型信息里面已经没有了泛型类型的信息。</p>
+<p>接下来我们需要用 -verbose 参数打印堆栈大小、各方法的locals及args参数，以及class文件的编译版本</p>
+<p>运行javap -verbose MyClassString , 其常量池的信息输出如下（MyClass 的就不贴出来了）</p>
+<pre><code>   Classfile /D:/javaworkspace/AccWeather/out/production/AccWeather/com/baidu/accweather/MyClassString.class
+  Last modified 2017-3-27; size 610 bytes
+  MD5 checksum caaccea4d689459e3464f2088a3efb34
+  Compiled from &quot;MyClassString.java&quot;
+public class com.baidu.accweather.MyClassString
+  SourceFile: &quot;MyClassString.java&quot;
+  minor version: 0
+  major version: 51
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #4.#22         //  java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+   #2 = Fieldref           #3.#23         //  com/baidu/accweather/MyClassString.data:Ljava/util/List;
+   #3 = Class              #24            //  com/baidu/accweather/MyClassString
+   #4 = Class              #25            //  java/lang/Object
+   #5 = Utf8               data
+   #6 = Utf8               Ljava/util/List;
+   #7 = Utf8               Signature
+   #8 = Utf8               Ljava/util/List&lt;Ljava/lang/String;&gt;;
+   #9 = Utf8               &lt;init&gt;
+  #10 = Utf8               ()V
+  #11 = Utf8               Code
+  #12 = Utf8               LineNumberTable
+  #13 = Utf8               LocalVariableTable
+  #14 = Utf8               this
+  #15 = Utf8               Lcom/baidu/accweather/MyClassString;
+  #16 = Utf8               setData
+  #17 = Utf8               (Ljava/util/List;)V
+  #18 = Utf8               LocalVariableTypeTable
+  #19 = Utf8               (Ljava/util/List&lt;Ljava/lang/String;&gt;;)V
+  #20 = Utf8               SourceFile
+  #21 = Utf8               MyClassString.java
+  #22 = NameAndType        #9:#10         //  &quot;&lt;init&gt;&quot;:()V
+  #23 = NameAndType        #5:#6          //  data:Ljava/util/List;
+  #24 = Utf8               com/baidu/accweather/MyClassString
+  #25 = Utf8               java/lang/Object
+{
+  java.util.List&lt;java.lang.String&gt; data;
+    flags:
+    Signature: #8                           // Ljava/util/List&lt;Ljava/lang/String;&gt;;
+
+  public com.baidu.accweather.MyClassString();
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+         4: return
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+        0       5      0      this   Lcom/baidu/accweather/MyClassString;
+
+  public void setData(java.util.List&lt;java.lang.String&gt;);
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: putfield      #2                  // Field data:Ljava/util/List;
+         5: return
+      LineNumberTable:
+        line 12: 0
+        line 13: 5
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+          0       6     0    this   Lcom/baidu/accweather/MyClassString;
+          0       6     1    data   Ljava/util/List;
+      LocalVariableTypeTable:
+        Start  Length  Slot  Name   Signature
+          0       6     1    data   Ljava/util/List&lt;Ljava/lang/String;&gt;;
+    Signature: #19                          // (Ljava/util/List&lt;Ljava/lang/String;&gt;;)V
+}
+</code></pre><p>从setData 方法输出的信息来看， 里面有两张表，一个本地变量表，一个是变量类型表，从 LocalVariableTypeTable 中可以看出来 变量 data 的类型信息是 java/util/List<ljava lang="" string;=""><br>而最后 Signature 的属性在这里具体指明了是常量池中的#19，这里具体说明了这个方法的信息。</ljava></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/26/C-拷贝控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2485,239 +2734,6 @@ int main(void) {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/15/Android-热修复技术/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/15/Android-热修复技术/" itemprop="url">Android 热修复技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-15T10:37:59+08:00">
-                2017-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天动手实践了一下安卓上的热修复机制，现在总结一下、</p>
-<p>在Android中要想实现热更新实际上就是对class文件的替换，将目标文件替换成新的class文件即可，但是在Android中并没有直接使用class文件，而是将class重新打包在了一个dex文件中，然后从这个dex文件中去load class.<br>在Android中，系统为我们提供了这么一个类，叫做<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/DexClassLoader.java" target="_blank" rel="external">DexClassLoader</a>, 从这个类的注释中我们可以看到这个类可以从包含了dex文件的jar和 apk文件中去载类，但是这个类实际上什么都没有做，只是继承了<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java" target="_blank" rel="external">BaseDexClassLoader</a>，BaseDexClassLoader中重写findClass方法</p>
-<pre><code>@Override
-protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException {
-    List&lt;Throwable&gt; suppressedExceptions = new ArrayList&lt;Throwable&gt;();
-    Class c = pathList.findClass(name, suppressedExceptions);        
-    if (c == null) {
-        ClassNotFoundException cnfe = new ClassNotFoundException(&quot;Didn&apos;t find class \&quot;&quot; + name + &quot;\&quot; on path: &quot; + pathList);
-        for (Throwable t : suppressedExceptions) {
-            cnfe.addSuppressed(t);
-        }
-        throw cnfe;
-    }
-    return c;
-}
-</code></pre><p>从上面的代码可以看出,实际上BaseDexClassLoader自己也什么都没有做，而是交给了已 pathList 这个对象去完成加载的任务，pathList 是一个<a href="http://androidxref.com/7.1.1_r6/xref/libcore/dalvik/src/main/java/dalvik/system/DexPathList.java" target="_blank" rel="external">DexPathList</a> 对象，它的findClass实现如下，</p>
-<pre><code> public Class findClass(String name, List&lt;Throwable&gt; suppressed) {
-    for (Element element : dexElements) {
-        DexFile dex = element.dexFile;
-
-        if (dex != null) {
-            Class clazz = dex.loadClassBinaryName(name, definingContext, suppressed);
-            if (clazz != null) {
-                return clazz;
-            }
-        }
-    }
-    if (dexElementsSuppressedExceptions != null) {
-        suppressed.addAll(Arrays.asList(dexElementsSuppressedExceptions));
-    }
-    return null;
-}
-</code></pre><p>它实际上会先遍历一个内部一个dexElements数组，然后从数组元素Elment中加载class对象，在这里我们最终找到了我们的classd对象是什么时候加载的了，既然知道了是什么时候加载的，我们就可以通过替换的方式来改变class了，在虚拟机加载一个class的时候，如果一个类已经被加载过了那么后面就不会再加载它，所以可以将包含补丁class的 Elment 放在数组的最前面，让虚拟机先加载补丁class, 这样需要被替换的class就不会被加载了，从而实现了更新。</p>
-<p>实际上PathClassLoader也是BaseDexClassLoader的子类，系统就是使用了这个类来实现加载，PathClassLoader和上面提到的DexClassLoader区别如下， 在创建BaseDexClassLoader的对象时候需要填一个 optimizedDirectory 参数，optimizedDirectory是用来缓存我们需要加载的dex文件的，并创建一个DexFile对象，如果它为null，那么会直接使用dex文件原有的路径来创建DexFile对象。同时optimizedDirectory必须是一个内部存储路径，无论哪种动态加载，加载的可执行文件一定要存放在内部存储。DexClassLoader可以指定自己的optimizedDirectory，所以它可以加载外部的dex，因为这个dex会被复制到内部路径的optimizedDirectory；而PathClassLoader没有optimizedDirectory，所以它只能加载内部的dex，这些大都是存在系统中已经安装过的apk里面的。</p>
-<p>因为这些类和变量我们在SDK中都无法直接的获取，所以只能通过反射的方式来获取。<br>下面是核心代码：</p>
-<pre><code>package com.baidu.myhotfix;
-
-import android.content.Context;
-import android.util.Log;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-
-import dalvik.system.BaseDexClassLoader;
-import dalvik.system.DexClassLoader;
-
-/**
- * Created by liuwei64 on 2017/1/14.
- */
-
-public class HotFixUtil {
-
-    private static final String TAG = &quot;HotFixUtil&quot;;
-
-    public static void init(Context context) {
-        ClassLoader classLoader = context.getClassLoader();
-        try {
-            if (classLoader instanceof BaseDexClassLoader) {
-                Log.i(TAG, &quot;get baseclassloader instance&quot;);
-                Field field = BaseDexClassLoader.class.getDeclaredField(&quot;pathList&quot;);
-                field.setAccessible(true);
-                Object dexPathList = getValue(BaseDexClassLoader.class, classLoader, &quot;pathList&quot;);
-                Object dexElements = getValue(dexPathList.getClass(), dexPathList, &quot;dexElements&quot;);
-
-                DexClassLoader cl = new DexClassLoader(&quot;/storage/sdcard0/classex_dex.jar&quot;,
-                        context.getCacheDir().getAbsolutePath(),
-                        null, context.getClassLoader());
-
-                Object dexPathListNew = getValue(BaseDexClassLoader.class, cl, &quot;pathList&quot;);
-                Object dexElementsNew = getValue(dexPathListNew.getClass(), dexPathListNew, &quot;dexElements&quot;);
-
-                Object newElements = combineArray(dexElementsNew, dexElements);
-                setValue(dexPathList.getClass(), dexPathList, &quot;dexElements&quot;, newElements);
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
-        }
-    }
-
-    public static Object getValue(Class clz, Object instance, String fileName) {
-        try {
-            Field field = clz.getDeclaredField(fileName);
-            field.setAccessible(true);
-            return field.get(instance);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void setValue(Class clz, Object instance, String fileName, Object value) {
-        try {
-            Field field = clz.getDeclaredField(fileName);
-            field.setAccessible(true);
-            field.set(instance, value);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Object combineArray(Object arrayFirst, Object arraySecond) {
-        if (arrayFirst == null || arrayFirst == null) {
-            return null;
-        }
-
-        int firstLen = Array.getLength(arrayFirst);
-        int secondLen = Array.getLength(arraySecond);
-
-        int totalLen =  firstLen + secondLen;
-        Object result = Array.newInstance(Array.get(arrayFirst, 0).getClass(), totalLen);
-        for (int  i = 0; i &lt; totalLen; i++) {
-            if (i &lt; firstLen) {
-                Array.set(result, i , Array.get(arrayFirst, i));
-            } else {
-                Array.set(result, i , Array.get(arraySecond, i - firstLen));
-            }
-        }
-
-        return result;
-    }
-}
-</code></pre><p>实际上这里还有一个问题要解决，就是<a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">CLASS_ISPREVERIFIED</a>的问题，后面自己实现了再来更新！</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2767,7 +2783,7 @@ public class HotFixUtil {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
