@@ -254,6 +254,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/05/C-结构体学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/05/C-结构体学习笔记/" itemprop="url">C++结构体学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-05T23:29:46+08:00">
+                2016-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对于结构体指针，使用-&gt; 符号来访问变量。</p>
+<pre><code>#include&lt;iostream&gt;
+using namespace std;
+struct UserInfo{
+    int id;
+    int age;
+};
+int main() {
+    UserInfo info;
+    UserInfo* p = &amp;info;
+    info.id = 888;
+    info.age = 25;
+    cout &lt;&lt; p-&gt;age;// 指针使用 -&gt; 来访问成员变量 
+}
+</code></pre><p>匿名结构体，定义了一个匿名的结构体，并且声明了一个info变量。因为这个结构体是匿名的，所以没有办法用它再来声明其他的变量。</p>
+<pre><code>struct {
+    int id;
+    int age;
+} info ; 
+</code></pre><p>结构体存在对齐问题，所使用sizeof 计算一个结构体的大小的时候，得到的不一定是其中所有成员变量sizeof的值之和，详细的计算参考<a href="http://www.cppblog.com/iuranus/archive/2009/01/06/71388.html" target="_blank" rel="external">博客</a>及<a href="http://www.cnblogs.com/graphics/archive/2010/08/12/1797953.html" target="_blank" rel="external">博客</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/04/C-指针学习笔记-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -888,7 +1019,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -901,7 +1032,7 @@ defaultConfig {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">42</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
