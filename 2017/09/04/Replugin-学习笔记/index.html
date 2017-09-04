@@ -100,7 +100,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/09/04/Replugin-学习笔记/index.html">
 <meta property="og:site_name" content="Learning">
 <meta property="og:description" content="在Replugin 这个框架中，360实现了只需要hook一个点，就可实现插件化加载，而这个点就是classloader。为什么hook这个点就能解决Activity 动态加载的问题，这个就要从我们的Activity是怎么来的说起了,Activity的启动代码相当复杂，在这里就不分析了，网上有不少大神的blog都分析了这个问题，其中跟hook点最相关的就是下面的这一段。这一段从ActivityTh">
-<meta property="og:updated_time" content="2017-09-04T14:14:35.000Z">
+<meta property="og:updated_time" content="2017-09-04T14:26:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Replugin 学习笔记">
 <meta name="twitter:description" content="在Replugin 这个框架中，360实现了只需要hook一个点，就可实现插件化加载，而这个点就是classloader。为什么hook这个点就能解决Activity 动态加载的问题，这个就要从我们的Activity是怎么来的说起了,Activity的启动代码相当复杂，在这里就不分析了，网上有不少大神的blog都分析了这个问题，其中跟hook点最相关的就是下面的这一段。这一段从ActivityTh">
@@ -350,6 +350,7 @@
 </code></pre><p>看到这个方法是不是就有一种恍然大悟的感觉了，最终的Activity 实例是通过其 Activity 的class对象调用newInstance()得到的. 所以只需要控制了 Activity的class 对象， 就控制了Activity的产生，而这个class对象，正是我们可以通过hooK来解决的。</p>
 <p>在这里Relugin 框架解决了Activity 怎么来的问题，同时因为Activity需要在AndroidManifest中注册，所以在使用Replugin 框架的时候，框架的插件会在生成的Apk文件中添加很多的Activity组件来作为一个个占坑，比如当我们启动的一个Activity A 的时候，Relugin 会将我们的目标Activity替换为坑位中的一个Activity AP ,但是在实际返回这个Activity目标class 对象的时候，返回的却是Activity A 的class 对象。</p>
 <p>走完这个流程，Replugin 的核心原理应该就算是掌握了，虽然说得这么简单，但是其中每个步骤都相当的复杂，继续学习吧。</p>
+<p>具体实现可以看下<a href="https://github.com/LNeway/PluginTest" target="_blank" rel="external">demo</a></p>
 
       
     </div>

@@ -351,6 +351,7 @@
 </code></pre><p>看到这个方法是不是就有一种恍然大悟的感觉了，最终的Activity 实例是通过其 Activity 的class对象调用newInstance()得到的. 所以只需要控制了 Activity的class 对象， 就控制了Activity的产生，而这个class对象，正是我们可以通过hooK来解决的。</p>
 <p>在这里Relugin 框架解决了Activity 怎么来的问题，同时因为Activity需要在AndroidManifest中注册，所以在使用Replugin 框架的时候，框架的插件会在生成的Apk文件中添加很多的Activity组件来作为一个个占坑，比如当我们启动的一个Activity A 的时候，Relugin 会将我们的目标Activity替换为坑位中的一个Activity AP ,但是在实际返回这个Activity目标class 对象的时候，返回的却是Activity A 的class 对象。</p>
 <p>走完这个流程，Replugin 的核心原理应该就算是掌握了，虽然说得这么简单，但是其中每个步骤都相当的复杂，继续学习吧。</p>
+<p>具体实现可以看下<a href="https://github.com/LNeway/PluginTest" target="_blank" rel="external">demo</a></p>
 
           
         
