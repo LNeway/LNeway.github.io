@@ -254,6 +254,141 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/18/C-引用学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/18/C-引用学习笔记/" itemprop="url">C++引用学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-18T23:46:38+08:00">
+                2016-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##理解##</p>
+<p>在C++中可以声明一个变量的引用，相当于给变量起了一个别名。<br>具体的语法如下</p>
+<pre><code>T &amp; n // T表示引用的类型，n表示引用的名字
+</code></pre><p>引用需要注意的几点</p>
+<ul>
+<li>定义引用的时候一定要将其初始化成引用某个变量 ，否则编译的时候会报错</li>
+<li>初始化之后，该引用就会一直引用该变量，不会引用其他的变量了。这个时候如果在进行 = 操作只是把等号右边的值赋值给引用所指向的变量。</li>
+</ul>
+<pre><code>int a = 0; int b = 1; int &amp; r = a; r = b; //执行之后，a = 1
+</code></pre><ul>
+<li>引用只能引用变量，不能引用常量和表达式</li>
+<li>声明一个引用并不是定义了一个变量，引用本身也不是一种数据类型，因此操作系统并不会给一个引用分配内存，因此对引用求地址就是对目标变量求地址 所以 &amp;a = &r;</li>
+<li>引用没有对应的指针类型。但是可以声明一个引用指向指针。<br> int<em> p = &a;<br> int</em>&amp; rp = p; // int<em> 为数据类型， int</em>&amp; 表示int <em>的引用。<br> cout &lt;&lt;</em>rp&lt;&lt;endl; </li>
+</ul>
+<p>##常引用##<br>使用const修饰的引用叫做常引用，常引用初始化之后就不能再指向别的值。</p>
+<pre><code>int b = 55;
+const int&amp; rb = b; 
+rb = 8888; // 编译器报错，不能再修改其值。
+</code></pre><p>cont T &amp; 和 T &amp; 是两种不同的类型<br>T&amp; 类型的引用 或者T类型的变量可以用来初始化const T &amp; 类型的引用。</p>
+<p>const T类型的常量和const T &amp; 类型的引用则不能用来初始化T &amp; 类型的引用，除非进行强制类型转换。</p>
+<p>##应用##（待补充）</p>
+<ul>
+<li><strong>引用作为参数引用的一个重要作用就是作为函数的参数</strong>。以前的C语言中函数参数传递是值传递，如果有大块数据作为参数传递的时候，采用的方案往往是指针，因为这样可以避免将整块数据全部压栈，可以提高程序的效率。但是现在（C++中）又增加了一种同样有效率的选择（在某些特殊情况下又是必须的选择），就是引用。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/05/C-结构体学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1019,7 +1154,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1032,7 +1167,7 @@ defaultConfig {
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

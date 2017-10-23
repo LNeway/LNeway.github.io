@@ -1,0 +1,767 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,OpenGL,滤镜," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="##原理## 在Android中，目前可以使用Opengl 来实时的预览相机界面，通过这相机的预览界面我们就可以实现滤镜的基本功能。 使用OpenGL 来实现相机的预览界面网上的代码很多，这里就不说了，主要记录一下使用OpenGL实现滤镜的原理。 在相机的预览界面中，我们通常都是相机的所采集到的数据直接渲染到了屏幕上，而我们渲染的屏幕实际上是系统默认提供的一个叫帧缓冲的地方,英文为Frame Bu">
+<meta name="keywords" content="Android,OpenGL,滤镜">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android实时滤镜实现原理">
+<meta property="og:url" content="http://yoursite.com/2017/10/23/Android实时滤镜实现原理/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="##原理## 在Android中，目前可以使用Opengl 来实时的预览相机界面，通过这相机的预览界面我们就可以实现滤镜的基本功能。 使用OpenGL 来实现相机的预览界面网上的代码很多，这里就不说了，主要记录一下使用OpenGL实现滤镜的原理。 在相机的预览界面中，我们通常都是相机的所采集到的数据直接渲染到了屏幕上，而我们渲染的屏幕实际上是系统默认提供的一个叫帧缓冲的地方,英文为Frame Bu">
+<meta property="og:updated_time" content="2017-10-23T15:08:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android实时滤镜实现原理">
+<meta name="twitter:description" content="##原理## 在Android中，目前可以使用Opengl 来实时的预览相机界面，通过这相机的预览界面我们就可以实现滤镜的基本功能。 使用OpenGL 来实现相机的预览界面网上的代码很多，这里就不说了，主要记录一下使用OpenGL实现滤镜的原理。 在相机的预览界面中，我们通常都是相机的所采集到的数据直接渲染到了屏幕上，而我们渲染的屏幕实际上是系统默认提供的一个叫帧缓冲的地方,英文为Frame Bu">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/23/Android实时滤镜实现原理/"/>
+
+
+
+
+
+  <title>Android实时滤镜实现原理 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/23/Android实时滤镜实现原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android实时滤镜实现原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-23T22:24:56+08:00">
+                2017-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>##原理##</p>
+<p>在Android中，目前可以使用Opengl 来实时的预览相机界面，通过这相机的预览界面我们就可以实现滤镜的基本功能。</p>
+<p>使用OpenGL 来实现相机的预览界面网上的代码很多，这里就不说了，主要记录一下使用OpenGL实现滤镜的原理。</p>
+<p>在相机的预览界面中，我们通常都是相机的所采集到的数据直接渲染到了屏幕上，而我们渲染的屏幕实际上是系统默认提供的一个叫帧缓冲的地方,英文为Frame Buffer Object （FBO) ， 既然系统提供了一个默认的帧缓冲对象，那么我们也可以创建一个我们自己的帧缓冲对象，将数据绘制到我们创建的帧缓冲对象上。关于<a href="http://blog.csdn.net/xiajun07061225/article/details/7283929" target="_blank" rel="external">FBO</a>的相关概念，可以参见这篇博客。</p>
+<p>通过我们自己创建的帧缓冲对象，可以附加一个或者多个纹理在这个帧缓冲区当中，最终渲染到这个Frame buffer中的数据实际上都是渲染到了纹理图像当中，既然有了这个纹理图像，那么就可以通过Fragmetn shader来实现各种滤镜的效果。</p>
+<p>##实现及思考##</p>
+<p>下面贴一下关键的代码</p>
+<p>绘制相机预览界面的代码，在这段代码中，把相机的数据绘制到了自己创建的FBO对象当中。</p>
+<pre><code>if (fbo == null) {             
+    fbo = FBO.createFBO(width, height);
+}
+
+GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fbo.framebufferID);
+
+GLES20.glViewport(0, 0, width, height);
+GLES20.glClearColor(0, 0, 0, 0);
+GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+GLES20.glUseProgram(mProgram);
+GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture);
+
+// get handle to vertex shader&apos;s vPosition member
+mPositionHandle = GLES20.glGetAttribLocation(mProgram, &quot;vPosition&quot;);
+beautyPosition = GLES20.glGetUniformLocation(mProgram, &quot;beauty&quot;);
+
+GLES20.glUniform1i(beautyPosition,  isBeauty ? 1 : 0);
+
+// Enable a handle to the triangle vertices
+GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+// Prepare the &lt;insert shape here&gt; coordinate data
+GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+
+mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, &quot;inputTextureCoordinate&quot;);
+GLES20.glEnableVertexAttribArray(mTextureCoordHandle);
+
+
+GLES20.glVertexAttribPointer(mTextureCoordHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, textureVerticesBuffer);
+GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+
+// Disable vertex array
+GLES20.glDisableVertexAttribArray(mPositionHandle);
+GLES20.glDisableVertexAttribArray(mTextureCoordHandle);
+
+// Switch to the default frame buffer
+GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);`
+</code></pre><p><strong>创建FBO</strong></p>
+<pre><code>public class FBO {
+       public int textureID;
+    public int renderbuffersID;
+    public int framebufferID;
+
+    public static FBO createFBO(int width, int height) {
+        FBO  fbo = new FBO();
+        int[] texture = new int[1];
+        int[] renderbuffersID = new int[1];
+        int[] framebufferID = new int[1];
+
+        GLES20.glGenTextures(1, texture, 0);
+        GLES20.glGenFramebuffers(1, framebufferID, 0);
+        GLES20.glGenRenderbuffers(1, renderbuffersID, 0);
+
+        // renderbuffer
+        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, renderbuffersID[0]);
+        GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, width, height);
+
+        // framebuffer
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebufferID[0]);
+        GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER,
+                framebufferID[0]);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[0]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0,
+                GLES20.GL_RGBA, width, height, 0,
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                null);
+
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER,
+                GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D,
+                texture[0], 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+
+        fbo.textureID = texture[0];
+        fbo.framebufferID = framebufferID[0];
+        fbo.renderbuffersID = framebufferID[0];
+
+        return fbo;
+    }
+}
+</code></pre><p><strong>滤镜处理</strong></p>
+<p>在这一步就是将前面附加的纹理作为纹理参数传递到Fragment shader当中，然后可以实现滤镜的效果了。</p>
+<p>Fragment shader代码</p>
+<pre><code>precision mediump float;
+varying vec2 textureCoordinate;
+uniform sampler2D inputImageTexture;
+
+void main() {
+    vec4 col = texture2D(inputImageTexture, textureCoordinate);
+    float h = dot(col.rgb, vec3(0.3, 0.59, 0.21));
+    gl_FragColor = vec4(h, h, h, col.a);
+}
+</code></pre><p>滤镜代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">public void draw(int texture) &#123;</div><div class="line">    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);</div><div class="line"></div><div class="line">    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);</div><div class="line">    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);</div><div class="line"></div><div class="line">    GLES20.glUseProgram(mProgram);</div><div class="line"></div><div class="line">    // get handle to vertex shader&apos;s vPosition member</div><div class="line">    mPositionHandle = GLES20.glGetAttribLocation(mProgram, &quot;vPosition&quot;);</div><div class="line"></div><div class="line">    // Enable a handle to the triangle vertices</div><div class="line">    GLES20.glEnableVertexAttribArray(mPositionHandle);</div><div class="line"></div><div class="line">    // Prepare the &lt;insert shape here&gt; coordinate data</div><div class="line">    GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);</div><div class="line"></div><div class="line">    mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, &quot;inputTextureCoordinate&quot;);</div><div class="line">    GLES20.glEnableVertexAttribArray(mTextureCoordHandle);</div><div class="line"></div><div class="line">    GLES20.glVertexAttribPointer(mTextureCoordHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, textureVerticesBuffer);</div><div class="line">    GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);</div><div class="line"></div><div class="line">    // Disable vertex array</div><div class="line">    GLES20.glDisableVertexAttribArray(mPositionHandle);</div><div class="line">    GLES20.glDisableVertexAttribArray(mTextureCoordHandle);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>思考</strong></p>
+<p>实际上在自己实现的过程中发现应该是可以直接避免到自己创建FBO这个对象来实现简单的滤镜的效果，但是这样的话各种滤镜选择的逻辑的可能都会存在一个类当中，而且在这个绘制对应的Fragment Shader 也会存在这种需要变量和属性，但是对应的属性和变量又可能只在一个对象中用到，这就造成了部分代码文件及其臃肿，以至于根本无法扩展，而通过FBO 的方式，这样相当于形成了一个流水线的方式，我们只要拿到上一个步骤最终绘制的纹理，就可以继续拼接下一步操作，这样在整个流程中插入想要的步骤就十分容易了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+            <a href="/tags/滤镜/" rel="tag"># 滤镜</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/04/Replugin-学习笔记/" rel="next" title="Replugin 学习笔记">
+                <i class="fa fa-chevron-left"></i> Replugin 学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
