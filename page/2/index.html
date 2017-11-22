@@ -254,6 +254,133 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/12/JNI相关的知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/12/JNI相关的知识点/" itemprop="url">JNI相关的知识点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-12T22:24:17+08:00">
+                2017-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="extern-“C”"><a href="#extern-“C”" class="headerlink" title="extern “C”"></a>extern “C”</h2><ol>
+<li>extern是C/C++语言中表明<strong>函数和全局变量作用范围（可见性）的关键字，该关键字告诉编译器，其声明的函数和变量可以在本模块或其它模块中使用</strong>。通常，在模块的头文件中对本模块提供给其它模块引用的函数和全局变量以关键字extern声明。例如，如果模块B欲引用该模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样，模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不到该函数，但是并不会报错；它会在连接阶段中从模块A编译生成的目标代码中找到此函数。</li>
+</ol>
+<p>与extern对应的关键字是 static，被它<strong>修饰的全局变量和函数只能在本模块中</strong>使用。因此，一个函数或变量只可能被本模块使用时，其不可能被extern “C”修饰。</p>
+<ol>
+<li>典型的，一个C++程序包含其它语言编写的部分代码。类似的，C++编写的代码片段可能被使用在其它语言编写的代码中。不同语言编写的代码互相调用是困难的，甚至是同一种编写的代码但不同的编译器编译的代码。例如，不同语言和同种语言的不同实现可能会在注册变量保持参数和参数在栈上的布局，这个方面不一样。</li>
+</ol>
+<p>为了使它们遵守统一规则，可以使用extern指定一个编译和连接规约。例如，声明C和C++标准库函数strcyp()，并指定它应该根据C的编译和连接规约来链接：</p>
+<p><a href="https://pqpo.me/2017/05/31/system-loadlibrary/" target="_blank" rel="external">JNI技术</a></p>
+<p>动态加载的几个知识点：</p>
+<ol>
+<li>System.loadLibrary会优先查找apk中的so目录，再查找系统目录，系统目录包括：/vendor/lib(64)，/system/lib(64)</li>
+<li>不能使用不同的ClassLoader加载同一个动态库</li>
+<li>System.loadLibrary加载过程中会调用目标库的JNI_OnLoad方法，我们可以在动态库中加一个JNI_OnLoad方法用于动态注册如果加了JNI_OnLoad方法，其的返回值为JNI_VERSION_1_2，JNI_VERSION_1_4，JNI_VERSION_1_6其一。我们一般使用JNI_VERSION_1_4即可</li>
+<li>Android动态库的加载与Linux一致使用dlopen系列函数，通过动态库的句柄和函数名称来调用动态库的函数</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/Retrofit-源码学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2629,372 +2756,6 @@ public abstract static class NotifierCallback&lt;C, T, A&gt; {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/28/Android中AIDL的理解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/28/Android中AIDL的理解/" itemprop="url">Android中AIDL的理解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-28T19:39:45+08:00">
-                2017-01-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>首先定义 </p>
-<pre><code>// IMyService.aidl
-package com.devtom.myservice;
-
-interface IMyService {
-    void printLog(String message);
-}
-</code></pre><p>定义完成了之后，编译工具会自动帮我们生成接口相关的文件。<br>生成的代码文件如下</p>
-<pre><code>package com.devtom.myservice;
-
-public interface IMyService extends android.os.IInterface {
-    /**
-     * Local-side IPC implementation stub class.
-     */
-    public static abstract class Stub extends android.os.Binder implements com.devtom.myservice.IMyService {
-        private static final java.lang.String DESCRIPTOR = &quot;com.devtom.myservice.IMyService&quot;;
-
-        /**
-         * Construct the stub at attach it to the interface.
-         */
-        public Stub() {
-            this.attachInterface(this, DESCRIPTOR);
-        }
-
-        /**
-         * Cast an IBinder object into an com.devtom.myservice.IMyService interface,
-         * generating a proxy if needed.
-         */
-        public static com.devtom.myservice.IMyService asInterface(android.os.IBinder obj) {
-            if ((obj == null)) {
-                return null;
-            }
-            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
-            if (((iin != null) &amp;&amp; (iin instanceof com.devtom.myservice.IMyService))) {
-                return ((com.devtom.myservice.IMyService) iin);
-            }
-            return new com.devtom.myservice.IMyService.Stub.Proxy(obj);
-        }
-
-        @Override
-        public android.os.IBinder asBinder() {
-            return this;
-        }
-
-        @Override
-        public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
-            switch (code) {
-                case INTERFACE_TRANSACTION: {
-                    reply.writeString(DESCRIPTOR);
-                    return true;
-                }
-                case TRANSACTION_printLog: {
-                    data.enforceInterface(DESCRIPTOR);
-                    java.lang.String _arg0;
-                    _arg0 = data.readString();
-                    this.printLog(_arg0);
-                    reply.writeNoException();
-                    return true;
-                }
-            }
-            return super.onTransact(code, data, reply, flags);
-        }
-
-        private static class Proxy implements com.devtom.myservice.IMyService {
-            private android.os.IBinder mRemote;
-
-            Proxy(android.os.IBinder remote) {
-                mRemote = remote;
-            }
-
-            @Override
-            public android.os.IBinder asBinder() {
-                return mRemote;
-            }
-
-            public java.lang.String getInterfaceDescriptor() {
-                return DESCRIPTOR;
-            }
-
-            @Override
-            public void printLog(java.lang.String message) throws android.os.RemoteException {
-                android.os.Parcel _data = android.os.Parcel.obtain();
-                android.os.Parcel _reply = android.os.Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
-                    _data.writeString(message);
-                    mRemote.transact(Stub.TRANSACTION_printLog, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-        }
-
-        static final int TRANSACTION_printLog = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
-    }
-
-    public void printLog(java.lang.String message) throws android.os.RemoteException;
-}
-</code></pre><p>再来看看service相关的实现</p>
-<pre><code>public class MyRemoteService extends Service {
-
-    private static final String TAG = &quot;MyRemoteService&quot;;
-
-    public static class MyServiceBinder extends IMyService.Stub {
-        @Override
-        public void printLog(String message) throws RemoteException {
-            Log.e(TAG, &quot;this is message from remote &quot; + message);
-        }
-    }
-
-    private MyServiceBinder binder;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        binder = new MyServiceBinder();
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-}
-</code></pre><p>客户端调用的代码如下 </p>
-<pre><code>public class MainActivity extends Activity {
-
-    private IMyService binder;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, MyRemoteService.class);
-        bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
-        this.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    binder.printLog(&quot;this is message from client&quot;);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = MyRemoteService.MyServiceBinder.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            binder = null;
-        }
-    };
-}
-</code></pre><p>目前按照个人理解 </p>
-<ol>
-<li><p>MainActivity当中通过ServiceConnect 拿到的对象实际上是IMyService 当中的Proxy 对象的引用，之所以会有这个代理对象的存在，目前的理解是，系统为了方便我们调用，通过这个代理对象完成了调用远程服务数据的封装，所以我们在Proxy当中可以看到代理对printLog的实现：</p>
-<pre><code>@Override
-public void printLog(java.lang.String message) throws android.os.RemoteException {
-    android.os.Parcel _data = android.os.Parcel.obtain();
-    android.os.Parcel _reply = android.os.Parcel.obtain();
-    try {
-        _data.writeInterfaceToken(DESCRIPTOR);
-        _data.writeString(message);
-        mRemote.transact(Stub.TRANSACTION_printLog, _data, _reply, 0);
-        _reply.readException();
-    } finally {
-        _reply.recycle();
-        _data.recycle();
-    }
-}
-</code></pre></li>
-</ol>
-<p>在Proxy的实现中，主要是完成了对数据的封装，并没有实现其他的逻辑，完成数据的封装之后，然后调用了 mRemote的transact方法。</p>
-<ol>
-<li><p>Proxy 中成员变量 mRemote 所指向的对象是 IMyService.Stub ,因为Stub 是一个抽象类，所以最终mRemote指向的实例也就是IMyService.Stub 的实现类了</p>
-<pre><code> @Override
-public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
-    switch (code) {
-        case INTERFACE_TRANSACTION: {
-            reply.writeString(DESCRIPTOR);
-            return true;
-        }
-        case TRANSACTION_printLog: {
-            data.enforceInterface(DESCRIPTOR);
-            java.lang.String _arg0;
-            _arg0 = data.readString();
-            this.printLog(_arg0);
-            reply.writeNoException();
-            return true;
-        }
-    }
-    return super.onTransact(code, data, reply, flags);
-}
-</code></pre><p> 在onTransact 方法当中实现了对数据的解析，将获取到的数据传给自己定义的方法当中去，最终调用了自己实现的方法。</p>
-</li>
-</ol>
-<p>３.通过这个例子，最重要的还是里面的Binder， 数据的传递，解析都是Binder这个对象来完成的。</p>
-<p>知道AIDL 的套路之后，可以自己手写一个实现。</p>
-<pre><code>public class MyServiceBinderImpl extends Binder implements MyServiceInterface, IInterface{
-
-    public static final String TAG  = &quot;MyServiceBinderImpl&quot;;
-
-    public static final String DESCRIPTOR = &quot;com.devtom.myservice.MyServiceBinderImpl&quot;;
-
-    @Override
-    protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-        switch (code) {
-            case INTERFACE_TRANSACTION:
-                reply.writeString(DESCRIPTOR);
-                break;
-            case Binder.FIRST_CALL_TRANSACTION + 0:
-                data.enforceInterface(DESCRIPTOR);
-                String strData = data.readString();
-                printLog(strData);
-                reply.writeNoException();
-                break;
-        }
-        return super.onTransact(code, data, reply, flags);
-    }
-
-    @Override
-    public void printLog(String message) {
-        Log.e(TAG, &quot;this message is &quot; + message);
-    }
-
-    @Override
-    public IBinder asBinder() {
-        return this;
-    }
-}
-</code></pre><p>这个实际上就是自己动手去解析数据。</p>
-<p>调用了也很简单 ，</p>
-<pre><code>android.os.Parcel _data = android.os.Parcel.obtain();
-           android.os.Parcel _reply = android.os.Parcel.obtain();
-           try {
-               _data.writeInterfaceToken(MyServiceBinderImpl.DESCRIPTOR);
-               _data.writeString(&quot;this my own aidl implement&quot;);
-               binder.transact(IMyService.Stub.TRANSACTION_printLog, _data, _reply, 0);
-               _reply.readException();
-           } catch (RemoteException e) {
-
-           } finally {
-               _reply.recycle();
-               _data.recycle();
-           }
-</code></pre><p>此处的binder对象就是从ServiceConnection的onServiceConnected 方法参数中获取的，因为我们去掉了代理帮帮我们封装数据，所以这里就只能自己手动的去封装数据了。</p>
-<p>其实从上面自己手动实现AIDL 的功能可以看出，我们新建的service只是为了方便我们自己调用，我们完全可以去掉了这些方法（printLog）在onTrasaction里面来实现各种功能,当然这个只是扯淡。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3044,7 +2805,7 @@ public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel re
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

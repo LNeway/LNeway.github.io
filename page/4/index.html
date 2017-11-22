@@ -254,6 +254,157 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/25/C-函数学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/25/C-函数学习/" itemprop="url">C++函数学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-25T11:03:38+08:00">
+                2016-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>内联函数</strong><br>编译器编译的时候直接将函数的内容作为调用函数的一部分，避免了调用函数所产生的开销。</p>
+<pre><code>inline function(int x, int y) {
+    cout&lt;&lt;x - y;
+} 
+</code></pre><p><strong>函数的缺省值</strong></p>
+<pre><code>//设置函数的缺省值 
+void function(int x, int y = 2, int z = 3) {
+    cout&lt;&lt;x+y+z;
+}
+</code></pre><p><strong>构造函数</strong></p>
+<p>对象所占用的存储空间并不是由构造函数分配的，构造只是在对象的存储空间分配之后，来完成一写初始化的工作。</p>
+<p><strong>复制构造函数</strong></p>
+<p>只能有一个参数，即同类对象的引用。如果自己不写复制构造函数，系统将提供一个默认的复制构造函数，这儿构造函数的功能完成对对象的拷贝。<br>复制构造函数起作用的三种情况：</p>
+<ul>
+<li>用一个对象去初始化另一个对象。例如 Complex c2 = c1 //初始化语句</li>
+<li>如果某一个函数的形参是类A的对象，调用该函数的时候，类A的复制构造函数将被调用 用来 初始化形参。</li>
+<li>如果一个函数的返回值是类A的对象，那么函数返回的时候类A的复制构造函数将被调用。复制构造函数用来初始化作为返回值存在的类A对象，例如函数method()的返回值赋值给a, 那么类的A的复制构造函数用来初始化a.</li>
+</ul>
+<p><strong>析构函数</strong><br>析构函数与构造函数相反是在一个对象被释放掉的时候调用，与Java中Object的finalize 方法相似。析构函数有以下几个调用的时机</p>
+<ul>
+<li>使用 delete 删除 new所分配的对象。</li>
+<li>当一个作用域结束的时候，其中对象的析构方法将被调用。</li>
+<li>临时对象的生存期结束。</li>
+<li>程序结束，并且存在全局或静态对象，对象的析构函数将被调用。</li>
+<li><p>显示的调用一个对象的析构方法时。</p>
+<p>使用析构函数时，如果一个类中都是对象和基本类型，那么在析构函数调用的时候将自动的调用这些对象和基本类型的析构函数，如果其中包含了自己手动申请的空间，那么需要自己手动的在析构函数中去释放这些空间。</p>
+<p>  public:</p>
+<pre><code>Book* book;
+
+MyClass(Book* book) {
+    this-&gt;book = book;
+}
+~MyClass() {
+    book-&gt;~Book();
+    cout&lt;&lt;&quot;MyClass析构函数被调用&quot;&lt;&lt;endl; 
+}
+</code></pre><p> };</p>
+<p> 如果在MyClass的析构函数中没有手动去的去调用~Book(),那么book所指向的内存将不会释放。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/18/C-引用学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1154,7 +1305,7 @@ defaultConfig {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

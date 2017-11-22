@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="OpenGL," />
 
 
 
@@ -93,12 +93,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Learning">
-<meta property="og:url" content="http://yoursite.com/tags/读书笔记/index.html">
+<meta name="description" content="最新在做使用opengl 来实现图片的液化效果，从而为静态图片添加动态的效果。 可以通过一句话来总结一下实现的原理:通过片段着色器来来计算每一个像素点应该显示的颜色在纹理上的位置，从而实现修改渲染像素颜色的功能。 实现可以看下面的函数: ​            vec2 curveStretchFun(vec2 curCoord, vec2 originPosition, float radiu">
+<meta name="keywords" content="OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenGL 片段着色器理解">
+<meta property="og:url" content="http://yoursite.com/2017/11/22/液化效果的心得/index.html">
 <meta property="og:site_name" content="Learning">
+<meta property="og:description" content="最新在做使用opengl 来实现图片的液化效果，从而为静态图片添加动态的效果。 可以通过一句话来总结一下实现的原理:通过片段着色器来来计算每一个像素点应该显示的颜色在纹理上的位置，从而实现修改渲染像素颜色的功能。 实现可以看下面的函数: ​            vec2 curveStretchFun(vec2 curCoord, vec2 originPosition, float radiu">
+<meta property="og:updated_time" content="2017-11-22T13:58:05.403Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Learning">
+<meta name="twitter:title" content="OpenGL 片段着色器理解">
+<meta name="twitter:description" content="最新在做使用opengl 来实现图片的液化效果，从而为静态图片添加动态的效果。 可以通过一句话来总结一下实现的原理:通过片段着色器来来计算每一个像素点应该显示的颜色在纹理上的位置，从而实现修改渲染像素颜色的功能。 实现可以看下面的函数: ​            vec2 curveStretchFun(vec2 curCoord, vec2 originPosition, float radiu">
 
 
 
@@ -126,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/读书笔记/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/22/液化效果的心得/"/>
 
 
 
 
 
-  <title>标签: 读书笔记 | Learning</title>
+  <title>OpenGL 片段着色器理解 | Learning</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +163,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -242,44 +247,168 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h1>读书笔记<small>标签</small>
-      </h1>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/22/液化效果的心得/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OpenGL 片段着色器理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-22T21:44:46+08:00">
+                2017-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p>最新在做使用opengl 来实现图片的液化效果，从而为静态图片添加动态的效果。</p>
+<p>可以通过一句话来总结一下实现的原理:通过片段着色器来来计算每一个像素点应该显示的颜色在纹理上的位置，从而实现修改渲染像素颜色的功能。</p>
+<p>实现可以看下面的函数:</p>
+<p>​            vec2 curveStretchFun(vec2 curCoord, vec2 originPosition, float radius)</p>
+<p>{</p>
+<p>  float currentDistance = distance(curCoord, originPosition);</p>
+<p>  if (currentDistance &lt; radius) {</p>
+<p>​      vec2 currentDirection = (curCoord - originPosition) / length(curCoord - originPosition);</p>
+<p>​      float angle = dot(currentDirection, vec2(1, 0));</p>
+<p>​      float value45 = sin(-90.0);</p>
+<p>​      float value135 = sin(90.0);</p>
+<p>​      if (angle &gt; value45 &amp;&amp; angle &lt; value135 &amp;&amp; currentDirection.y &gt; 0.0) {</p>
+<p>​          curCoord = originPosition;</p>
+<p>​          return curCoord ;</p>
+<p>​      } else {</p>
+<p>​        return curCoord - vec2(0, 0);</p>
+<p>​      }</p>
+<p>  } else {</p>
+<p>​      return curCoord - vec2(0, 0);</p>
+<p>  }        </p>
+<p>这里传进来的curCoord 实际上是当前像素点的坐标，我们通过计算originPosition(液化作用的起始点)和当前坐标的距离判断当前像素点是否在作用范围之内，如果不在，那么就不会修改当前像素的坐标，(通过修改坐标来影响在纹理上取像素最终修改当前坐标显示的颜色)。在这个简单的方法中，我们通过吧一个范围的所有颜色全部显示为originPosition 在纹理上对应的颜色。</p>
 
-      <h2 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/06/25/锁的可重入/" itemprop="url">
-              
-                <span itemprop="name">锁的可重入</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-25T21:50:53+08:00"
-              content="2017-06-25" >
-          06-25
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/23/Android实时滤镜实现原理/" rel="next" title="Android实时滤镜实现原理">
+                <i class="fa fa-chevron-left"></i> Android实时滤镜实现原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -287,6 +416,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -473,10 +606,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-  
+
 
   
 
