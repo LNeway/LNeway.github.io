@@ -1,0 +1,726 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="计算机基础," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="#导论# 程序编译的过程  预处理阶段，将include包含的内容直接插入到文本中间。 编译阶段:将程序转为汇编代码编写的程序、 汇编阶段：将汇编代码转为机器指令，输出目标文件、 链接阶段：负责将所引用库中已经生成好的目标文件合并到汇编阶段所产生的目标文件中，最后生成可执行目标文件。  设备的存储级别寄存器-》L1,L2,L3缓存-》内存 -》磁盘-》分布式文件系统从下到上提供缓存作用 虚拟内存的">
+<meta name="keywords" content="计算机基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解计算机系统学习笔记">
+<meta property="og:url" content="http://yoursite.com/2017/11/28/深入理解计算机系统学习笔记/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="#导论# 程序编译的过程  预处理阶段，将include包含的内容直接插入到文本中间。 编译阶段:将程序转为汇编代码编写的程序、 汇编阶段：将汇编代码转为机器指令，输出目标文件、 链接阶段：负责将所引用库中已经生成好的目标文件合并到汇编阶段所产生的目标文件中，最后生成可执行目标文件。  设备的存储级别寄存器-》L1,L2,L3缓存-》内存 -》磁盘-》分布式文件系统从下到上提供缓存作用 虚拟内存的">
+<meta property="og:updated_time" content="2017-11-28T15:19:52.753Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统学习笔记">
+<meta name="twitter:description" content="#导论# 程序编译的过程  预处理阶段，将include包含的内容直接插入到文本中间。 编译阶段:将程序转为汇编代码编写的程序、 汇编阶段：将汇编代码转为机器指令，输出目标文件、 链接阶段：负责将所引用库中已经生成好的目标文件合并到汇编阶段所产生的目标文件中，最后生成可执行目标文件。  设备的存储级别寄存器-》L1,L2,L3缓存-》内存 -》磁盘-》分布式文件系统从下到上提供缓存作用 虚拟内存的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/28/深入理解计算机系统学习笔记/"/>
+
+
+
+
+
+  <title>深入理解计算机系统学习笔记 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/28/深入理解计算机系统学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入理解计算机系统学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-28T23:18:54+08:00">
+                2017-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#导论#</p>
+<p><strong>程序编译的过程</strong></p>
+<ol>
+<li>预处理阶段，将include包含的内容直接插入到文本中间。</li>
+<li>编译阶段:将程序转为汇编代码编写的程序、</li>
+<li>汇编阶段：将汇编代码转为机器指令，输出目标文件、</li>
+<li>链接阶段：负责将所引用库中已经生成好的目标文件合并到汇编阶段所产生的目标文件中，最后生成可执行目标文件。</li>
+</ol>
+<p><strong>设备的存储级别</strong><br>寄存器-》L1,L2,L3缓存-》内存 -》磁盘-》分布式文件系统<br>从下到上提供缓存作用</p>
+<p><strong>虚拟内存的地址空间</strong></p>
+<p>程序代码地址 -》程序运行时堆 -》 共享库地址-》栈-》内核地址空间</p>
+<p>对于所有代码来说，代码都是从一个固定地址开始。</p>
+<p><strong>并发：</strong><br>线程级别并发，利用现代CPU的超线程技术，一个CPU核心可以同时执行两个线程。</p>
+<p>指令级别并发：<br>现在处理器上，处理器可以同时执行多条指令</p>
+<p>单指令，多数据并行：允许一条指令，产生多个可以并行的操作。</p>
+<p>抽象：<br>文件是对I/O的抽象，虚拟存储是对I/O和内存的抽象，进程是对I/O，内存，处理器的抽象。</p>
+<p>#信息的表示处理#</p>
+<p>在C/C++中，指针实际上指向了一个存储块的虚拟地址的第一个字节，使用指针的时候，指针实际上包含了指向地址的长度。例如在int*指针中，指针所指向地址的长度是4，我们可以将指针的类型的改为char* 这样，我们可以访问这个int中的每一个字节。</p>
+<p>字长是单位是字节，32位的电脑是指2^32字节。</p>
+<p>##字节序##<br>大端法：高位有效字节在前面。<br>小端法：地位有效字节在前面。</p>
+<p>计算机电路先处理低位字节，效率比较高，因为计算都是从低位开始的。所以，计算机的内部处理都是小端字节序。<br>但是，人类还是习惯读写大端字节序。所以，除了计算机的内部处理，其他的场合几乎都是大端字节序，比如网络传输和文件储存。</p>
+<p>##位操作##<br>基本的位操作：异，或，与，左移，右移<br>逻辑右移：左边的高位，补0.<br>算数右移：左边的高位补上k个(右移k位)最高的有效位。(目前基本上都是采用的算术右移)</p>
+<p>【Java当中】当移动的位数k很大的时候，通常会通过 k % sizeof(type) 之后 再来进行真正的移动，比如int 类型的左移36,那么实际上真正移动的只有4位 （36 % 32）。</p>
+<p>【在部分c/c++中】当对一个数进行左移的时候，如果超过了这个数的字长,那么这个数将会变成零, 例如 32位的int位移大于等32的时候会变成零。</p>
+<p>在C++中，对任何一个非零的数执行 ! 运算都是1。</p>
+<p>##整数的表示##</p>
+<ol>
+<li>C/C++中，数据支持有符号和无符号的，但是在Java中只支持有符号的数</li>
+<li><p>当有符号数和无符号数之间发生转换的时候，从有符号数转为无符号数，如果是正数那么实际上的数值还是原来的数值，如果是负数，转为无符号的数之后实际上只是对位的解释方式不同了，有符号的数之前是最高有效位是负权值也就是（-2^(w-1)），转为正数之后实际上由负权值便为了正权值，所以两者时间的值实际上是相差了（2 * 2^(w-1) = 2 ^ w），所以在强转之后，可以通过很简单的公式来计算强制转换的结果。</p>
+<pre><code>static void testSigned() {
+    unsigned char u =  0;
+    u = -1;
+    cout&lt;&lt;hex&lt;&lt;(u - 0)&lt;&lt;endl;
+}
+</code></pre><p>上面的结果会输出 ff 也就是 2^8 + (u), </p>
+</li>
+<li><p>在C/C++语言中，当无符号数和有符号数一起运算的时候，会先将有符号数转为无符号数，然后再开始运算，在计算的过程中应该注意此类陷阱。</p>
+<pre><code>static void testSignedOperation() {
+    cout&lt;&lt;(-1&lt;0u)&lt;&lt;endl; // 输出 false；以为 0u是无符号数
+}
+</code></pre></li>
+</ol>
+<p><strong>扩展数字的位表示(向上数据类型的转换)</strong><br>扩展一个数位的表示就是通常我们在代码里面写的对基本数据类型的向上转换，对于一个无符号的数，只需要在数据位钱补零就行，但是对于一个有符号的数字来说，则需要补充最高的有效位。</p>
+<p><strong>截断数字的表示(向下的数据类型转换)</strong><br>截断数字的表示通常会丢掉k个高位。对于无符号的数字可以直接按照剩下的bit串来解释数字，将其转为对应的数字表示即可，但是对于有符号的数字，我们还需要注意其表示范围，例如对于int 53191，转为short之后，因为是有符号的类型，所以剩下的位串最终会被解释为-12345</p>
+<p><strong>运算溢出</strong><br>当两个数进行运算后，如果出现了溢出的情况，这个时候需要根据两个数的符号类型(有符号还是无符号)，对截断后的位串重新进行解释。例如在4位情况下，-8 + (-7) = -15，位串表示为 10001，这个时候需要截取位串，去掉头部的1, 剩下 0001，所以结果为1.</p>
+<p><strong>整数的运算</strong><br><strong>乘法</strong>：整数的乘法通常会比加法耗费更多的时间的时间周期，所以通常可以把乘法拆分成位移运算和加法运算的结合。</p>
+<pre><code>例如x * 3, 我们可以将3 拆分成 2^1  + 2^0, 
+x * 3 = x * (2^1  + 2^0) =  x * 2 + x * 1  = x &lt;&lt; 1 + x &lt;&lt; 0
+</code></pre><p><strong>除法</strong>：对于程序中的除法，所有的结果都是向零取整(意味着对于一个结果大于零的数字，这个值是向下取整，但是对于一个小于零的结果，这个值是向上取整)</p>
+<pre><code>-5 / 2 = -2;(结果小于零，向上取整)
+5 / 2 = 2; (结果小于零，向下取整)
+</code></pre><p><strong>浮点数</strong></p>
+<ol>
+<li>浮点数的计算不满足结合律，分配律，所以在计算的时候需要额外考虑一点。</li>
+<li>浮点数的表示为 V = s <em> E </em> M, (符号位 <em> 阶码 </em> 尾数)</li>
+</ol>
+<p>#程序的机器级表示#</p>
+<p>Linux使用平坦寻址的方式，使程序员将存储空间看做一个巨大数组。</p>
+<p><strong>机器级代码</strong></p>
+<ol>
+<li><p>对于机器级编程来说，两种抽象至关重要，第一种是机器级程序的格式和行为，定义为指令集体系结构（ISA）, 它定义了处理器状态，指令的格式，以及每条指令对状态的影响。 第二种抽象是机器级程序使用的地址是虚拟地址，提供的存储器模型看上去是一个非常大的字节数组。</p>
+</li>
+<li><p>程序存储器包含：程序的可执行机器代码，操作系统需要的一些信息，用来管理过程调用和返回的运行时栈，以及用户分配的存储器块。</p>
+</li>
+<li><p>程序链接之后，所有变量在内存中的地址就确定了。</p>
+</li>
+</ol>
+<p><strong>数据格式</strong></p>
+<ol>
+<li><p>字 16位， 字节 8位，双字 32 位。</p>
+</li>
+<li><p>三类操作符: 第一种是立即数，用$ 加上 一个C表示的常数，例如movl $66, %eax, 就是将常数66放入寄存器eax中。第二种操作的对象是寄存器， movl %edx, %eax，例如就是将寄存器edx中的值拷贝到eax，第三种操作的对象是存储器的引用（这里的引用可以改成索引）， movl （%edx), %eax, 假设内存数组为M, 这里movl 操作的对象是M[%edx] 这个地址。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机基础/" rel="tag"># 计算机基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/22/液化效果的心得/" rel="next" title="OpenGL 片段着色器理解">
+                <i class="fa fa-chevron-left"></i> OpenGL 片段着色器理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
