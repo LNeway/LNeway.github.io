@@ -1,0 +1,712 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,OpenGL,WebP," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言在目前的项目中我们使用到了WEBP作为直播动画的方案，使用WEBP的优点就不用说了，缺点我觉得有一个就是Android上目前能够解码webp动画的库只有FB的 Fresco 库，所以目前只能使用这个库作为webp动画播放的库。 既然是直播比较蛋疼的问题就是目前手机屏幕上出现的各种元素会比较多，所以对于UI上的优化就显得比较重要了，在目前我们的项目中，在一个屏幕上用户可以发弹幕，点赞，发送礼物，">
+<meta name="keywords" content="Android,OpenGL,WebP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过OpenGL优化WEBP动画的渲染">
+<meta property="og:url" content="http://yoursite.com/2018/03/18/“通过OpenGL优化WEBP动画的渲染”/index.html">
+<meta property="og:site_name" content="Learning">
+<meta property="og:description" content="前言在目前的项目中我们使用到了WEBP作为直播动画的方案，使用WEBP的优点就不用说了，缺点我觉得有一个就是Android上目前能够解码webp动画的库只有FB的 Fresco 库，所以目前只能使用这个库作为webp动画播放的库。 既然是直播比较蛋疼的问题就是目前手机屏幕上出现的各种元素会比较多，所以对于UI上的优化就显得比较重要了，在目前我们的项目中，在一个屏幕上用户可以发弹幕，点赞，发送礼物，">
+<meta property="og:image" content="http://yoursite.com/2018/03/18/images/stack.jpeg">
+<meta property="og:updated_time" content="2018-03-18T10:25:03.166Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过OpenGL优化WEBP动画的渲染">
+<meta name="twitter:description" content="前言在目前的项目中我们使用到了WEBP作为直播动画的方案，使用WEBP的优点就不用说了，缺点我觉得有一个就是Android上目前能够解码webp动画的库只有FB的 Fresco 库，所以目前只能使用这个库作为webp动画播放的库。 既然是直播比较蛋疼的问题就是目前手机屏幕上出现的各种元素会比较多，所以对于UI上的优化就显得比较重要了，在目前我们的项目中，在一个屏幕上用户可以发弹幕，点赞，发送礼物，">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/18/images/stack.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/18/“通过OpenGL优化WEBP动画的渲染”/"/>
+
+
+
+
+
+  <title>通过OpenGL优化WEBP动画的渲染 | Learning</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Learning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/18/“通过OpenGL优化WEBP动画的渲染”/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">通过OpenGL优化WEBP动画的渲染</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-18T17:09:19+08:00">
+                2018-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在目前的项目中我们使用到了WEBP作为直播动画的方案，使用WEBP的优点就不用说了，缺点我觉得有一个就是Android上目前能够解码webp动画的库只有FB的 Fresco 库，所以目前只能使用这个库作为webp动画播放的库。</p>
+<p>既然是直播比较蛋疼的问题就是目前手机屏幕上出现的各种元素会比较多，所以对于UI上的优化就显得比较重要了，在目前我们的项目中，在一个屏幕上用户可以发弹幕，点赞，发送礼物，而且还是在播放器界面，整个界面的元素相当复杂，所以这个时候每一个操作的优化都显得十分重要，不然就会造成UI线程的卡顿，影响用户体验。因此在这里的用户直播礼物的优化就会显得十分重要。但是在Freso库默认提供的 SimpleDraweeView  是继承于ImageView的，这也就说明这个库的渲染是在主线程当中完成的，那么这就提供了优化的空间，我们可以使用OpenGL在非主线程中来完成礼物的渲染。</p>
+<h1 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h1><p>在Freso的使用说明中可以查找到如何使用<a href="https://www.fresco-cn.org/docs/writing-custom-views.html" target="_blank" rel="external">自定义的View</a>. 既然我们需要使用OpenGL,那么我们需要继承GLSurfaceView 这个类，这个类具体的使用说明可以自行百度，继承之后按照文档里面相关的说明完成一系列方法的重写。</p>
+<p>接下来，按照Fresco的教程定义完成View之后，就需要完成OpenGL 当中render的 编写了。代码的核心就是完成onDrawFrame的编写。核心代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onDrawFrame(GL10 gl) &#123;</div><div class="line">    cacheBitmap.eraseColor(Color.TRANSPARENT);</div><div class="line">    Canvas canvas = new Canvas(cacheBitmap);</div><div class="line">    canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));</div><div class="line">    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());</div><div class="line">    drawable.draw(canvas);</div><div class="line"></div><div class="line">    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1f);</div><div class="line">    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BITS);</div><div class="line">    texture = Util.loadTexture(cacheBitmap, texture, false);</div><div class="line">    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);</div><div class="line">    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);</div><div class="line">    GLES20.glDrawElements(GLES20.GL_TRIANGLES, position.length,</div><div class="line">            GLES20.GL_UNSIGNED_SHORT, shortBuffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中的主要逻辑梳理一下，在自定义的View当中我们可以通过 mDraweeHolder.getTopLevelDrawable() 拿到当前需要绘制的Drawable对象，但是在OpenGL中，Drawable对象不管用，我们只能将其转为一个Bitmap 对象，所以需要创建一个Canvas，通过drawable .draw 方法来得到其中的图像数据。拿到bitmap之后将其转为opengl中的纹理对象即可。</p>
+<p>如果你完全按照Fresco中的代码来定义View, 运行上诉的代码会直接崩溃。</p>
+<p><img src="../images/stack.jpeg" alt=""></p>
+<p>从代码的异常堆栈里面可以看出看我们在WebpGLView这个类中导致了 <em>invalidateDrawable</em> 这个方法的调用，这个方法定义在Drawable.Callback当中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Called when the drawable needs to be redrawn.  A view at this point</div><div class="line"> * should invalidate itself (or at least the part of itself where the</div><div class="line"> * drawable appears).</div><div class="line"> *</div><div class="line"> * @param who The drawable that is requesting the update.</div><div class="line"> */</div><div class="line">void invalidateDrawable(@NonNull Drawable who);</div></pre></td></tr></table></figure>
+<p>从注释中我们可以看到这个方法是在Drawable出现更新的时候view应该更新自己。</p>
+<p>而在Fresco的教程当中也需要我们调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mDraweeHolder.getTopLevelDrawable().setCallback(this);</div></pre></td></tr></table></figure>
+<p>这行代码，这里之所以能够直接使用this， 就是因为View默认实现了这个接口，我们再来看下View当中是怎么实现的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Invalidates the specified Drawable.</div><div class="line"> *</div><div class="line"> * @param drawable the drawable to invalidate</div><div class="line"> */</div><div class="line">@Override</div><div class="line">public void invalidateDrawable(@NonNull Drawable drawable) &#123;</div><div class="line">    if (verifyDrawable(drawable)) &#123;</div><div class="line">        final Rect dirty = drawable.getDirtyBounds();</div><div class="line">        final int scrollX = mScrollX;</div><div class="line">        final int scrollY = mScrollY;</div><div class="line"></div><div class="line">        invalidate(dirty.left + scrollX, dirty.top + scrollY,</div><div class="line">                dirty.right + scrollX, dirty.bottom + scrollY);</div><div class="line">        rebuildOutline();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>从View实现的代码中我们可以看出来，View调用了 invalidate 方法来实现View的更新。</p>
+<p>在我们上线的代码中我们在一个OpenGL线程中调用draw(canvas)最终导致invalidateDrawable 的调用，从而在非主线程调用了invalidate，所以出现了上面的崩溃。</p>
+<p>所以为了避免这种情况我们只需自己重写这个方法即可，重写十分简单，直接调用requestRender() 即可。</p>
+<p>所有的代码都在<a href="https://github.com/LNeway/OpenGL-learning" target="_blank" rel="external">LNeway</a>上可以找到。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+            <a href="/tags/WebP/" rel="tag"># WebP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/28/深入理解计算机系统学习笔记/" rel="next" title="深入理解计算机系统学习笔记">
+                <i class="fa fa-chevron-left"></i> 深入理解计算机系统学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Tom Liu" />
+          <p class="site-author-name" itemprop="name">Tom Liu</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义View"><span class="nav-number">2.</span> <span class="nav-text">自定义View</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Liu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

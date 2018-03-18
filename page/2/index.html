@@ -264,6 +264,145 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/24/FFMPEG记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tom Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/24/FFMPEG记录/" itemprop="url">FFMPEG记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-24T20:50:21+08:00">
+                2017-06-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用的两个关键命令 </p>
+<pre><code>ffmpeg 
+    -framerate 10 
+    -start_number 1 
+    -i app_imagecache/3461686%04d.png 
+    -i logo.png 
+    -i pa.png 
+    -vframes 44 
+    -filter_complex &quot;[1:v]scale=50:50[water];[0:v][water]overlay=0:0[x];[x][2:v] paletteuse,reverse&quot; 
+    -y logo.gif
+</code></pre><p>下面来简单的解析一下这段命令 </p>
+<ul>
+<li>framerate 指定生成gif的 帧率，目前ffmpeg 最快支持为 20ms/每帧，所以这里的帧率最大0为 50</li>
+<li>start_number 指定图片输入序列的启示位置</li>
+<li>-i  app_imagecache/3461686%04d.png 指定生成gif的 图片序列</li>
+<li>-i logo.png 指定水印</li>
+<li>vframes 指定帧数</li>
+<li>-filter_complex “[1:v]scale=50:50[water];[0:v] [water]overlay=0:0[x];[x][2:v]paletteuse,reverse”</li>
+</ul>
+<p>这一段指定对输入的处理 [1:v]实际上指定了命令的中的输入参数，这里的 1 表示参数的序号，序号是基于0开始的，这里实际上指向了第二个输入参数也就是 logo.png. scale说明对这个水印的大小，这里指定了高宽为 50、接下来跟着了一个[water]这个就表示对上一个步骤处理结果的重命名，在后续的操作中就可以用这个重命名来指代。接下来使用[water] 表示上一步指定为 50:50 的这个水印 偏移量 为0:0； 接下来是[x][2:v] 这两个单独的意思都能理解，放在一起的理解应该是对将[2:v]所致的结果应用到[x]上面去，[2:v] 执行了第三个输入参数即pa.png， 后面跟着了paletteuse，加上这个是为了提升了gif图像的质量，为gif制定了一个全局的调色盘。</p>
+<p>再接下来的reverse 制定了整个gif按照倒序的方式生成。</p>
+<p>刚刚说到了gif的调色盘，生成的方式如下</p>
+<pre><code>ffmpeg
+-i source
+-vf palettegen
+-y palettegen.png
+</code></pre><p>-i 即我们制定的生成调色盘的源文件，在项目中，我们的gif来源于视频，所以在生成调色盘的时候，这里制定为 视频的路径。</p>
+<p>开发的时候遇到一个问题， 从制定的时间开始取视频帧的时候，非常的慢，因为需要从头开始解析，所以后来的做法就是先截取视频，然后截取后的视频中开始取帧。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/12/TCP学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2361,302 +2500,6 @@ shared_ptr&lt;connection&gt; con_p(connction,end_connection);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/09/Andriod中的资源管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Tom Liu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/09/Andriod中的资源管理/" itemprop="url">Andriod中的资源管理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-09T12:38:52+08:00">
-                2017-02-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Android的安装包本质上是一个zip压缩文件，我们可以使用解压软件打开。<br>其中的resources.arsc 是一个二进制格式的文件，与二进制的xml完全不同，appt在对资源进行编译的时候会为每一个资源分配唯一的id，程序在执行的时候会根据这些id来读取特定的资源，而resources.arsc文件正是包含了所有id资源值得一个数据集合，在该文件中，如果某个id对应的资源是string或者数值，那么该文件会直接包含对应的值，如果id对应的资源是某个layout或者drawable资源，那么该文件会存入对应资源的地址。</p>
-<p>安装后的目录如下 </p>
-<ul>
-<li>/data/app 安装之后，会有一个以报名命名的文件夹在里面，其中base.apk就是用户安装的apk。系统自带的应用在/system/app下面。</li>
-<li>/data/dalvik-cache， 每个apk里面都有class.dex，安装之后，所有的dex文件都会放到该目录下面，这样用户在启动APP的时候就可以快速的读取dex文件，而不用解压，在早期版本中，会对dex进行优化，最后生成的odex文件也在这个目录下面，任何程序都可以读写该目录，这就为类的动态加载提供了可能，实际上每个app的dex .</li>
-</ul>
-<p><strong>styleable, style, attr, theme</strong></p>
-<p>styleable 一般和attr联合使用，用于定义一些属性。从AttributeSet对象中获取这三个属性的时候可以，可以传入R.styleable.xxx 这个参数实际上会被编译成一个int []. 数组的内容正是所包含的attrde id。</p>
-<p><strong>AttributeSet和TypeArray</strong></p>
-<p>AttributeSet 代表了视图属性的集合， TypedArray 类又是对ArributeSet数据的抽象。context.obtainStyledAttribute() ，该函数的内部实现正是通过遍历set中的每一个属性，找到用户感兴趣的属性，然后把值和属性经过重定位返回一个TypedArray对象。</p>
-<p>TypedArray 中的内部mValue（类型为一个int 数组）起到了一个内部缓冲的作用，mData 包含了styleable中所有的属性值， 其长度为 styleable 中属性的个数乘以 AssetManager.STYLE_NUM_ENTRIES，AssetManager.STYLE_NUM_ENTRIES的值为6，它实际上表示有6种数据在mData这个数组当中。</p>
-<pre><code>static final int STYLE_NUM_ENTRIES = 6;
-static final int STYLE_TYPE = 0;
-static final int STYLE_DATA = 1;
-static final int STYLE_ASSET_COOKIE = 2;
-static final int STYLE_RESOURCE_ID = 3;
-static final int STYLE_CHANGING_CONFIGURATIONS = 4;
-static final int STYLE_DENSITY = 5;
-</code></pre><p>比如说我先有一个int 类型的属性值，那么它 实际上在mData中占据了6个 存储位置，从 0 -5 位置上的值分别对应上面的类型。再看如何获取string的存储的，核心方法是调用了 TypedArray的 loadStringValueAt 方法。</p>
-<pre><code> public String getString(@StyleableRes int index) {
-        if (mRecycled) {
-            throw new RuntimeException(&quot;Cannot make calls to a recycled instance!&quot;);
-        }
-
-        index *= AssetManager.STYLE_NUM_ENTRIES;
-        final int[] data = mData;
-        final int type = data[index+AssetManager.STYLE_TYPE];
-        if (type == TypedValue.TYPE_NULL) {
-            return null;
-        } else if (type == TypedValue.TYPE_STRING) {
-            return loadStringValueAt(index).toString();
-        }
-
-        final TypedValue v = mValue;
-        if (getValueAt(index, v)) {
-            final CharSequence cs = v.coerceToString();
-            return cs != null ? cs.toString() : null;
-        }
-
-        throw new RuntimeException(&quot;getString of bad type: 0x&quot; + Integer.toHexString(type));
-    }
-
-
-首页要做的就是找到index在mData中正确的位置，这里将index*=6,如果这里存放的本来就是一个sting那么使用loadStringValueAt，如果不是，那么将调用 TypedValue的 coerceTOsTRING();
-</code></pre><p>再来看 loadStringValueAt方法 </p>
-<pre><code>private CharSequence loadStringValueAt(int index) {
-    final int[] data = mData;
-    final int cookie = data[index+AssetManager.STYLE_ASSET_COOKIE];
-    if (cookie &lt; 0) {
-        if (mXml != null) {
-            return mXml.getPooledString(
-                data[index+AssetManager.STYLE_DATA]);
-        }
-        return null;
-    }
-    return mAssets.getPooledStringForCookie(cookie, data[index+AssetManager.STYLE_DATA]);
-}
-
-首先尝试获取字符串的cookie,cookie如果有效的话将会从mXml（mXml是用于解析二进制xml的对象）中去加载，无效的话将调用AssetManager的 getPooledStringForCookie 方法，
-</code></pre><p><strong>获取资源</strong><br>获取资源通常需要Resource对象，在构建Resource对象的过程中需要一个AssertManager。</p>
-<pre><code>  public AssetManager() {
-    synchronized (this) {
-        if (DEBUG_REFS) {
-            mNumRefs = 0;
-            incRefsLocked(this.hashCode());
-        }
-        init(false);
-        if (localLOGV) Log.v(TAG, &quot;New asset manager: &quot; + this);
-        ensureSystemAssets();
-    }
-}
-</code></pre><p>init 是一个navtive的方法，它会尝试去加载/system/framework-res.apk， 这样APP就可以使用系统提供的资源。</p>
-<p>通过尝试去跟Resource. getXXX方法， 最终都是调用了AssetManager的方法。<br>而AssetManager最终又是采用JNI的方式来获取资源。 </p>
-<pre><code>static jint android_content_AssetManager_loadResourceValue(JNIEnv* env, jobject clazz,
-                                                       jint ident,
-                                                       jshort density,
-                                                       jobject outValue,
-                                                       jboolean resolve)
-{
-    AssetManager* am = assetManagerForJavaObject(env, clazz);
-    if (am == NULL) {
-        return 0;
-    }
-    const ResTable&amp; res(am-&gt;getResources());
-    Res_value value;
-    ResTable_config config;
-    uint32_t typeSpecFlags;
-    ssize_t block = res.getResource(ident, &amp;value, false, density, &amp;typeSpecFlags, &amp;config);
-#if THROW_ON_BAD_ID
-    if (block == BAD_INDEX) {
-        jniThrowException(env, &quot;java/lang/IllegalStateException&quot;, &quot;Bad resource!&quot;);
-        return 0;
-    }
-#endif
-    uint32_t ref = ident;
-    if (resolve) {
-        block = res.resolveReference(&amp;value, block, &amp;ref, &amp;typeSpecFlags, &amp;config);
-#if THROW_ON_BAD_ID
-        if (block == BAD_INDEX) {
-            jniThrowException(env, &quot;java/lang/IllegalStateException&quot;, &quot;Bad resource!&quot;);
-            return 0;
-        }
-#endif
-    }
-    return block &gt;= 0 ? copyValue(env, outValue, &amp;res, value, ref, block, typeSpecFlags, &amp;config) : block;
-}
-</code></pre><p>首先通过获取ResTable ,让后从resTable 当中去找到相应的资源，这里的ResTable实际上就是apk文件解压出来之后的resources.arsc。</p>
-<p><strong>Framework资源</strong></p>
-<p><em>加载和读取</em><br>系统资源是在zygote 进程启动的时候加载的，并且只有在加载系统资源完成之后才开始启动其他的应用进程，从而实现其他应用进程共享系统资源的目标，</p>
-<p>方法的调用栈 ZyogteInit.main() -&gt; preload() -&gt; preloadResources() , 系统加载完这些资源之后会在ResoucesImpl通过集合缓存起来。</p>
-<pre><code>// Information about preloaded resources.  Note that they are not
-// protected by a lock, because while preloading in zygote we are all
-// single-threaded, and after that these are immutable.
-private static final LongSparseArray&lt;Drawable.ConstantState&gt;[] sPreloadedDrawables;
-private static final LongSparseArray&lt;Drawable.ConstantState&gt; sPreloadedColorDrawables
-        = new LongSparseArray&lt;&gt;();
-private static final LongSparseArray&lt;android.content.res.ConstantState&lt;ComplexColor&gt;&gt;
-        sPreloadedComplexColors = new LongSparseArray&lt;&gt;();
-</code></pre><p>在ResouscesImpl 内有一个成员变量mPreloading ， 这个值只会在 startPreloading()和 finishPreloading 这两个方法当中被改变，而这两个方法又只会在Zygote进程中被调用，所以当mPreloading为true的时候， 是Zygote 进程正在加载系统资源。所以在ResourcesImpl的cacheDrawble方法当中，可以看到</p>
-<pre><code>if (mPreloading) {
-        final int changingConfigs = cs.getChangingConfigurations();
-        if (isColorDrawable) {
-            if (verifyPreloadConfig(changingConfigs, 0, value.resourceId, &quot;drawable&quot;)) {
-                sPreloadedColorDrawables.put(key, cs);
-            }
-        } else {
-            if (verifyPreloadConfig(
-                    changingConfigs, LAYOUT_DIR_CONFIG, value.resourceId, &quot;drawable&quot;)) {
-                if ((changingConfigs &amp; LAYOUT_DIR_CONFIG) == 0) {
-                    // If this resource does not vary based on layout direction,
-                    // we can put it in all of the preload maps.
-                    sPreloadedDrawables[0].put(key, cs);
-                    sPreloadedDrawables[1].put(key, cs);
-                } else {
-                    // Otherwise, only in the layout dir we loaded it for.
-                    sPreloadedDrawables[mConfiguration.getLayoutDirection()].put(key, cs);
-                }
-            }
-        }
-    }
-</code></pre><p>如果mPreloading 是true，那么这个时候是在执行ZygoteInit进程，所以这些数据会被缓存到静态变量当中去。这里加载的Framework的资源，加载的仅仅只是一小部分，对于那些非”预装载”的系统资源则不会缓存到静态集合变量中，在这种情况下，如果应用京城需要一个非预装载的资源，则会在各个进程中保持一个资源的缓存。</p>
-<hr>
-<p>关于 <a href="https://github.com/fengjundev/Android-Skin-Loader" target="_blank" rel="external">动态加载皮肤框架</a>的实现 </p>
-<p><strong>获取新的资源对象 Resources ?</strong><br>简单的概括一下就是通过AssetManager 来构建一个新的Resouce对象。</p>
-<pre><code>AssetManager assetManager = AssetManager.class.newInstance();
-Method addAssetPath = assetManager.getClass().getMethod(&quot;addAssetPath&quot;, String.class);
-addAssetPath.invoke(assetManager, skinPkgPath);
-Resources superRes = context.getResources();
-Resources skinResource = new                        Resources(assetManager,superRes.getDisplayMetrics(),superRes.getConfiguration());
-</code></pre><p>这样既可以获取到一个指向新资源的 Resource 对象。</p>
-<p>在获取新的资源对象的时候，先根据现有资源的id来获取资源的字符串名字，就是我们开发的时候给资源的命名，然后根据命名来在新的 Resource对象中 获取相应的资源。</p>
-<pre><code>String resName = context.getResources().getResourceEntryName(resId);
-int trueResId = mResources.getIdentifier(resName, &quot;color&quot;, skinPackageName);
-int trueColor = 0;
-try{
-    trueColor = mResources.getColor(trueResId);
-}catch(NotFoundException e){
-    e.printStackTrace();
-    trueColor = originColor;
-}
-return trueColor;
-</code></pre><p>拿到资源之后替换即可。</p>
-<p><strong>如何获取需要更换皮肤的View.</strong><br>在作者的实现如下，<br>在布局文件中为每一个需要替换皮肤的View 添加了一个属性 skin:enable=”true” ， 同时为LayoutInflator指定自定义的Factory， 在LayoutInflator解析这个布局文件的时候，会调用Factory的onCreateView 方法，这样可以在这里获取到所有添加了 <em>skin:enable=”true”</em> 这个标签的View.</p>
-<pre><code>@Override
-protected void onCreate(Bundle savedInstanceState) {
-super.onCreate(savedInstanceState);
-    mSkinInflaterFactory = new SkinInflaterFactory();
-    getLayoutInflater().setFactory(mSkinInflaterFactory);
-}
-</code></pre><p>自定义Factory的核心方法如下</p>
-<pre><code>@Override
-public View onCreateView(String name, Context context, AttributeSet attrs) {
-    // if this is NOT enable to be skined , simplly skip it 
-    boolean isSkinEnable = attrs.getAttributeBooleanValue(SkinConfig.NAMESPACE, SkinConfig.ATTR_SKIN_ENABLE, false);
-    if (!isSkinEnable){
-            return null;
-    }
-    View view = createView(context, name, attrs);
-    if (view == null){
-        return null;
-    }
-    parseSkinAttr(context, attrs, view);
-    return view;
-}
-</code></pre><p>解决以上两个问题，换肤就好实现了。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2706,7 +2549,7 @@ public View onCreateView(String name, Context context, AttributeSet attrs) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2719,7 +2562,7 @@ public View onCreateView(String name, Context context, AttributeSet attrs) {
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-count">46</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
