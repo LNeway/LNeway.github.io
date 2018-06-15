@@ -100,7 +100,7 @@
 <meta property="og:url" content="http://yoursite.com/2018/03/25/Okhttp学习笔记/index.html">
 <meta property="og:site_name" content="Learning">
 <meta property="og:description" content="之前使用Retrofit的时候把里面的源码过了一遍，retrofit的核心在于帮助使用者构建构建一个个请求，避免我们每次调用网络的时候都需要重新的去创建请求，其底层的网络库的实现采用的是okhttp, 下面是自己看了源码之后的学习笔记（目前还比较凌乱，后面写完了会重新整理） 个人的学习源码的习惯从一个非常简单的事例开始，然后自己跟着这个示例一步步的调试源码，看源码里面到底是怎么一步步实现的的，下面">
-<meta property="og:updated_time" content="2018-06-07T23:22:40.242Z">
+<meta property="og:updated_time" content="2018-06-14T23:54:20.880Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Okhttp学习笔记（持续更新中）">
 <meta name="twitter:description" content="之前使用Retrofit的时候把里面的源码过了一遍，retrofit的核心在于帮助使用者构建构建一个个请求，避免我们每次调用网络的时候都需要重新的去创建请求，其底层的网络库的实现采用的是okhttp, 下面是自己看了源码之后的学习笔记（目前还比较凌乱，后面写完了会重新整理） 个人的学习源码的习惯从一个非常简单的事例开始，然后自己跟着这个示例一步步的调试源码，看源码里面到底是怎么一步步实现的的，下面">
@@ -422,7 +422,25 @@
 <p>3）createTunnel 向代理服务器发送一个Connect请求，然后对响应进行判断，如果成功的和目标服务器建立了连接，那么这个时候connect回返回200，还有一种可能是代理服务器反悔了401，即未授权。</p>
 <p>然后，如果这个时候是不需要http 隧道的话，就可以调用connectSocket方法直接创建一个的socket连接了。</p>
 <p>再接下来建立协议进入 <em>establishProtocol</em> 方法，这个里面主要包含了https 和 http2 协议的相关设定。</p>
-<p>当这个这个请求是一个非https的请求的时候，那么一旦socket连接建立完成，那就可以直接返回了，如果是一个https的请求，那么这个时候就要开始TLS的握手过程了。这个握手的过程在RealConnection 的connectTls 方法当中，</p>
+<p>当这个这个请求是一个非https的请求的时候，那么一旦socket连接建立完成，那就可以直接返回了，如果是一个https的请求，那么这个时候就要开始TLS的握手过程了。这个握手的过程在RealConnection 的connectTls 方法当中.</p>
+<ol>
+<li><p>方法内存首先开始配置socket的密码套件，TLS版本和TLS扩展，关于TLS扩展可以查看<a href="https://www.zybuluo.com/ensis/note/233759" target="_blank" rel="external">博客</a></p>
+</li>
+<li><p>调用sslsocket.startHandShake 开始握手（<a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html" target="_blank" rel="external">博客</a>），具体握手流程如下</p>
+<p>a) 客户端发送被称为ClientHello的信息给服务器端，其中包括了TLS的版本，支持的加密算法和一个随机生成的字符串。</p>
+<p>b) 服务器端接收到客户端发送的ClientHello之后，也向客户端发送一个被称为ServerHello的信息，其中包括了选择的加密算法，一个随机字符串，服务器端的证书，还有选择的TLS版本，如果客户端支持的版本和服务器支持的版本不一致则关闭加密通信。</p>
+<p>c）客户端收到服务器的消息之后开始对服务器端的消息进行验证，包括证书中的域名和实际的域名是否匹配，证书是否过期和证书是不是由可靠机构办法，否则向用户给出警告，由用户决定是否继续进行。完成校验之后，服务器端回复如下信息：由服务器公钥加密的随机串(保证安全)； 编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送；客户端握手结束通知，表示客户端的握手已经结束了，这一项内存还是前面所有消息的hashcode ，给服务器端验证。</p>
+<p>4）服务器端接收到客户端消息，向客户端发送消息编码改变的通知，随后的消息都将采用约定的秘钥和加密方法进行，同时还有服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。</p>
+</li>
+<li><p>从sslSocketSession中创建一个Handshake对象，这个对象里面包括了这次握手的基本信息，TLS版本，加密套件，本地发送的证书，和从服务器端接收到的证书。</p>
+</li>
+<li><p>然后调用HostnameVerifier 的verify 验证主机地址是否在证书的接收范围之内，如果不在的话会抛出一个SSLPeerUnverifiedException，https连接验证失败。在okhttp中，HostnameVerifier中返回的是 OkHostnameVerifier的一个实例。</p>
+</li>
+<li><p>接下来是HPKP的验证，这种验证也是一种防止中间人攻击的验证(<a href="https://w2x.me/2017/07/03/HPKP-HTTP-Public-Key-Pinning-%E8%AF%A6%E8%A7%A3/" target="_blank" rel="external">博客</a>)，如果验证是失败同样会抛出一个SSLPeerUnverifiedException异常。</p>
+</li>
+<li><p>如果以上步骤都没有出现问题，那么这一次的handshake就完成了。</p>
+</li>
+</ol>
 <p>接下需要执行的是execute这个方法，在RealCall的实现中，这个方法的代码十分简短，但是其中的调用链却是非常的复杂，先看代码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">execute</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (executed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Already Executed"</span>);</div><div class="line">    executed = <span class="keyword">true</span>;</div><div class="line">  &#125;</div><div class="line">  captureCallStackTrace();</div><div class="line">  eventListener.callStart(<span class="keyword">this</span>);</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    client.dispatcher().executed(<span class="keyword">this</span>);</div><div class="line">    Response result = getResponseWithInterceptorChain();</div><div class="line">    <span class="keyword">if</span> (result == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Canceled"</span>);</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    eventListener.callFailed(<span class="keyword">this</span>, e);</div><div class="line">    <span class="keyword">throw</span> e;</div><div class="line">  &#125; <span class="keyword">finally</span> &#123;</div><div class="line">    client.dispatcher().finished(<span class="keyword">this</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在上面已经说过了，一个调用只能执行一次，所以在这个方法前面，首先就是判断是否已经执行过。</p>
